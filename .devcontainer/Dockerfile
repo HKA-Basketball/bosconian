@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/cpp:0-debian-11
+FROM mcr.microsoft.com/devcontainers/cpp:0-ubuntu-22.04
 
 ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="none"
 
@@ -14,6 +14,9 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 # RUN su vscode -c "${VCPKG_ROOT}/vcpkg install <your-port-name-here>"
 
 # [Optional] Uncomment this section to install additional packages.
-# RUN sudo apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && sudo apt-get -y install --no-install-recommends install libsdl2-2.0-0 \
-#     && sudo apt-get -y install --no-install-recommends install libsdl2-dev
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends libsdl2-2.0-0 \
+    && apt-get -y install --no-install-recommends libsdl2-dev
