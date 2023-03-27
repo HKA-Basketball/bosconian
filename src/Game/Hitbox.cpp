@@ -157,6 +157,16 @@ namespace Game {
         }
 
         //TODO: may add simplify Contour (reduce points by detecting Lines?)
+        //TODO: Idea: find a corner and use a paht algo to go along the line and find the next corner that will be connected to the previous one
+        /*
+                :----------:
+                |          |
+                |          |
+                |          |
+        :-------:          |
+        |                  |
+        :------------------:
+         */
 
         for (int i = 0; i < contour.size(); i++) {
             hitbox_Polygon.push_back(contour[i]);
