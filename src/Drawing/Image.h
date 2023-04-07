@@ -10,9 +10,11 @@ namespace Drawing {
         // some meta data
         const void* mem;
         int dataSize;
+        const char *file;
 
         SDL_Texture* img;
         Utils::Vector2D size;
+        Utils::Vector2D worldPos; // TODO: move to Entity
         Utils::Vector2D pos;
         float angle;
         //TODO: may move drawings to Graphics
@@ -20,6 +22,7 @@ namespace Drawing {
 
         Image(SDL_Renderer* renderer, const void* mem, int dataSize, Utils::Vector2D sizeOfImg, float deg = 0.f);
         Image(SDL_Renderer* renderer, const char *file, Utils::Vector2D sizeOfImg, float deg = 0.f);
+        Image(SDL_Renderer* renderer, const char *file, float deg = 0.f);
 
         void setSize(Utils::Vector2D newSize);
         Utils::Vector2D getSize();

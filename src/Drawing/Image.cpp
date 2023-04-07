@@ -31,11 +31,12 @@ namespace Drawing {
     }
 
     Image::Image(SDL_Renderer* renderer, const char *file, Utils::Vector2D sizeOfImg, float deg) {
-        this->mem = mem;
-        this->dataSize = dataSize;
+        this->mem = nullptr;
+        this->dataSize = 0;
+        this->file = file;
 
         this->renderer = renderer;
-        size = sizeOfImg;
+        size = sizeOfImg; // TODO: Change texture size
         angle = deg;
 
         img = IMG_LoadTexture(renderer, file);
@@ -44,6 +45,28 @@ namespace Drawing {
             LOG(std::string("Error loading Texture: ") + SDL_GetError());
             return;
         }
+
+        pos = Utils::Vector2D(-100, -100);
+    }
+
+    Image::Image(SDL_Renderer *renderer, const char *file, float deg) {
+        this->mem = nullptr;
+        this->dataSize = 0;
+        this->file = file;
+
+        this->renderer = renderer;
+        angle = deg;
+
+        img = IMG_LoadTexture(renderer, file);
+        if (!img)
+        {
+            LOG(std::string("Error loading Texture: ") + SDL_GetError());
+            return;
+        }
+        int x, y;
+        SDL_QueryTexture(img, NULL, NULL, &x, &y);
+        size.x = x;
+        size.y = y;
 
         pos = Utils::Vector2D(-100, -100);
     }
