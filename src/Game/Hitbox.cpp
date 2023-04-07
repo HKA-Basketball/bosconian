@@ -139,6 +139,43 @@ namespace Game {
         return false;
     }
 
+    bool isEdgePixel(const std::vector<std::vector<int>>& contour, int x, int y) {
+        if (x < 0 || x >= contour[0].size() || y < 0 || y >= contour.size()) {
+            return false;
+        }
+        return contour[y][x] == 1;
+    }
+
+    bool isCorner(const std::vector<std::vector<int>>& contour, int x, int y) {
+        int numNeighbors = 0;
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                if (dx == 0 && dy == 0) {
+                    continue;
+                }
+                if (isEdgePixel(contour, x + dx, y + dy)) {
+                    // Check if the two neighbor pixels are diagonal to each other
+                    if (dx != 0 && dy != 0) {
+                        continue;
+                    }
+                    // Check if the two neighbor pixels are on opposite sides of the current pixel
+                    if ((dx == -1 && isEdgePixel(contour, x+1, y)) ||
+                        (dx == 1 && isEdgePixel(contour, x-1, y)) ||
+                        (dy == -1 && isEdgePixel(contour, x, y+1)) ||
+                        (dy == 1 && isEdgePixel(contour, x, y-1))) {
+                        continue;
+                    }
+
+                    numNeighbors++;
+                }
+            }
+        }
+        if (numNeighbors != 2) {
+            return false;
+        }
+        return true;
+    }
+
     void Hitbox::createHitbox(SDL_Surface *bmp, Utils::Vector2D displaySize) {
         // TODO: may add Upscaling
 
@@ -146,31 +183,76 @@ namespace Game {
         center.y = bmp->h / 2;
 
         //SDL_Surface* edgeSurface = SDL_CreateRGBSurface(0, bmp->w, bmp->h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-        std::vector<SDL_Point> contour;
 
+        std::vector<std::vector<int>> contour2D(bmp->h, std::vector<int>(bmp->w, 0));
         for (int y = 0; y < bmp->h; y++) {
             for (int x = 0; x < bmp->w; x++) {
                 if (isEdgePixel(bmp, x, y)) {
-                    contour.push_back({x, y});
+                    contour2D[y][x] = 1;
                 }
             }
         }
 
-        //TODO: may add simplify Contour (reduce points by detecting Lines?)
-        //TODO: Idea: find a corner and use a paht algo to go along the line and find the next corner that will be connected to the previous one
-        /*
-                :----------:
-                |          |
-                |          |
-                |          |
-        :-------:          |
-        |                  |
-        :------------------:
-         */
-
-        for (int i = 0; i < contour.size(); i++) {
-            hitbox_Polygon.push_back(contour[i]);
+        std::vector<std::vector<int>> simplifiedContour = contour2D;
+        for (int y = 0; y < bmp->h; y++) {
+            for (int x = 0; x < bmp->w; x++) {
+                if (contour2D[y][x] == 1 && isCorner(contour2D, x, y)) {
+                    simplifiedContour[y][x] = 2;
+                }
+            }
         }
+
+        /*for (int y = 0; y < bmp->h; y++) {
+            for (int x = 0; x < bmp->w; x++) {
+                std::cout << simplifiedContour[y][x];
+            }
+            std::cout << std::endl;
+        }*/
+
+        std::vector<SDL_Point> polygon;
+        std::vector<std::vector<bool>> visited(bmp->h, std::vector<bool>(bmp->w, false)); // initialize all pixels as unvisited
+
+        // start at any corner pixel and add it to the polygon
+        SDL_Point startPixel;
+        for (int y = 0; y < bmp->h; y++) {
+            for (int x = 0; x < bmp->w; x++) {
+                if (simplifiedContour[y][x] == 2) {
+                    startPixel = {x, y};
+                    break;
+                }
+            }
+        }
+        polygon.push_back(startPixel);
+        visited[startPixel.y][startPixel.x] = true;
+
+        // create a stack to keep track of pixels to visit
+        std::stack<SDL_Point> pixelStack;
+        pixelStack.push(startPixel);
+
+        // follow the contour by always moving to the next adjacent corner pixel
+        while (!pixelStack.empty()) {
+            SDL_Point currentPixel = pixelStack.top();
+            pixelStack.pop();
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    int nx = currentPixel.x + dx;
+                    int ny = currentPixel.y + dy;
+                    if (nx >= 0 && nx < bmp->w && ny >= 0 && ny < bmp->h) {
+                        if ((simplifiedContour[ny][nx] == 1 || simplifiedContour[ny][nx] == 2) && !visited[ny][nx]) {
+                            SDL_Point neighborPixel = {nx, ny};
+                            if (simplifiedContour[ny][nx] == 2)
+                                polygon.push_back(neighborPixel);
+
+                            visited[ny][nx] = true;
+                            pixelStack.push(neighborPixel);
+                        }
+                    }
+                }
+            }
+        }
+        polygon.push_back(startPixel); // close the polygon
+
+        hitbox_Polygon = polygon;
 
         /*for (const SDL_Point& point : hitbox_Polygon) {
             std::cout << "x: " << point.x << ", y: " << point.y << std::endl;
