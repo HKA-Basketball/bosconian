@@ -7,8 +7,10 @@ namespace Game {
         angle = deg;
         obj = img;
 
-        hitbox = new Game::Hitbox(obj->mem, obj->dataSize, obj->size);
-        //hitbox->printHitbox();
+        if (obj->mem)
+            hitbox = new Game::Hitbox(obj->mem, obj->dataSize, obj->size);
+        else
+            hitbox = new Game::Hitbox(obj->file, obj->size);
     }
 
     void Entity::update() {
@@ -26,6 +28,9 @@ namespace Game {
 
     void Entity::setOrigin(Utils::Vector2D newOrigin) {
         origin = newOrigin;
+        // TODO: Should this happen during the update?
+        hitbox->updateHitboxPos(newOrigin);
+        obj->setPos(newOrigin);
     }
 
     Utils::Vector2D Entity::getOrigin() {
