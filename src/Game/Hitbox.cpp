@@ -19,7 +19,7 @@ namespace Game {
         }
 
         createHitbox(image_surface, sizeOfImg);
-        LOG(std::string("Hitbox created"));
+        LOG(std::string("Hitbox created from memory"));
     }
 
     Hitbox::Hitbox(const char *file, Utils::Vector2D sizeOfImg) {
@@ -31,16 +31,19 @@ namespace Game {
         }
 
         createHitbox(image_surface, sizeOfImg);
-        LOG(std::string("Hitbox created for: ") + file);
+        LOG(std::string("Hitbox created from file: ") + file);
     }
 
     // TODO: WorldToScreen needed!!!
     void Hitbox::updateHitboxPos(Utils::Vector2D pos) {
-        this->pos = pos;
+        if (this->pos == pos)
+            return;
+
         for (int i = 0; i < hitbox_Polygon.size(); i++) {
-            hitbox_Polygon[i].x += pos.x;
-            hitbox_Polygon[i].y += pos.y;
+            hitbox_Polygon[i].x += pos.x - this->pos.x;
+            hitbox_Polygon[i].y += pos.y - this->pos.y;
         }
+        this->pos = pos;
     }
 
     // TODO: move to Math Class ?
@@ -67,20 +70,12 @@ namespace Game {
     }
 
     void Hitbox::updateHitboxAngle(float angle) {
-        static unsigned long long oldTCount = SDL_GetTicks64();
-        int inputDelay = 250;
-
-        if (SDL_GetTicks64() - oldTCount < inputDelay)
-            return;
-
-        static float oldAngle = 0.f;
         if (angle == oldAngle)
             return;
 
         rotatePolygon(hitbox_Polygon, angle, oldAngle, (pos + center));
 
         oldAngle = angle;
-        oldTCount = SDL_GetTicks64();
     }
 
     // TODO: may move to Image Class
@@ -265,5 +260,9 @@ namespace Game {
         for (const auto& rect : hitbox) {
             std::cout << "x: " << rect.x << ", y: " << rect.y << ", w: " << rect.w << ", h: " << rect.h << std::endl;
         }
+    }
+
+    std::vector<SDL_Point> Hitbox::getHitboxPolygon() {
+        return this->hitbox_Polygon;
     }
 } // Game
