@@ -130,7 +130,7 @@ int main(int argc, char* args[])
         }*/
 
         SDL_SetRenderDrawColor(g_renderer->renderer, 255, 0, 255, 48);
-        SDL_RenderDrawPoints(g_renderer->renderer, player1->getHitbox()->hitbox_Polygon.data(), player1->getHitbox()->hitbox_Polygon.size());
+        SDL_RenderDrawLines(g_renderer->renderer, player1->getHitbox()->hitbox_Polygon.data(), player1->getHitbox()->hitbox_Polygon.size());
 
 
         snprintf(text, sizeof(text), "FPS: %i", getFPS());
