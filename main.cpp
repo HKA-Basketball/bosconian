@@ -93,11 +93,34 @@ int main(int argc, char* args[])
 
     g_world->initBackground();
 
+    // TODO: Move
+    // Only for testing
+    // -------------------------------------------------------------------------------------
+    std::vector<std::pair<Game::Entity*, Drawing::Image*>> nonMovingEntitys;
+    nonMovingEntitys.resize(50);
+
+    std::vector<float> list{0.f, 45.f, 90.f, 135.f, 180.f, -45.f, -90.f, -135.f};
+    std::vector<const char*> listIMG{"../Resources/bomb.png", "../Resources/astroid-01.png", "../Resources/astroid-02.png", "../Resources/astroid-03.png"};
+    for (int i = 0; i < nonMovingEntitys.size(); i++)
+    {
+        float ang = list[rand() % list.size()];
+        Utils::Vector2D pos = Utils::Vector2D(std::rand() % (Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth), std::rand() % (Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth));
+        Drawing::Image* img = new Drawing::Image(g_renderer->renderer, listIMG[rand() % listIMG.size()], ang);
+        img->setPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::playerPos);
+        img->worldPos = Utils::Vector2D(pos.x, pos.y);
+        nonMovingEntitys[i].second = img;
+
+        nonMovingEntitys[i].first = new Game::Entity(pos - Utils::GlobalVars::playerPos, ang, img);
+        nonMovingEntitys[i].first->setAngle(ang);
+        nonMovingEntitys[i].first->getHitbox()->updateHitboxPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::playerPos);
+    }
+
     Drawing::Image* spaceShip = new Drawing::Image(g_renderer->renderer, space_ship, sizeof(space_ship), Utils::Vector2D(60.f, 64.f), 0.f);
     spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
     Game::Entity* player1 = new Game::Entity(Utils::GlobalVars::playerPos, Utils::GlobalVars::playerAngle, spaceShip);
 
     player1->getHitbox()->updateHitboxPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
+    // -------------------------------------------------------------------------------------
 
     char text[32];
     char pos[256];
@@ -109,10 +132,27 @@ int main(int argc, char* args[])
         g_renderer->beginScene();
 
         //Drawing
-        //player1->move2Pos(Utils::GlobalVars::playerPos, 1.f);
-        player1->setAngle(Utils::GlobalVars::playerAngle);
         g_world->runBackground(Utils::GlobalVars::playerPos.x, Utils::GlobalVars::playerPos.y);
+
+        // Only for testing
+        // -------------------------------------------------------------------------------------
+        player1->setAngle(Utils::GlobalVars::playerAngle);
+
+        for (int i = 0; i < nonMovingEntitys.size(); i++) {
+            nonMovingEntitys[i].first->update();
+            Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i].second->worldPos - Utils::GlobalVars::playerPos);
+            nonMovingEntitys[i].first->setOrigin(newPos);
+
+            //SDL_SetRenderDrawColor(g_renderer->renderer, 255, 0, 255, 48);
+            //SDL_RenderDrawLines(g_renderer->renderer, nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().data(), nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().size());
+        }
+
+        //player1->move2Pos(Utils::GlobalVars::playerPos, 1.f);
         player1->update();
+
+        //SDL_SetRenderDrawColor(g_renderer->renderer, 255, 0, 255, 48);
+        //SDL_RenderDrawLines(g_renderer->renderer, player1->getHitbox()->getHitboxPolygon().data(), player1->getHitbox()->getHitboxPolygon().size());
+
 
         /*if (Utils::GlobalVars::accesDebugMode)
         {
@@ -129,9 +169,6 @@ int main(int argc, char* args[])
             }
         }*/
 
-        SDL_SetRenderDrawColor(g_renderer->renderer, 255, 0, 255, 48);
-        SDL_RenderDrawLines(g_renderer->renderer, player1->getHitbox()->hitbox_Polygon.data(), player1->getHitbox()->hitbox_Polygon.size());
-
 
         snprintf(text, sizeof(text), "FPS: %i", getFPS());
         g_drawing->string(std::string(text), g_renderer->m_fonts[0], {255, 255, 255}, { 10, 5 });
@@ -141,8 +178,10 @@ int main(int argc, char* args[])
         TTF_SizeText(g_renderer->m_fonts[0], pos, &destR.w, &destR.h);
         g_drawing->string(std::string(pos), g_renderer->m_fonts[0], { 255, 255, 255 }, Utils::Vector2D(Utils::GlobalVars::windowWidth - (destR.w + 15), 5));
 
+        // -------------------------------------------------------------------------------------
 
 
+        // TODO: Move to UI Class
         SDL_Rect rec3 = { Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight };
         g_drawing->fillRectangle2({ 0, 0, 0, 255 }, rec3);
 
