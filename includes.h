@@ -22,6 +22,6 @@
 #include <SDL_keycode.h>
 
 #include "./src/Utilities/Logging.h"
-#include "./src/Utilities/Vector2D.h."
+#include "./src/Utilities/Vector2D.h"
 
 #endif //BOSCONIAN_INCLUDES_H
