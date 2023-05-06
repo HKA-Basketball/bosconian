@@ -12,7 +12,7 @@ namespace Event {
         LOG(std::string("EventManager Successfully Loaded"));
     }
 
-    bool EventManager::startLogging() {
+    bool EventManager::logging() {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -92,25 +92,25 @@ namespace Event {
 
         if ((Utils::GlobalVars::playerPos.x < 0))
         {
-            Utils::GlobalVars::playerPos.x = Utils::GlobalVars::lvlWidth;
+            Utils::GlobalVars::playerPos.x += Utils::GlobalVars::lvlWidth;
             Utils::GlobalVars::playerAngle = -90.f;
         }
 
         if ((Utils::GlobalVars::playerPos.x > Utils::GlobalVars::lvlWidth))
         {
-            Utils::GlobalVars::playerPos.x = 0;
+            Utils::GlobalVars::playerPos.x -= Utils::GlobalVars::lvlWidth;
             Utils::GlobalVars::playerAngle = 90.f;
         }
 
         if ((Utils::GlobalVars::playerPos.y < 0))
         {
-            Utils::GlobalVars::playerPos.y = Utils::GlobalVars::lvlHeight;
+            Utils::GlobalVars::playerPos.y += Utils::GlobalVars::lvlHeight;
             Utils::GlobalVars::playerAngle = 0.f;
         }
 
         if ((Utils::GlobalVars::playerPos.y > Utils::GlobalVars::lvlHeight))
         {
-            Utils::GlobalVars::playerPos.y = 0;
+            Utils::GlobalVars::playerPos.y -= Utils::GlobalVars::lvlHeight;
             Utils::GlobalVars::playerAngle = 180.f;
         }
 

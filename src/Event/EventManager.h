@@ -46,7 +46,7 @@ namespace Event {
     public:
         EventManager();
 
-        bool startLogging();
+        bool logging();
 
         // TODO: manage all things where they belong
         void manageGameVars();
