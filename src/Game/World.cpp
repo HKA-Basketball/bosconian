@@ -26,15 +26,15 @@ namespace Game {
     bool World::initBackground() {
         oldTick = SDL_GetTicks64();
         starDelay = 500;
-        countStars = 1000;
+        countStars = 420;
         bToggle = false;
 
         vcPoints.resize(countStars * 2);
 
         for (int i = 0; i < countStars * 2; i++)
         {
-            vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth);
-            vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight + Utils::GlobalVars::windowHeight);
+            vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+            vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
             vcPoints[i].first.h = vcPoints[i].first.w = RandomFloat(0.5f, 5.5f);
 
             sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
@@ -56,8 +56,8 @@ namespace Game {
             {
                 for (int i = 0; i < countStars; i++)
                 {
-                    vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth);
-                    vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight + Utils::GlobalVars::windowHeight);
+                    vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+                    vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
                     vcPoints[i].first.h = vcPoints[i].first.w = RandomFloat(0.5f, 5.5f);
 
                     sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
@@ -74,8 +74,8 @@ namespace Game {
             {
                 for (int i = countStars; i < countStars * 2; i++)
                 {
-                    vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth);
-                    vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight + Utils::GlobalVars::windowHeight);
+                    vcPoints[i].first.x = RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+                    vcPoints[i].first.y = RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
                     vcPoints[i].first.h = vcPoints[i].first.w = RandomFloat(0.5f, 5.5f);
 
                     sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
@@ -94,7 +94,14 @@ namespace Game {
 
         for (int i = 0; i < countStars * 2; i++)
         {
-            SDL_FRect rec = { vcPoints[i].first.x - offsetX, vcPoints[i].first.y - offsetY, vcPoints[i].first.w, vcPoints[i].first.h };
+            float x = fmod(vcPoints[i].first.x - offsetX * 0.6f, Utils::GlobalVars::lvlWidth * 0.6f);
+            float y = fmod(vcPoints[i].first.y - offsetY * 0.6f, Utils::GlobalVars::lvlHeight * 0.6f);
+
+            // If x or y is negative, add lvlWidth or lvlHeight to wrap around the other edge
+            if (x < 0) x += Utils::GlobalVars::lvlWidth * 0.6f;
+            if (y < 0) y += Utils::GlobalVars::lvlHeight * 0.6f;
+
+            SDL_FRect rec = { x, y, vcPoints[i].first.w, vcPoints[i].first.h };
             g_drawing->fillRectangle(vcPoints[i].second, rec);
         }
     }

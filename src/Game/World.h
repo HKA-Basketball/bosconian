@@ -3,6 +3,7 @@
 
 #include "../../includes.h"
 #include "../Drawing/Graphics.h"
+#include "../Utilities/GlobalVars.h"
 
 namespace Game {
 
