@@ -14,6 +14,9 @@ namespace Utils {
         int windowHeight = 896;  // 224 * 4;
         int infoWidth = 256;    //  64 * 4
 
+        int gameWindowWidth = windowWidth - infoWidth;
+        int gameWindowHeight = windowHeight;
+
         int lvlWidth = 2000;
         int lvlHeight = 2000;
 
@@ -23,6 +26,21 @@ namespace Utils {
         //
         bool accesDebugMode = true;
         bool drawHitboxes = false;
+
+        bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint)
+        {
+            // Calculate the screen coordinates of the world point
+            screenPoint.x = (worldPoint.x - Utils::GlobalVars::playerPos.x) + Utils::GlobalVars::gameWindowWidth / 2;
+            screenPoint.y = (worldPoint.y - Utils::GlobalVars::playerPos.y) + Utils::GlobalVars::gameWindowHeight / 2;
+
+            // Check if the point is within the bounds of the screen
+            if (screenPoint.x < 0 || screenPoint.x >= Utils::GlobalVars::gameWindowWidth || screenPoint.y < 0 || screenPoint.y >= Utils::GlobalVars::gameWindowHeight)
+            {
+                return false;
+            }
+
+            return true;
+        }
     };
 
 

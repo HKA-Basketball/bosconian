@@ -9,6 +9,9 @@ namespace Utils {
         extern int windowHeight;
         extern int infoWidth;
 
+        extern int gameWindowWidth;
+        extern int gameWindowHeight;
+
         extern int lvlWidth;
         extern int lvlHeight;
 
@@ -18,6 +21,8 @@ namespace Utils {
         //
         extern bool accesDebugMode;
         extern bool drawHitboxes;
+
+        extern bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint);
     };
 
 
