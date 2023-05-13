@@ -24,9 +24,9 @@ namespace Game {
     }
 
     bool World::initBackground() {
-        oldTick = SDL_GetTicks64();
+        elapsedTicks = 0;
         starDelay = 500;
-        countStars = 420;
+        countStars = 210;
         bToggle = false;
 
         vcPoints.resize(countStars * 2);
@@ -49,8 +49,9 @@ namespace Game {
         return 1;
     }
 
-    void World::runBackground(float offsetX, float offsetY) {
-        if (SDL_GetTicks64() - oldTick > starDelay)
+    void World::runBackground(float offsetX, float offsetY, float deltaTime) {
+        elapsedTicks += deltaTime * 1000.f;
+        if (elapsedTicks > starDelay)
         {
             if (!bToggle)
             {
@@ -89,7 +90,7 @@ namespace Game {
                 bToggle = false;
             }
 
-            oldTick = SDL_GetTicks64();
+            elapsedTicks -= starDelay;
         }
 
         for (int i = 0; i < countStars * 2; i++)

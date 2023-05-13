@@ -11,7 +11,7 @@ namespace Game {
     private:
         Drawing::Graphics* g_drawing;
 
-        unsigned long long oldTick;
+        Uint64 elapsedTicks;
         int starDelay;
         int countStars;
         float sineValue;
@@ -24,7 +24,7 @@ namespace Game {
         World(Drawing::Graphics* drawing, int width, int height);
 
         bool initBackground();
-        void runBackground(float offsetX, float offsetY);
+        void runBackground(float offsetX, float offsetY, float deltaTime);
 
         void draw2DRadar(Utils::Vector2D pos, Utils::Vector2D size, float offsetX, float offsetY, Utils::Vector2D mapSize);
 
