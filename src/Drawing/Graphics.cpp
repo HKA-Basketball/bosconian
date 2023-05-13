@@ -29,6 +29,15 @@ namespace Drawing {
         SDL_RenderFillRectF(g_renderer, &rect);
     }
 
+    void Graphics::fillRectangleOutline(SDL_Color color, SDL_Rect rect)
+    {
+        SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderFillRect(g_renderer, &rect);
+
+        SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, color.a);
+        SDL_RenderDrawRect(g_renderer, &rect);
+    }
+
     void Graphics::string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos)
     {
         SDL_Surface* surface;

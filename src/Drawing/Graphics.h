@@ -20,6 +20,7 @@ namespace Drawing {
         void rectangle(SDL_Color color, SDL_Rect rect);
         void fillRectangle2(SDL_Color color, SDL_Rect rect);
         void fillRectangle(SDL_Color color, SDL_FRect rect);
+        void fillRectangleOutline(SDL_Color color, SDL_Rect rect);
 
         void string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos);
     };
