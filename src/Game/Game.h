@@ -3,6 +3,7 @@
 
 #include "../../includes.h"
 #include "../Utilities/Initializer.h"
+#include "Projectile.h"
 
 namespace Game {
 
@@ -13,11 +14,12 @@ namespace Game {
 
         std::vector<std::pair<Entity*, Drawing::Image*>> nonMovingEntitys;
         Entity* player1;
+        std::vector<Projectile*> playersProjectiles;
 
     public:
         explicit Game(Initialization::Initializer *g);
 
-        void playTest();
+        void playTest(float deltaTime);
 
         void initOnce();
     };

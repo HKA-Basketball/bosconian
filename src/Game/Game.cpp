@@ -19,18 +19,18 @@ namespace Game {
             float ang = ranImg == 4 ? list[rand() % 2] : list[rand() % list.size()];
             Utils::Vector2D pos = Utils::Vector2D(std::rand() % (Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth), std::rand() % (Utils::GlobalVars::lvlWidth + Utils::GlobalVars::windowWidth));
             Drawing::Image* img = new Drawing::Image(g->renderer()->renderer, listIMG[ranImg], ang);
-            img->setPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::playerPos);
+            img->setPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::cameraPos);
             img->worldPos = Utils::Vector2D(pos.x, pos.y);
             nonMovingEntitys[i].second = img;
 
-            nonMovingEntitys[i].first = new Entity(pos - Utils::GlobalVars::playerPos, ang, img);
+            nonMovingEntitys[i].first = new Entity(pos - Utils::GlobalVars::cameraPos, ang, img);
             nonMovingEntitys[i].first->setAngle(ang);
-            nonMovingEntitys[i].first->getHitbox()->updateHitboxPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::playerPos);
+            nonMovingEntitys[i].first->getHitbox()->updateHitboxPos(Utils::Vector2D(pos.x, pos.y) - Utils::GlobalVars::cameraPos);
         }
 
         Drawing::Image* spaceShip = new Drawing::Image(g->renderer()->renderer, space_ship, sizeof(space_ship), Utils::Vector2D(60.f, 64.f), 0.f);
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
-        player1 = new Entity(Utils::GlobalVars::playerPos, Utils::GlobalVars::playerAngle, spaceShip);
+        player1 = new Entity(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
         player1->getHitbox()->updateHitboxPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         // -------------------------------------------------------------------------------------
@@ -59,38 +59,76 @@ namespace Game {
         return lastFps;
     }
 
-    void Game::playTest() {
+    void Game::playTest(float deltaTime) {
         static bool once = false;
         if (!once) {
             initOnce();
             once = true;
         }
 
+        static Uint32 timeSinceLastProjectile = 0;
+        const Uint32 projectileInterval = 500;
+
+        if (g->event()->isKeyClicked(SDL_SCANCODE_LCTRL, false))
+        {
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - timeSinceLastProjectile >= projectileInterval) {
+                // Add a new Projectile object to the vector
+                Utils::Vector2D screenPos;
+                Utils::GlobalVars::WorldToScreen(Utils::GlobalVars::cameraPos, screenPos);
+                Projectile* newProjectile1 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y, 1000 * deltaTime, Utils::GlobalVars::playerAngle);
+                Projectile* newProjectile2 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y, 1000 * deltaTime, Utils::GlobalVars::playerAngle + 180);
+                playersProjectiles.push_back(newProjectile1);
+                playersProjectiles.push_back(newProjectile2);
+                timeSinceLastProjectile = currentTime;
+            }
+        }
+
+        // Update the positions of the player's projectiles
+        for (int i = 0; i < playersProjectiles.size(); i++) {
+            playersProjectiles[i]->update();
+            // Check if the projectile is out of bounds
+            if (playersProjectiles[i]->isOffscreen()) {
+                std::swap(playersProjectiles[i], playersProjectiles.back());
+                playersProjectiles.pop_back();
+            }
+        }
+
+
         //Drawing
-        g->world()->runBackground(Utils::GlobalVars::playerPos.x, Utils::GlobalVars::playerPos.y);
+        g->world()->runBackground(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y, deltaTime);
 
         // Only for testing
         // -------------------------------------------------------------------------------------
         player1->setAngle(Utils::GlobalVars::playerAngle);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i].second->worldPos - Utils::GlobalVars::playerPos);
-            Utils::Vector2D screenPos;
-            if (!Utils::GlobalVars::WorldToScreen(newPos, screenPos))
-                continue;
-
             nonMovingEntitys[i].first->update();
-            nonMovingEntitys[i].first->setOrigin(screenPos);
+
+            Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i].second->worldPos);
+            Utils::Vector2D newPosScreen;
+            Utils::GlobalVars::WorldToScreen(newPos, newPosScreen);
+
+            nonMovingEntitys[i].first->setOrigin(newPosScreen);
 
             //SDL_SetRenderDrawColor(g->renderer()->renderer, 255, 0, 255, 48);
             //SDL_RenderDrawLines(g->renderer()->renderer, nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().data(), nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().size());
         }
 
-        //player1->move2Pos(Utils::GlobalVars::playerPos, 1.f);
+        //player1->move2Pos(Utils::GlobalVars::cameraPos, 1.f);
         player1->update();
 
         //SDL_SetRenderDrawColor(g_renderer->renderer, 255, 0, 255, 48);
         //SDL_RenderDrawLines(g_renderer->renderer, player1->getHitbox()->getHitboxPolygon().data(), player1->getHitbox()->getHitboxPolygon().size());
+
+
+
+        // Render the player's projectiles
+        for (auto& projectile : playersProjectiles) {
+            projectile->render();
+        }
+
+
 
 
         /*if (Utils::GlobalVars::accesDebugMode)
@@ -114,7 +152,7 @@ namespace Game {
         snprintf(text, sizeof(text), "FPS: %i", getFPS());
         g->drawing()->string(std::string(text), g->renderer()->m_fonts[0], {255, 255, 255}, { 10, 5 });
 
-        snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)Utils::GlobalVars::playerPos.x, (int)Utils::GlobalVars::playerPos.y);
+        snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)Utils::GlobalVars::cameraPos.x, (int)Utils::GlobalVars::cameraPos.y);
         SDL_Rect destR = { 0, 0, 0, 0 };
         TTF_SizeText(g->renderer()->m_fonts[0], pos, &destR.w, &destR.h);
         g->drawing()->string(std::string(pos), g->renderer()->m_fonts[0], { 255, 255, 255 }, Utils::Vector2D(Utils::GlobalVars::windowWidth - (destR.w + 15), 5));
@@ -140,7 +178,7 @@ namespace Game {
         SDL_Rect rec4 = { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 };
         g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, rec4);
 
-        g->world()->draw2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth - 8, 448 - 8), (int)Utils::GlobalVars::playerPos.x, (int)Utils::GlobalVars::playerPos.y, Utils::Vector2D(Utils::GlobalVars::lvlWidth, Utils::GlobalVars::lvlHeight));
+        g->world()->draw2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth - 8, 448 - 8), (int)Utils::GlobalVars::cameraPos.x, (int)Utils::GlobalVars::cameraPos.y, Utils::Vector2D(Utils::GlobalVars::lvlWidth, Utils::GlobalVars::lvlHeight));
 
 
     }
