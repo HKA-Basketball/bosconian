@@ -3,9 +3,6 @@
 
 namespace Event {
     EventManager::EventManager() {
-        oldTCount = SDL_GetTicks64();
-        inputDelay = 50;
-
         mState = MouseState::Unknown;
         mButton = MouseButton::None;
 
@@ -45,7 +42,7 @@ namespace Event {
         return 0;
     }
 
-    void EventManager::manageGameVars() {
+    void EventManager::manageGameVars(float deltaTime) {
         if (isKeyClicked(SDL_SCANCODE_SPACE))
         {
             if (Mix_Paused(-1))
@@ -54,66 +51,53 @@ namespace Event {
                 Mix_Pause(-1);
         }
 
-        if (SDL_GetTicks64() - oldTCount < inputDelay)
-            return;
-
         // TODO: Move that to the player class and handle anything related there.
-        Utils::Vector2D oldPos(Utils::GlobalVars::playerPos.x, Utils::GlobalVars::playerPos.y);
+        // TODO: Only change the angle ... we have a constant movement speed
+        Utils::Vector2D oldPos(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y);
 
-        if (kState[SDL_SCANCODE_LEFT] == KeyboardState::KeyDown || kState[SDL_SCANCODE_A] == KeyboardState::KeyDown)
-            Utils::GlobalVars::playerPos.x -= 10;
-        if (kState[SDL_SCANCODE_RIGHT] == KeyboardState::KeyDown || kState[SDL_SCANCODE_D] == KeyboardState::KeyDown)
-            Utils::GlobalVars::playerPos.x += 10;
-
-        if (kState[SDL_SCANCODE_UP] == KeyboardState::KeyDown || kState[SDL_SCANCODE_W] == KeyboardState::KeyDown)
-            Utils::GlobalVars::playerPos.y -= 10;
-        if (kState[SDL_SCANCODE_DOWN] == KeyboardState::KeyDown || kState[SDL_SCANCODE_S] == KeyboardState::KeyDown)
-            Utils::GlobalVars::playerPos.y += 10;
+        float movement = 200 * deltaTime;
 
 
-        if (Utils::GlobalVars::playerPos.x < oldPos.x) // Left
+        if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false))
+            Utils::GlobalVars::cameraPos.x -= movement;
+        if (isKeyClicked(SDL_SCANCODE_RIGHT, false) || isKeyClicked(SDL_SCANCODE_D, false))
+            Utils::GlobalVars::cameraPos.x += movement;
+
+        if (isKeyClicked(SDL_SCANCODE_UP, false) || isKeyClicked(SDL_SCANCODE_W, false))
+            Utils::GlobalVars::cameraPos.y -= movement;
+        if (isKeyClicked(SDL_SCANCODE_DOWN, false) || isKeyClicked(SDL_SCANCODE_S, false))
+            Utils::GlobalVars::cameraPos.y += movement;
+
+
+        if (Utils::GlobalVars::cameraPos.x < oldPos.x) // Left
             Utils::GlobalVars::playerAngle = -90.f;
-        else if (Utils::GlobalVars::playerPos.x > oldPos.x) // Right
+        else if (Utils::GlobalVars::cameraPos.x > oldPos.x) // Right
             Utils::GlobalVars::playerAngle = 90.f;
-        else if (Utils::GlobalVars::playerPos.y > oldPos.y) // Down
+        else if (Utils::GlobalVars::cameraPos.y > oldPos.y) // Down
             Utils::GlobalVars::playerAngle = 180.f;
-        else if (Utils::GlobalVars::playerPos.y < oldPos.y) // Up
+        else if (Utils::GlobalVars::cameraPos.y < oldPos.y) // Up
             Utils::GlobalVars::playerAngle = 0.f;
 
-        if (Utils::GlobalVars::playerPos.x < oldPos.x && Utils::GlobalVars::playerPos.y < oldPos.y) // Left Up
+        if (Utils::GlobalVars::cameraPos.x < oldPos.x && Utils::GlobalVars::cameraPos.y < oldPos.y) // Left Up
             Utils::GlobalVars::playerAngle = -45.f;
-        else if (Utils::GlobalVars::playerPos.x > oldPos.x && Utils::GlobalVars::playerPos.y < oldPos.y) // Right Up
+        else if (Utils::GlobalVars::cameraPos.x > oldPos.x && Utils::GlobalVars::cameraPos.y < oldPos.y) // Right Up
             Utils::GlobalVars::playerAngle = 45.f;
-        else if (Utils::GlobalVars::playerPos.x < oldPos.x && Utils::GlobalVars::playerPos.y > oldPos.y) // Left Down
+        else if (Utils::GlobalVars::cameraPos.x < oldPos.x && Utils::GlobalVars::cameraPos.y > oldPos.y) // Left Down
             Utils::GlobalVars::playerAngle = -135.f;
-        else if (Utils::GlobalVars::playerPos.x > oldPos.x && Utils::GlobalVars::playerPos.y > oldPos.y) // Right Down
+        else if (Utils::GlobalVars::cameraPos.x > oldPos.x && Utils::GlobalVars::cameraPos.y > oldPos.y) // Right Down
             Utils::GlobalVars::playerAngle = 135.f;
 
 
-        if ((Utils::GlobalVars::playerPos.x < 0))
-        {
-            Utils::GlobalVars::playerPos.x += Utils::GlobalVars::lvlWidth;
-            Utils::GlobalVars::playerAngle = -90.f;
-        }
+        if ((Utils::GlobalVars::cameraPos.x < 0))
+            Utils::GlobalVars::cameraPos.x += Utils::GlobalVars::lvlWidth;
 
-        if ((Utils::GlobalVars::playerPos.x > Utils::GlobalVars::lvlWidth))
-        {
-            Utils::GlobalVars::playerPos.x -= Utils::GlobalVars::lvlWidth;
-            Utils::GlobalVars::playerAngle = 90.f;
-        }
+        if ((Utils::GlobalVars::cameraPos.x > Utils::GlobalVars::lvlWidth))
+            Utils::GlobalVars::cameraPos.x -= Utils::GlobalVars::lvlWidth;
 
-        if ((Utils::GlobalVars::playerPos.y < 0))
-        {
-            Utils::GlobalVars::playerPos.y += Utils::GlobalVars::lvlHeight;
-            Utils::GlobalVars::playerAngle = 0.f;
-        }
+        if ((Utils::GlobalVars::cameraPos.y < 0))
+            Utils::GlobalVars::cameraPos.y += Utils::GlobalVars::lvlHeight;
 
-        if ((Utils::GlobalVars::playerPos.y > Utils::GlobalVars::lvlHeight))
-        {
-            Utils::GlobalVars::playerPos.y -= Utils::GlobalVars::lvlHeight;
-            Utils::GlobalVars::playerAngle = 180.f;
-        }
-
-        oldTCount = SDL_GetTicks64();
+        if ((Utils::GlobalVars::cameraPos.y > Utils::GlobalVars::lvlHeight))
+            Utils::GlobalVars::cameraPos.y -= Utils::GlobalVars::lvlHeight;
     }
 } // Event

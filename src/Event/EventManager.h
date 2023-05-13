@@ -34,14 +34,14 @@ namespace Event {
 
     class EventManager {
     private:
-        unsigned long long oldTCount;
-        int inputDelay;
-
         MouseState mState;
         MouseButton mButton;
         KeyboardState kState[SDL_NUM_SCANCODES];
 
         SDL_Event event;
+
+        bool kDown[256] = { false };
+        bool kClicked[256] = { false };
 
     public:
         EventManager();
@@ -49,12 +49,12 @@ namespace Event {
         bool logging();
 
         // TODO: manage all things where they belong
-        void manageGameVars();
+        void manageGameVars(float deltaTime);
         // TODO: add an KeyManager and move it there
         bool isKeyClicked(int iKey, bool clicked = true)
         {
-            static bool is_down = false;
-            static bool is_clicked = false;
+            bool& is_down = kDown[iKey];
+            bool& is_clicked = kClicked[iKey];
 
             if (kState[iKey] == KeyboardState::KeyDown)
             {
