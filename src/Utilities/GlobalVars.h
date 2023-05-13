@@ -15,7 +15,7 @@ namespace Utils {
         extern int lvlWidth;
         extern int lvlHeight;
 
-        extern Vector2D playerPos;
+        extern Vector2D cameraPos;
         extern float playerAngle;
 
         //
@@ -23,6 +23,7 @@ namespace Utils {
         extern bool drawHitboxes;
 
         extern bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint);
+        extern bool ScreenToWorld(Utils::Vector2D screenPoint, Utils::Vector2D& worldPoint);
     };
 
 

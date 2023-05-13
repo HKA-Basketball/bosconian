@@ -26,7 +26,6 @@ namespace Initialization {
             return 0;
         }
 
-
         g_drawing = new Drawing::Graphics(g_renderer);
         if (!g_drawing) {
             g_renderer->clearAll();
