@@ -2,27 +2,25 @@
 #define BOSCONIAN_IMAGE_H
 
 #include "../../includes.h"
+#include "Graphics.h"
+#include "../Utilities/GlobalVars.h"
 
 namespace Drawing {
 
     class Image {
+    private:
+        Drawing::Graphics* g_drawing;
+
     public:
-        // some meta data
-        const void* mem;
-        int dataSize;
-        const char *file;
+        std::string name;
 
-        SDL_Texture* img;
-        Utils::Vector2D size;
-        Utils::Vector2D worldPos; // TODO: move to Entity
-        Utils::Vector2D pos;
+        SDL_Texture* imgTex;
+        bool clipped;
+        SDL_Rect renderRect;
+        SDL_Rect clipRect;
         float angle;
-        //TODO: may move drawings to Graphics
-        SDL_Renderer* renderer;
 
-        Image(SDL_Renderer* renderer, const void* mem, int dataSize, Utils::Vector2D sizeOfImg, float deg = 0.f);
-        Image(SDL_Renderer* renderer, const char *file, Utils::Vector2D sizeOfImg, float deg = 0.f);
-        Image(SDL_Renderer* renderer, const char *file, float deg = 0.f);
+        Image(Drawing::Graphics* drawing, std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
 
         void setSize(Utils::Vector2D newSize);
         Utils::Vector2D getSize();

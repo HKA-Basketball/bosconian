@@ -2,89 +2,83 @@
 #include "Image.h"
 
 namespace Drawing {
-    Image::Image(SDL_Renderer* renderer, const void *mem, int dataSize, Utils::Vector2D sizeOfImg, float deg) {
-        this->mem = mem;
-        this->dataSize = dataSize;
-
-        this->renderer = renderer;
-        size = sizeOfImg;
+    Image::Image(Drawing::Graphics* drawing, std::string filename, float deg, bool clipped, std::string spritesheet) {
+        this->name = name;
+        this->g_drawing = drawing;
         angle = deg;
 
-        SDL_RWops* pImgMem = SDL_RWFromConstMem(mem, dataSize);
+        if (clipped) {
+            this->clipped = true;
 
-        if (!pImgMem)
-        {
-            LOG(std::string("Error loading img Data: ") + SDL_GetError());
-            return;
+            int x;
+            int y;
+            int width;
+            int height;
+            bool found = false;
+
+            for (const auto& frame : Utils::GlobalVars::frames) {
+                if (!frame.filename.compare(filename)) {
+                    width = frame.frame.w;
+                    height = frame.frame.h;
+                    x = frame.frame.x;
+                    y = frame.frame.y;
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                LOG(std::string("Error frame not found!: ") + SDL_GetError());
+                return;
+            }
+
+            imgTex = g_drawing->getTexture(spritesheet);
+            if (!imgTex) {
+                LOG(std::string("Error loading Texture: ") + SDL_GetError());
+                return;
+            }
+
+            renderRect.w = width;
+            renderRect.h = height;
+
+            //Setting the clipped rectangle to only get the needed texture from the spritesheet
+            clipRect.x = x;
+            clipRect.y = y;
+            clipRect.w = width;
+            clipRect.h = height;
+        } else {
+            imgTex = g_drawing->getTexture(filename);
+            if (!imgTex) {
+                LOG(std::string("Error loading Texture: ") + SDL_GetError());
+                return;
+            }
+            int w, h;
+            SDL_QueryTexture(imgTex, NULL, NULL, &w, &h);
+
+            clipped = false;
+
+            renderRect.w = w;
+            renderRect.h = h;
         }
-
-        img = IMG_LoadTexture_RW(renderer, pImgMem, 1);
-        if (!img)
-        {
-            LOG(std::string("Error loading Texture: ") + SDL_GetError());
-            return;
-        }
-
-        //SDL_QueryTexture(img, NULL, NULL, &w, &h);
-
-        pos = Utils::Vector2D(-1000, -1000);
-    }
-
-    Image::Image(SDL_Renderer* renderer, const char *file, Utils::Vector2D sizeOfImg, float deg) {
-        this->mem = nullptr;
-        this->dataSize = 0;
-        this->file = file;
-
-        this->renderer = renderer;
-        size = sizeOfImg; // TODO: Change texture size
-        angle = deg;
-
-        img = IMG_LoadTexture(renderer, file);
-        if (!img)
-        {
-            LOG(std::string("Error loading Texture: ") + SDL_GetError());
-            return;
-        }
-
-        pos = Utils::Vector2D(-100, -100);
-    }
-
-    Image::Image(SDL_Renderer *renderer, const char *file, float deg) {
-        this->mem = nullptr;
-        this->dataSize = 0;
-        this->file = file;
-
-        this->renderer = renderer;
-        angle = deg;
-
-        img = IMG_LoadTexture(renderer, file);
-        if (!img)
-        {
-            LOG(std::string("Error loading Texture: ") + SDL_GetError());
-            return;
-        }
-        int x, y;
-        SDL_QueryTexture(img, NULL, NULL, &x, &y);
-        size.x = x;
-        size.y = y;
-
-        pos = Utils::Vector2D(-100, -100);
+        renderRect.x = 0;
+        renderRect.y = 0;
     }
 
     void Image::setSize(Utils::Vector2D newSize) {
-        size = newSize;
+        renderRect.w = newSize.x;
+        renderRect.h = newSize.y;
     }
 
     Utils::Vector2D Image::getSize() {
-        return size;
+        return {static_cast<float>(renderRect.w), static_cast<float>(renderRect.h)};
     }
 
     void Image::setPos(Utils::Vector2D newPos) {
-        pos = newPos;
+        renderRect.x = newPos.x;
+        renderRect.y = newPos.y;
     }
 
     Utils::Vector2D Image::getPos() {
-        return pos;
+        return {static_cast<float>(renderRect.x), static_cast<float>(renderRect.y)};
     }
 
     void Image::setAngel(float newAngel) {
@@ -98,10 +92,10 @@ namespace Drawing {
     }
 
     void Image::draw() {
-        // TODO: WorldToScreen & ScreenToWorld ?!
+        //renderRect.x = (int)(renderRect.x - renderRect.w*0.5f);
+        //renderRect.y = (int)(renderRect.y - renderRect.h*0.5f);
 
-        SDL_Rect rec = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
-        SDL_RenderCopyEx(renderer, img, NULL, &rec, angle, NULL, SDL_FLIP_NONE);
+        g_drawing->texture(imgTex, (clipped) ? &clipRect : NULL, &renderRect, angle);
     }
 
 
