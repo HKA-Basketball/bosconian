@@ -42,6 +42,8 @@ namespace Event {
 
         bool kDown[256] = { false };
         bool kClicked[256] = { false };
+        bool mDown[6] = { false };
+        bool mClicked[6] = { false };
 
     public:
         EventManager();
@@ -51,6 +53,37 @@ namespace Event {
         // TODO: manage all things where they belong
         void manageGameVars(float deltaTime);
         // TODO: add an KeyManager and move it there
+        bool isMouseClicked(int button, bool clicked = true)
+        {
+            bool& is_down = mDown[button];
+            bool& is_clicked = mClicked[button];
+
+            if (mState == MouseState::Down && static_cast<int>(mButton) == button)
+            {
+                is_clicked = false;
+                is_down = true;
+            }
+            else if (mState == MouseState::Up && is_down && static_cast<int>(mButton) == button)
+            {
+                is_clicked = true;
+                is_down = false;
+            }
+            else
+            {
+                is_clicked = false;
+                is_down = false;
+            }
+
+            if (clicked)
+            {
+                return is_clicked;
+            }
+            else
+            {
+                return is_down;
+            }
+        }
+
         bool isKeyClicked(int iKey, bool clicked = true)
         {
             bool& is_down = kDown[iKey];
