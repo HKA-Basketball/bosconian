@@ -12,14 +12,13 @@ namespace Game {
     class ProjectileModel {
     public:
         ProjectileModel(int x, int y, int speed, float angle) :
-                m_x(x - 5),
-                m_y(y - 5),
-                m_startX(x - 5),
-                m_startY(y - 5),
+                m_x(x - 4),
+                m_y(y - 4),
                 m_speed(speed),
                 m_angle(angle),
-                m_width(10),
-                m_height(10) {
+                m_width(8),
+                m_height(8) {
+            m_activ = true;
         }
 
         void update() {
@@ -37,18 +36,17 @@ namespace Game {
             m_x += dx;
             m_y += dy;
 
-            if (m_x < 0) {
+            if ((m_x < 0))
                 m_x += Utils::GlobalVars::lvlWidth;
-            }
-            else if (m_x > Utils::GlobalVars::lvlWidth) {
+
+            if ((m_x > Utils::GlobalVars::lvlWidth))
                 m_x -= Utils::GlobalVars::lvlWidth;
-            }
-            if (m_y < 0) {
+
+            if ((m_y < 0))
                 m_y += Utils::GlobalVars::lvlHeight;
-            }
-            else if (m_y > Utils::GlobalVars::lvlHeight) {
+
+            if ((m_y > Utils::GlobalVars::lvlHeight))
                 m_y -= Utils::GlobalVars::lvlHeight;
-            }
         }
 
         int getX() const {
@@ -67,15 +65,22 @@ namespace Game {
             return m_height;
         }
 
+        bool getActiv() const {
+            return m_activ;
+        }
+
+        void setActiv(bool val) {
+            m_activ = val;
+        }
+
     private:
         int m_x;
         int m_y;
-        int m_startX;
-        int m_startY;
         int m_speed;
         int m_width;
         int m_height;
         float m_angle;
+        bool m_activ;
     };
 
     class ProjectileView {
@@ -136,6 +141,43 @@ namespace Game {
             Utils::Vector2D screenPos;
             Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
             return (screenPos.x < -50 || screenPos.x > Utils::GlobalVars::gameWindowWidth || screenPos.y < -50 || screenPos.y > Utils::GlobalVars::gameWindowHeight);
+        }
+
+        bool ProjectileHitsEntity(SDL_Rect entityHitbox)
+        {
+            // Create a SDL_Rect for the projectile hitbox
+            SDL_Rect projectileHitbox = {
+                    static_cast<int>(m_model.getX()),
+                    static_cast<int>(m_model.getY()),
+                    static_cast<int>(m_model.getWidth()),
+                    static_cast<int>(m_model.getHeight())
+            };
+
+            // Check if the bounding boxes of the projectile and entity intersect
+            return (projectileHitbox.x < entityHitbox.x + entityHitbox.w &&
+                    projectileHitbox.x + projectileHitbox.w > entityHitbox.x &&
+                    projectileHitbox.y < entityHitbox.y + entityHitbox.h &&
+                    projectileHitbox.y + projectileHitbox.h > entityHitbox.y);
+        }
+
+        SDL_Rect getHitbox()
+        {
+            SDL_Rect projectileHitbox = {
+                    static_cast<int>(m_model.getX()),
+                    static_cast<int>(m_model.getY()),
+                    static_cast<int>(m_model.getWidth()),
+                    static_cast<int>(m_model.getHeight())
+            };
+
+            return projectileHitbox;
+        }
+
+        void setActiv(bool val) {
+            m_model.setActiv(val);
+        }
+
+        bool getActiv() {
+            return m_model.getActiv();
         }
 
         void update() {
