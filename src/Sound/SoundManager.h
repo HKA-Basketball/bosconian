@@ -8,6 +8,7 @@ namespace Sound {
     enum : uint32_t
     {
         SOUND_BG = 0,
+        SOUND_SHOOT,
         //Space for more
         SOUND_MAX
     };

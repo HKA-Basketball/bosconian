@@ -10,13 +10,14 @@ namespace Sound {
 
         // credits: Music by Marllon Silva (xDeviruchi)
         addSound("./loop.wav", SOUND_BG);
+        addSound("./shoot.wav", SOUND_SHOOT);
 
 
         LOG(std::string("SoundManager Successfully Loaded"));
     }
 
     bool SoundManager::initSDL_OA() {
-        if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+        if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
         {
             LOG(std::string("Error intializing SDL2_mixer:") + SDL_GetError());
             return 0;
