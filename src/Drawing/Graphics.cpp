@@ -38,6 +38,11 @@ namespace Drawing {
         SDL_RenderDrawRect(g_renderer, &rect);
     }
 
+    void Graphics::texture(SDL_Texture* tex, SDL_Rect* clip, SDL_Rect* rend, float angle, SDL_RendererFlip flip)
+    {
+        SDL_RenderCopyEx(g_renderer, tex, clip, rend, angle, NULL, flip);
+    }
+
     void Graphics::string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos)
     {
         SDL_Surface* surface;
@@ -55,5 +60,26 @@ namespace Drawing {
         SDL_FreeSurface(surface);
         SDL_RenderCopy(g_renderer, texture, NULL, &destR);
         SDL_DestroyTexture(texture);
+    }
+
+    SDL_Texture* Graphics::getTexture(std::string filename) {
+        std::string fullPath = SDL_GetBasePath();
+        fullPath.append("images/" + filename);
+
+        if(textures[fullPath] == nullptr)
+            textures[fullPath] = loadTexture(fullPath);
+
+        return textures[fullPath];
+    }
+
+    SDL_Texture* Graphics::loadTexture(std::string filename) {
+        SDL_Texture* tex = IMG_LoadTexture(g_renderer, filename.c_str());
+        if(tex == NULL) {
+            printf("Image Load Error: Path(%s) - Error(%s)\n", filename.c_str(), IMG_GetError());
+            printf("Create Texture Error: %s\n", SDL_GetError());
+            return tex;
+        }
+
+        return tex;
     }
 } // Drawing
