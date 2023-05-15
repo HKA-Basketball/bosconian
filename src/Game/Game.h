@@ -12,16 +12,18 @@ namespace Game {
         Initialization::Initializer* g;
 
 
-        std::vector<std::pair<Entity*, Drawing::Image*>> nonMovingEntitys;
+        std::vector<std::pair<Entity*, bool>> nonMovingEntitys;
         Entity* player1;
         std::vector<Projectile*> playersProjectiles;
 
     public:
         explicit Game(Initialization::Initializer *g);
 
-        void playTest(float deltaTime);
+        void update(float deltaTime);
+        void postUpdate(float deltaTime);
+        void render(float deltaTime);
 
-        void initOnce();
+        void init();
     };
 
 } // Game

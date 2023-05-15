@@ -7,15 +7,10 @@ namespace Game {
         angle = deg;
         obj = img;
 
-        if (obj->mem)
-            hitbox = new Game::Hitbox(obj->mem, obj->dataSize, obj->size);
-        else
-            hitbox = new Game::Hitbox(obj->file, obj->size);
+        hitbox = new Game::Hitbox(origin, obj->getSize());
     }
 
     void Entity::update() {
-        obj->angle = angle;
-        //obj->pos = origin; // TODO: WorldToScreen & ScreenToWorld
         obj->draw();
     }
 
@@ -29,8 +24,10 @@ namespace Game {
     void Entity::setOrigin(Utils::Vector2D newOrigin) {
         origin = newOrigin;
         // TODO: Should this happen during the update?
-        hitbox->updateHitboxPos(newOrigin);
-        obj->setPos(newOrigin);
+        //hitbox->updateHitboxPos(newOrigin);
+        Utils::Vector2D newPosScreen;
+        Utils::GlobalVars::WorldToScreen(newOrigin, newPosScreen);
+        obj->setPos(newPosScreen);
     }
 
     Utils::Vector2D Entity::getOrigin() {
@@ -38,8 +35,9 @@ namespace Game {
     }
 
     void Entity::setAngle(float newAngle) {
+        obj->angle = angle;
         angle = newAngle;
-        hitbox->updateHitboxAngle(angle);
+        //hitbox->updateHitboxAngle(angle);
     }
 
     float Entity::getAngle() {

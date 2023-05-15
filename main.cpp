@@ -15,20 +15,24 @@ int main(int argc, char* args[])
     }
 
     Game::Game* g_game = new Game::Game(g);
+    g_game->init();
 
     Uint32 previousTime = SDL_GetTicks64();
     //Loop
     while (!g->event()->logging())
     {
-        g->renderer()->beginScene();
-
         Uint32 currentTime = SDL_GetTicks64();
         float deltaTime = (currentTime - previousTime) / 1000.0f;
         previousTime = currentTime;
 
         g->event()->manageGameVars(deltaTime);
 
-        g_game->playTest(deltaTime);
+        g_game->update(deltaTime);
+        g_game->postUpdate(deltaTime);
+
+        g->renderer()->beginScene();
+
+        g_game->render(deltaTime);
 
         g->renderer()->endScene();
 
