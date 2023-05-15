@@ -6,24 +6,13 @@
 namespace Game {
 
     class Hitbox {
-        //TODO: Idea: List of rectangles that represent the respective object(Texture) more or less.
     private:
-        std::vector<SDL_Rect> hitbox;
-        std::vector<SDL_Point> hitbox_Polygon;
-        Utils::Vector2D pos;
-        Utils::Vector2D center;
-
-        float oldAngle = 0.f;
+        SDL_Rect hitbox;
     public:
-        Hitbox(const void* mem, int dataSize, Utils::Vector2D sizeOfImg);
-        Hitbox(const char *file, Utils::Vector2D sizeOfImg);
+        const SDL_Rect &getHitbox() const;
 
-        void updateHitboxPos(Utils::Vector2D pos);
-        void updateHitboxAngle(float angle);
-        void createHitbox(SDL_Surface* bmp, Utils::Vector2D displaySize);
-        void printHitbox();
-
-        std::vector<SDL_Point> getHitboxPolygon();
+    public:
+        Hitbox(Utils::Vector2D pos, Utils::Vector2D size);
     };
 
 } // Game
