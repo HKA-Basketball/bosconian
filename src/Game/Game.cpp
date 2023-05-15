@@ -129,12 +129,13 @@ namespace Game {
         }
 
         static Uint32 timeSinceLastProjectile = 0;
-        const Uint32 projectileInterval = 400;
+        const Uint32 projectileInterval = 250;
 
         if (g->event()->isKeyClicked(SDL_SCANCODE_LCTRL, false))
         {
             Uint32 currentTime = SDL_GetTicks();
             if (currentTime - timeSinceLastProjectile >= projectileInterval) {
+                g->sound()->playSound(Sound::SOUND_SHOOT, 10, 0);
                 // Add a new Projectile object to the vector
                 Projectile* newProjectile1 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y, 1000 * deltaTime, Utils::GlobalVars::playerAngle);
                 Projectile* newProjectile2 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y, 1000 * deltaTime, Utils::GlobalVars::playerAngle + 180);
