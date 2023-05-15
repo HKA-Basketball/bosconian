@@ -71,6 +71,76 @@ namespace Utils {
             return true;
         }
 
+        bool isCursorInRect(Utils::Vector2D xy, Utils::Vector2D wh) {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            SDL_Rect p = {x, y};
+            return ( (p.x >= xy.x) && (p.x < (xy.x + wh.x)) && (p.y >= xy.y) && (p.y < (xy.y + wh.y)) );
+        }
+
+        std::vector<Frame> frames = {
+                {
+                        "E-Type",
+                        {0, 0, 28, 64}
+                },
+                {
+                        "I-Type-attack",
+                        {0, 64, 56, 56}
+                },
+                {
+                        "I-Type-norm",
+                        {0, 120, 56, 56}
+                },
+                {
+                        "P-Type-attack",
+                        {0, 176, 52, 48}
+                },
+                {
+                        "P-Type-norm",
+                        {0, 224, 52, 48}
+                },
+                {
+                        "astro-explo-01",
+                        {0, 272, 56, 60}
+                },
+                {
+                        "astro-explo-02",
+                        {0, 332, 64, 60}
+                },
+                {
+                        "astro-explo-03",
+                        {0, 392, 64, 64}
+                },
+                {
+                        "astroid-01",
+                        {0, 456, 56, 44}
+                },
+                {
+                        "astroid-02",
+                        {0, 500, 48, 40}
+                },
+                {
+                        "astroid-03",
+                        {0, 540, 52, 44}
+                },
+                {
+                        "base",
+                        {0, 584, 288, 256}
+                },
+                {
+                        "bomb",
+                        {0, 840, 60, 60}
+                },
+                {
+                        "ship",
+                        {0, 900, 60, 64}
+                },
+                {
+                        "spy",
+                        {0, 964, 44, 52}
+                }
+                // ... add more here
+        };
     };
 
 
