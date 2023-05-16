@@ -27,6 +27,22 @@ namespace Utils {
         bool accesDebugMode = true;
         bool drawHitboxes = false;
 
+        // TODO: Move this to a math class or something
+        float normalizeAngle180(float angle)
+        {
+            angle = fmod(angle, 360.0);
+            if (angle > 180.0) {
+                angle -= 360.0;
+            }
+            return angle;
+        }
+
+        float normalizeAngle360(float angle)
+        {
+            angle = fmod(angle, 360.0);
+            return angle;
+        }
+
         bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint)
         {
             // Wrap the world coordinates around the edges of the screen
