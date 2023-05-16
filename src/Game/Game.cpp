@@ -15,8 +15,8 @@ namespace Game {
         std::vector<std::string> listIMG{"bomb", "astroid-01", "astroid-02", "astroid-03"};
         const float minDistance = 100.f; // minimum distance between non-moving entities
         const int cellSize = 500; // size of each cell in the grid
-        const int numCols = (Utils::GlobalVars::lvlWidth - 20 + cellSize - 1) / cellSize; // number of columns in the grid
-        const int numRows = (Utils::GlobalVars::lvlWidth - 20 + cellSize - 1) / cellSize; // number of rows in the grid
+        const int numCols = (Utils::GlobalVars::lvlWidth + cellSize - 1) / cellSize; // number of columns in the grid
+        const int numRows = (Utils::GlobalVars::lvlWidth + cellSize - 1) / cellSize; // number of rows in the grid
         std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store non-moving entities
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
@@ -128,12 +128,12 @@ namespace Game {
             //SDL_RenderDrawLines(g->renderer()->renderer, nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().data(), nonMovingEntitys[i].first->getHitbox()->getHitboxPolygon().size());
         }
 
-        static Uint32 timeSinceLastProjectile = 0;
-        const Uint32 projectileInterval = 250;
+        static Uint64 timeSinceLastProjectile = 0;
+        const Uint64 projectileInterval = 250;
 
         if (g->event()->isKeyClicked(SDL_SCANCODE_LCTRL, false))
         {
-            Uint32 currentTime = SDL_GetTicks();
+            Uint64 currentTime = SDL_GetTicks64();
             if (currentTime - timeSinceLastProjectile >= projectileInterval) {
                 g->sound()->playSound(Sound::SOUND_SHOOT, 3, 0);
                 // Add a new Projectile object to the vector
@@ -147,7 +147,7 @@ namespace Game {
 
         // Update the positions of the player's projectiles
         for (int i = 0; i < playersProjectiles.size(); i++) {
-            playersProjectiles[i]->update();
+            playersProjectiles[i]->update(1000 * deltaTime);
             // Check if the projectile is out of bounds
             if (playersProjectiles[i]->isOffscreen() || !playersProjectiles[i]->getActiv()) {
                 std::swap(playersProjectiles[i], playersProjectiles.back());
