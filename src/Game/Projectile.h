@@ -21,20 +21,15 @@ namespace Game {
             m_activ = true;
         }
 
-        void update() {
+        void update(float speed) {
             // Calculate the new position of the projectile based on the angle.
-            float angleRadians = (90.0f - m_angle) * M_PI / 180.0f;
-            float dx = m_speed * std::cos(angleRadians);
-            float dy = -m_speed * std::sin(angleRadians);
+            float angleInRadians = Utils::GlobalVars::normalizeAngle360(m_angle - 90.f) * M_PI / 180.0;
+            float dx = speed * cos(angleInRadians);
+            float dy = speed * sin(angleInRadians);
 
-            //TODO: Fix speed and angle at oblique angle
-            /*if (std::abs(m_angle) == 45 || std::abs(m_angle) == 135) {
-                dx /= std::sqrt(2.0f);
-                dy /= std::sqrt(2.0f);
-            }*/
             // Update the position of the projectile in world coordinates.
-            m_x += dx;
-            m_y += dy;
+            m_x += static_cast<int>(std::round(dx));
+            m_y += static_cast<int>(std::round(dy));
 
             if ((m_x < 0))
                 m_x += Utils::GlobalVars::lvlWidth;
@@ -117,8 +112,8 @@ namespace Game {
                 m_model(model) {
         }
 
-        void update() {
-            m_model.update();
+        void update(float speed) {
+            m_model.update(speed);
         }
 
     private:
@@ -180,8 +175,8 @@ namespace Game {
             return m_model.getActiv();
         }
 
-        void update() {
-            m_controller.update();
+        void update(float speed) {
+            m_controller.update(speed);
         }
 
         void render() const {
