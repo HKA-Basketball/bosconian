@@ -36,10 +36,10 @@ int main(int argc, char* args[])
 
         g->renderer()->endScene();
 
-        Uint32 frameTime = SDL_GetTicks64() - currentTime;
+        /*Uint32 frameTime = SDL_GetTicks64() - currentTime;
         if (frameTime < 1000 / 120) {
             SDL_Delay((1000 / 120) - frameTime);
-        }
+        }*/
     }
 
     g->renderer()->clearAll();
