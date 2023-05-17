@@ -1,8 +1,6 @@
 #ifndef BOSCONIAN_CONFIG_H
 #define BOSCONIAN_CONFIG_H
 
-#include "../../includes.h"
-
 namespace fs = std::filesystem;
 
 namespace Utils {
