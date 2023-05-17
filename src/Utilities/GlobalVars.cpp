@@ -14,9 +14,6 @@ namespace Utils {
         int windowHeight = 896;  // 224 * 4;
         int infoWidth = 256;    //  64 * 4
 
-        int gameWindowWidth = windowWidth;
-        int gameWindowHeight = windowHeight;
-
         int lvlWidth = 2000;
         int lvlHeight = 2000;
 
@@ -24,7 +21,9 @@ namespace Utils {
         float playerAngle = 0.f;
 
         //
-        bool accesDebugMode = true;
+        bool menuActive = false;
+
+        bool accesDebugMode = false;
         bool drawHitboxes = false;
 
         // TODO: Move this to a math class or something
@@ -60,11 +59,11 @@ namespace Utils {
             }
 
             // Calculate the screen coordinates of the wrapped world point
-            screenPoint.x = worldPoint.x - Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::gameWindowWidth / 2;
-            screenPoint.y = worldPoint.y - Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::gameWindowHeight / 2;
+            screenPoint.x = worldPoint.x - Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::windowWidth / 2;
+            screenPoint.y = worldPoint.y - Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::windowHeight / 2;
 
             // Check if the point is within the bounds of the screen
-            if (screenPoint.x < 0 || screenPoint.x >= Utils::GlobalVars::gameWindowWidth || screenPoint.y < 0 || screenPoint.y >= Utils::GlobalVars::gameWindowHeight)
+            if (screenPoint.x < 0 || screenPoint.x >= Utils::GlobalVars::windowWidth || screenPoint.y < 0 || screenPoint.y >= Utils::GlobalVars::windowHeight)
             {
                 return false;
             }
@@ -75,14 +74,14 @@ namespace Utils {
         bool ScreenToWorld(Utils::Vector2D screenPoint, Utils::Vector2D& worldPoint)
         {
             // Check if the point is within the bounds of the screen
-            if (screenPoint.x < 0 || screenPoint.x >= Utils::GlobalVars::gameWindowWidth || screenPoint.y < 0 || screenPoint.y >= Utils::GlobalVars::gameWindowHeight)
+            if (screenPoint.x < 0 || screenPoint.x >= Utils::GlobalVars::windowWidth || screenPoint.y < 0 || screenPoint.y >= Utils::GlobalVars::windowHeight)
             {
                 return false;
             }
 
             // Calculate the world coordinates of the screen point
-            worldPoint.x = screenPoint.x - Utils::GlobalVars::gameWindowWidth / 2 + Utils::GlobalVars::cameraPos.x;
-            worldPoint.y = screenPoint.y - Utils::GlobalVars::gameWindowHeight / 2 + Utils::GlobalVars::cameraPos.y;
+            worldPoint.x = screenPoint.x - Utils::GlobalVars::windowWidth / 2 + Utils::GlobalVars::cameraPos.x;
+            worldPoint.y = screenPoint.y - Utils::GlobalVars::windowHeight / 2 + Utils::GlobalVars::cameraPos.y;
 
             return true;
         }

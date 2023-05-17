@@ -19,9 +19,6 @@ namespace Utils {
         extern int windowHeight;
         extern int infoWidth;
 
-        extern int gameWindowWidth;
-        extern int gameWindowHeight;
-
         extern int lvlWidth;
         extern int lvlHeight;
 
@@ -31,6 +28,8 @@ namespace Utils {
         extern std::vector<Frame> frames;
 
         //
+        extern bool menuActive;
+
         extern bool accesDebugMode;
         extern bool drawHitboxes;
 

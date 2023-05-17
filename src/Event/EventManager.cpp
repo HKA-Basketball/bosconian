@@ -43,6 +43,10 @@ namespace Event {
     }
 
     void EventManager::manageGameVars(float deltaTime) {
+        if (isKeyClicked(SDL_SCANCODE_ESCAPE)) {
+            Utils::GlobalVars::menuActive = !Utils::GlobalVars::menuActive;
+        }
+
         if (isKeyClicked(SDL_SCANCODE_SPACE))
         {
             if (Mix_Paused(-1))
@@ -50,6 +54,9 @@ namespace Event {
             else
                 Mix_Pause(-1);
         }
+
+        if (Utils::GlobalVars::menuActive)
+            return;
 
         // TODO: Move that to the player class and handle anything related there.
         // TODO: Only change the angle ... we have a constant movement speed

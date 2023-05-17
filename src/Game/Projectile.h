@@ -135,7 +135,7 @@ namespace Game {
             Utils::Vector2D worldPos = Utils::Vector2D(m_x, m_y);
             Utils::Vector2D screenPos;
             Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
-            return (screenPos.x < -50 || screenPos.x > Utils::GlobalVars::gameWindowWidth || screenPos.y < -50 || screenPos.y > Utils::GlobalVars::gameWindowHeight);
+            return (screenPos.x < -50 || screenPos.x > Utils::GlobalVars::windowWidth || screenPos.y < -50 || screenPos.y > Utils::GlobalVars::windowHeight);
         }
 
         bool ProjectileHitsEntity(SDL_Rect entityHitbox)

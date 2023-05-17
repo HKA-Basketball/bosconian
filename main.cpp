@@ -16,6 +16,7 @@ int main(int argc, char* args[])
 
     Game::Game* g_game = new Game::Game(g);
     g_game->init();
+    g_game->update(0.f);
 
     Uint32 previousTime = SDL_GetTicks64();
     //Loop
@@ -27,12 +28,23 @@ int main(int argc, char* args[])
 
         g->event()->manageGameVars(deltaTime);
 
-        g_game->update(deltaTime);
-        g_game->postUpdate(deltaTime);
+        if (!Utils::GlobalVars::menuActive) {
+            g_game->update(deltaTime);
+            g_game->postUpdate(deltaTime);
+        }
+        else {
+            // Update menu data?
+        }
 
         g->renderer()->beginScene();
 
         g_game->render(deltaTime);
+
+        if (Utils::GlobalVars::menuActive) {
+            // Render Menu
+            g->drawing()->string(std::string("Menu WIP"), g->renderer()->m_fonts[0], { 255, 0, 0 }, Utils::Vector2D(100, 100));
+
+        }
 
         g->renderer()->endScene();
 
