@@ -45,21 +45,12 @@ namespace Drawing {
 
     void Graphics::string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos)
     {
-        SDL_Surface* surface;
-        SDL_Texture* texture;
+        SDL_Texture* texture = getText(text, font, color).get();
 
-        // Create an SDL_Surface with the text to render
-        surface = TTF_RenderText_Blended(font, text.c_str(), color);
+        SDL_Rect destR = { (int)pos.x, (int)pos.y, 0, 0 };
+        TTF_SizeText(font, text.c_str(), &destR.w, &destR.h);
 
-        // Create an SDL_Texture from the SDL_Surface
-        texture = SDL_CreateTextureFromSurface(g_renderer, surface);
-
-        SDL_Rect destR = { (int)pos.x, (int)pos.y, surface->w, surface->h };
-        //TTF_SizeText(font, text.c_str(), &destR.w, &destR.h);
-
-        SDL_FreeSurface(surface);
         SDL_RenderCopy(g_renderer, texture, NULL, &destR);
-        SDL_DestroyTexture(texture);
     }
 
     SDL_Texture* Graphics::getTexture(std::string filename) {
@@ -74,12 +65,56 @@ namespace Drawing {
 
     SDL_Texture* Graphics::loadTexture(std::string filename) {
         SDL_Texture* tex = IMG_LoadTexture(g_renderer, filename.c_str());
-        if(tex == NULL) {
-            printf("Image Load Error: Path(%s) - Error(%s)\n", filename.c_str(), IMG_GetError());
-            printf("Create Texture Error: %s\n", SDL_GetError());
+        if(!tex) {
+            LOG(std::string("Image Load Error: Path(") + filename.c_str() + ")" + " - Error(" + IMG_GetError() + ")");
+            LOG(std::string("Create Texture Error: ") + SDL_GetError());
             return tex;
         }
 
         return tex;
+    }
+
+    std::shared_ptr<SDL_Texture> Graphics::getText(std::string text, TTF_Font* font, SDL_Color color) {
+        std::string key = text + (char)color.r + (char)color.b + (char)color.g;
+
+        auto cacheIter = textCache.find(key);
+        if (cacheIter == textCache.end()) {
+            textCache[key] = { creatTextTexture(text, font, color), 1 };
+
+            if (textCache.size() > MAX_CACHE_SIZE) {
+                // Remove the last used item from the cache
+                std::string& oldestKey = accessQueue.front();
+                textCache.erase(oldestKey);
+                accessQueue.pop_front();
+            }
+
+            accessQueue.push_back(key);
+        } else {
+            cacheIter->second.accessCount++;
+
+            accessQueue.remove(key);
+            accessQueue.push_back(key);
+        }
+
+        return textCache[key].texture;
+    }
+
+    std::shared_ptr<SDL_Texture> Graphics::creatTextTexture(std::string text, TTF_Font* font, SDL_Color color)
+    {
+        SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+        if(!surface) {
+            LOG(std::string("Text Render Error: ") + TTF_GetError());
+            return NULL;
+        }
+
+        std::shared_ptr<SDL_Texture> texture(SDL_CreateTextureFromSurface(g_renderer, surface), SDL_DestroyTexture);
+        if(!texture.get()) {
+            LOG(std::string("Text Texture Creation Error: ") + SDL_GetError());
+            return NULL;
+        }
+
+        SDL_FreeSurface(surface);
+
+        return texture;
     }
 } // Drawing

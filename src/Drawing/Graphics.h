@@ -2,6 +2,10 @@
 #define BOSCONIAN_GRAPHICS_H
 
 #include <map>
+#include <unordered_map>
+#include <list>
+#include <algorithm>
+#include <memory>
 #include "../../includes.h"
 #include "../Renderer/Renderer.h"
 
@@ -9,9 +13,18 @@ namespace Drawing {
 
     class Graphics {
     private:
+        const int MAX_CACHE_SIZE = 100;
+
+        struct TextCacheItem {
+            std::shared_ptr<SDL_Texture> texture;
+            int accessCount;
+        };
+
         SDL_Renderer* g_renderer;
-        //Cache for all loaded images
+        //Caching
         std::map<std::string, SDL_Texture*> textures;
+        std::map<std::string, TextCacheItem> textCache;
+        std::list<std::string> accessQueue;
 
     public:
         Graphics(Renderer::RendererSDL* renderer);
@@ -27,6 +40,9 @@ namespace Drawing {
         // TODO: May add AssetManager?
         SDL_Texture* getTexture(std::string filename);
         SDL_Texture* loadTexture(std::string filename);
+
+        std::shared_ptr<SDL_Texture> getText(std::string text, TTF_Font *font, SDL_Color color);
+        std::shared_ptr<SDL_Texture> creatTextTexture(std::string text, TTF_Font* font, SDL_Color color);
     };
 
 } // Drawing
