@@ -13,6 +13,13 @@
 #include <chrono>
 #include <iostream>
 
+#include <fstream>
+#include <vector>
+#include <map>
+#include <typeinfo>
+#include <filesystem>
+
+
 //SDL stuff
 #include <SDL.h>
 #include <SDL_image.h>
@@ -23,5 +30,6 @@
 
 #include "./src/Utilities/Logging.h"
 #include "./src/Utilities/Vector2D.h"
+#include "./src/Utilities/Config.h"
 
 #endif //BOSCONIAN_INCLUDES_H
