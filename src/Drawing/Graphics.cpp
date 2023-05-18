@@ -43,14 +43,33 @@ namespace Drawing {
         SDL_RenderCopyEx(g_renderer, tex, clip, rend, angle, NULL, flip);
     }
 
-    void Graphics::string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos)
+    void Graphics::string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos, int alignment)
     {
         SDL_Texture* texture = getText(text, font, color).get();
 
-        SDL_Rect destR = { (int)pos.x, (int)pos.y, 0, 0 };
-        TTF_SizeText(font, text.c_str(), &destR.w, &destR.h);
+        int textWidth, textHeight;
+        TTF_SizeText(font, text.c_str(), &textWidth, &textHeight);
 
-        SDL_RenderCopy(g_renderer, texture, NULL, &destR);
+        SDL_Rect destRect;
+        destRect.w = textWidth;
+        destRect.h = textHeight;
+
+        switch (alignment) {
+            case Left:
+                destRect.x = static_cast<int>(pos.x);
+                destRect.y = static_cast<int>(pos.y);
+                break;
+            case Right:
+                destRect.x = static_cast<int>(pos.x - textWidth);
+                destRect.y = static_cast<int>(pos.y);
+                break;
+            case Center:
+                destRect.x = static_cast<int>(pos.x - (textWidth / 2));
+                destRect.y = static_cast<int>(pos.y - (textHeight / 2));
+                break;
+        }
+
+        SDL_RenderCopy(g_renderer, texture, NULL, &destRect);
     }
 
     SDL_Texture* Graphics::getTexture(std::string filename) {

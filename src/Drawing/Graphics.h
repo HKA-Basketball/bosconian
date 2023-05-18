@@ -11,6 +11,12 @@
 
 namespace Drawing {
 
+    enum : uint32_t {
+        Left = 0,
+        Right,
+        Center
+    };
+
     class Graphics {
     private:
         const int MAX_CACHE_SIZE = 100;
@@ -35,7 +41,7 @@ namespace Drawing {
         void fillRectangle(SDL_Color color, SDL_FRect rect);
         void fillRectangleOutline(SDL_Color color, SDL_Rect rect);
         void texture(SDL_Texture* tex, SDL_Rect* clip = NULL, SDL_Rect* rend = NULL, float angle = 0.0f, SDL_RendererFlip flip = SDL_FLIP_NONE);
-        void string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos);
+        void string(std::string text, TTF_Font* font, SDL_Color color, Utils::Vector2D pos, int alignment = Left);
 
         // TODO: May add AssetManager?
         SDL_Texture* getTexture(std::string filename);
