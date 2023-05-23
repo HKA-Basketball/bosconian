@@ -9,10 +9,11 @@ namespace Game {
     private:
         SDL_Rect hitbox;
     public:
-        const SDL_Rect &getHitbox() const;
-
-    public:
         Hitbox(Utils::Vector2D pos, Utils::Vector2D size);
+
+        void updateHitboxPos(Utils::Vector2D newOrigin);
+
+        const SDL_Rect &getHitbox() const;
     };
 
 } // Game
