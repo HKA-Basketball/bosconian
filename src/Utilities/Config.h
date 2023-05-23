@@ -62,6 +62,11 @@ namespace Utils {
                                     viss >> value;
                                     *reinterpret_cast<int*>(inner_map[key].value) = value;
                                 }
+                                else if (inner_map[key].type == typeid(Uint64).name()) {
+                                    Uint64 value;
+                                    viss >> value;
+                                    *reinterpret_cast<Uint64*>(inner_map[key].value) = value;
+                                }
                                 else if (inner_map[key].type == typeid(float).name()) {
                                     float value;
                                     viss >> value;
@@ -169,6 +174,9 @@ namespace Utils {
                     outfile << key << " = ";
                     if (item.type == typeid(int).name()) {
                         outfile << *reinterpret_cast<int*>(item.value);
+                    }
+                    else if (item.type == typeid(Uint64).name()) {
+                        outfile << *reinterpret_cast<Uint64*>(item.value);
                     }
                     else if (item.type == typeid(float).name()) {
                         outfile << *reinterpret_cast<float*>(item.value);
