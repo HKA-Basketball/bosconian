@@ -4,8 +4,6 @@ namespace Renderer {
 
     Window::Window(const char *title, int width, int height, Uint32 flags)
     {
-        // TODO: when returning we need to exit our Program
-
         if (!initSDL())
             return;
 
