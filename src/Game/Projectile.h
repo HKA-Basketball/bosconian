@@ -18,7 +18,7 @@ namespace Game {
                 m_angle(angle),
                 m_width(8),
                 m_height(8) {
-            m_activ = true;
+            m_active = true;
         }
 
         void update(float speed) {
@@ -60,12 +60,12 @@ namespace Game {
             return m_height;
         }
 
-        bool getActiv() const {
-            return m_activ;
+        bool getActive() const {
+            return m_active;
         }
 
-        void setActiv(bool val) {
-            m_activ = val;
+        void setActive(bool val) {
+            m_active = val;
         }
 
     private:
@@ -75,7 +75,7 @@ namespace Game {
         int m_width;
         int m_height;
         float m_angle;
-        bool m_activ;
+        bool m_active;
     };
 
     class ProjectileView {
@@ -106,26 +106,11 @@ namespace Game {
         const ProjectileModel& m_model;
     };
 
-    class ProjectileController {
-    public:
-        ProjectileController(ProjectileModel& model) :
-                m_model(model) {
-        }
-
-        void update(float speed) {
-            m_model.update(speed);
-        }
-
-    private:
-        ProjectileModel& m_model;
-    };
-
     class Projectile {
     public:
         Projectile(Drawing::Graphics* graphics, int x, int y, int speed, float angle) :
                 m_model(x, y, speed, angle),
-                m_view(graphics, m_model),
-                m_controller(m_model) {
+                m_view(graphics, m_model) {
         }
 
         bool isOffscreen() const {
@@ -141,12 +126,7 @@ namespace Game {
         bool ProjectileHitsEntity(SDL_Rect entityHitbox)
         {
             // Create a SDL_Rect for the projectile hitbox
-            SDL_Rect projectileHitbox = {
-                    static_cast<int>(m_model.getX()),
-                    static_cast<int>(m_model.getY()),
-                    static_cast<int>(m_model.getWidth()),
-                    static_cast<int>(m_model.getHeight())
-            };
+            SDL_Rect projectileHitbox = getHitbox();
 
             // Check if the bounding boxes of the projectile and entity intersect
             return (projectileHitbox.x < entityHitbox.x + entityHitbox.w &&
@@ -167,26 +147,29 @@ namespace Game {
             return projectileHitbox;
         }
 
-        void setActiv(bool val) {
-            m_model.setActiv(val);
+        void setActive(bool val) {
+            m_model.setActive(val);
         }
 
-        bool getActiv() {
-            return m_model.getActiv();
+        bool getActive() {
+            return m_model.getActive();
         }
 
         void update(float speed) {
-            m_controller.update(speed);
+            if (m_model.getActive()) {
+                m_model.update(speed);
+            }
         }
 
         void render() const {
-            m_view.render();
+            if (m_model.getActive()) {
+                m_view.render();
+            }
         }
 
     private:
         ProjectileModel m_model;
         ProjectileView m_view;
-        ProjectileController m_controller;
     };
 
 } // Game
