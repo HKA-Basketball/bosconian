@@ -2,6 +2,7 @@
 
 #include "./src/Utilities/Initializer.h"
 #include "./src/Game/Game.h"
+#include "./src/GUI/Menu.h"
 
 int main(int argc, char* args[])
 {
@@ -18,6 +19,18 @@ int main(int argc, char* args[])
     g_game->init();
     g_game->update(0.f);
 
+    SDL_Rect menuRect = {Utils::GlobalVars::windowWidth/2, Utils::GlobalVars::windowHeight/2, 250, 250};
+    menuRect.x -= menuRect.w/2;
+    menuRect.y -= menuRect.h/2;
+
+    Menu::Menu menu(g->drawing(), g->event(), g->renderer()->m_fonts[0]
+                    , menuRect, {48, 48, 48, 255}
+                    , {255, 255, 255, 255}, 45);
+    menu.addOption("Start");
+    menu.addOption("Options");
+    menu.addOption("Exit");
+
+
     Uint32 previousTime = SDL_GetTicks64();
     //Loop
     while (!g->event()->logging())
@@ -33,7 +46,11 @@ int main(int argc, char* args[])
             g_game->postUpdate(deltaTime);
         }
         else {
-            // Update menu data?
+            // Update menu
+            menu.handleEvent();
+
+            // for our background if needed
+            g->world()->update(deltaTime);
         }
 
         g->renderer()->beginScene();
@@ -42,8 +59,7 @@ int main(int argc, char* args[])
 
         if (Utils::GlobalVars::menuActive) {
             // Render Menu
-            g->drawing()->string(std::string("Menu WIP"), g->renderer()->m_fonts[0], { 255, 0, 0 }, Utils::Vector2D(100, 100));
-
+            menu.render();
         }
 
         g->renderer()->endScene();
