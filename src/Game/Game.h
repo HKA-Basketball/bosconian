@@ -4,15 +4,17 @@
 #include "../../includes.h"
 #include "../Utilities/Initializer.h"
 #include "Projectile.h"
+#include "EntityManager.h"
 
 namespace Game {
 
     class Game {
     private:
         Initialization::Initializer* g;
+        EntityManager* entities;
 
-
-        std::vector<std::pair<Entity*, bool>> nonMovingEntitys;
+        std::vector<Entity*> nonMovingEntitys;
+        std::vector<Entity*> baseShipEntitys;
         Entity* player1;
         std::vector<Projectile*> playersProjectiles;
 
