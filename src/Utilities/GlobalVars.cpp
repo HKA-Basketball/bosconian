@@ -17,6 +17,7 @@ namespace Utils {
         int lvlWidth = 2000;
         int lvlHeight = 2000;
 
+        Uint64 currenPTS = 0;
         Vector2D cameraPos((lvlWidth / 2), (lvlHeight / 2));
         float playerAngle = 0.f;
 
@@ -40,6 +41,15 @@ namespace Utils {
         {
             angle = fmod(angle, 360.0);
             return angle;
+        }
+
+        // TODO: move to Math
+        float RandomFloat(float min, float max)
+        {
+            float random = ((float)rand()) / (float)RAND_MAX;
+
+            float range = max - min;
+            return (random * range) + min;
         }
 
         bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint)

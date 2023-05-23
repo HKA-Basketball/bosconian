@@ -22,6 +22,7 @@ namespace Utils {
         extern int lvlWidth;
         extern int lvlHeight;
 
+        extern Uint64 currenPTS;
         extern Vector2D cameraPos;
         extern float playerAngle;
 
@@ -35,6 +36,7 @@ namespace Utils {
 
         extern float normalizeAngle180(float angle);
         extern float normalizeAngle360(float angle);
+        extern float RandomFloat(float min, float max);
 
         extern bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint);
         extern bool ScreenToWorld(Utils::Vector2D screenPoint, Utils::Vector2D& worldPoint);
