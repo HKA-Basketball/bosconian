@@ -23,7 +23,7 @@ namespace Game {
 
         void update(float speed) {
             // Calculate the new position of the projectile based on the angle.
-            float angleInRadians = Utils::GlobalVars::normalizeAngle360(m_angle - 90.f) * M_PI / 180.0;
+            float angleInRadians = Utils::Math::normalizeAngle360(m_angle - 90.f) * M_PI / 180.0;
             float dx = speed * cos(angleInRadians);
             float dy = speed * sin(angleInRadians);
 
@@ -91,7 +91,7 @@ namespace Game {
             Utils::Vector2D worldPos = Utils::Vector2D(m_model.getX(), m_model.getY());
             Utils::Vector2D screenPos;
 
-            Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
+            Utils::render::WorldToScreen(worldPos, screenPos);
 
             SDL_Rect rect = { (int)screenPos.x, (int)screenPos.y, m_model.getWidth(), m_model.getHeight() };
             m_drawing->fillRectangleOutline({ 255, 255, 255, 255 }, rect);
@@ -119,7 +119,7 @@ namespace Game {
 
             Utils::Vector2D worldPos = Utils::Vector2D(m_x, m_y);
             Utils::Vector2D screenPos;
-            Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
+            Utils::render::WorldToScreen(worldPos, screenPos);
             return (screenPos.x < -50 || screenPos.x > Utils::GlobalVars::windowWidth || screenPos.y < -50 || screenPos.y > Utils::GlobalVars::windowHeight);
         }
 

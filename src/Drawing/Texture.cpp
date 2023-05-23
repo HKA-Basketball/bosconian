@@ -1,8 +1,8 @@
 #include "../Utilities/Logging.h"
-#include "Image.h"
+#include "Texture.h"
 
 namespace Drawing {
-    Image::Image(Drawing::Graphics* drawing, std::string filename, float deg, bool clipped, std::string spritesheet) {
+    Texture::Texture(Drawing::Graphics* drawing, std::string filename, float deg, bool clipped, std::string spritesheet) {
         this->name = name;
         this->g_drawing = drawing;
         angle = deg;
@@ -63,35 +63,35 @@ namespace Drawing {
         renderRect.y = 0;
     }
 
-    void Image::setSize(Utils::Vector2D newSize) {
+    void Texture::setSize(Utils::Vector2D newSize) {
         renderRect.w = newSize.x;
         renderRect.h = newSize.y;
     }
 
-    Utils::Vector2D Image::getSize() {
+    Utils::Vector2D Texture::getSize() {
         return {static_cast<float>(renderRect.w), static_cast<float>(renderRect.h)};
     }
 
-    void Image::setPos(Utils::Vector2D newPos) {
+    void Texture::setPos(Utils::Vector2D newPos) {
         renderRect.x = newPos.x;
         renderRect.y = newPos.y;
     }
 
-    Utils::Vector2D Image::getPos() {
+    Utils::Vector2D Texture::getPos() {
         return {static_cast<float>(renderRect.x), static_cast<float>(renderRect.y)};
     }
 
-    void Image::setAngel(float newAngel) {
+    void Texture::setAngel(float newAngel) {
         // TODO: normalize
 
         angle = newAngel;
     }
 
-    float Image::getAngel() {
+    float Texture::getAngel() {
         return angle;
     }
 
-    void Image::draw() {
+    void Texture::draw() {
         //renderRect.x = (int)(renderRect.x - renderRect.w*0.5f);
         //renderRect.y = (int)(renderRect.y - renderRect.h*0.5f);
 

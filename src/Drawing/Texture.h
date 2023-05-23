@@ -1,5 +1,5 @@
-#ifndef BOSCONIAN_IMAGE_H
-#define BOSCONIAN_IMAGE_H
+#ifndef BOSCONIAN_TEXTURE_H
+#define BOSCONIAN_TEXTURE_H
 
 #include "../../includes.h"
 #include "Graphics.h"
@@ -7,7 +7,7 @@
 
 namespace Drawing {
 
-    class Image {
+    class Texture {
     private:
         Drawing::Graphics* g_drawing;
 
@@ -20,7 +20,7 @@ namespace Drawing {
         SDL_Rect clipRect;
         float angle;
 
-        Image(Drawing::Graphics* drawing, std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
+        Texture(Drawing::Graphics* drawing, std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
 
         void setSize(Utils::Vector2D newSize);
         Utils::Vector2D getSize();
@@ -36,4 +36,4 @@ namespace Drawing {
 
 } // Drawing
 
-#endif //BOSCONIAN_IMAGE_H
+#endif //BOSCONIAN_TEXTURE_H

@@ -27,9 +27,9 @@ namespace Game {
 
         void initBackground() {
             for (int i = 0; i < countStars * 2; i++) {
-                vcPoints[i].first.x = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
-                vcPoints[i].first.y = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
-                vcPoints[i].first.h = vcPoints[i].first.w = Utils::GlobalVars::RandomFloat(0.5f, 5.5f);
+                vcPoints[i].first.x = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+                vcPoints[i].first.y = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
+                vcPoints[i].first.h = vcPoints[i].first.w = Utils::Math::RandomFloat(0.5f, 5.5f);
 
                 sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
                 vcPoints[i].second.r = static_cast<Uint8>((sineValue + 1.f) / 2.f * 255.f);
@@ -47,9 +47,9 @@ namespace Game {
             if (elapsedTicks > starDelay) {
                 if (!bToggle) {
                     for (int i = 0; i < countStars; i++) {
-                        vcPoints[i].first.x = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
-                        vcPoints[i].first.y = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
-                        vcPoints[i].first.h = vcPoints[i].first.w = Utils::GlobalVars::RandomFloat(0.5f, 5.5f);
+                        vcPoints[i].first.x = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+                        vcPoints[i].first.y = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
+                        vcPoints[i].first.h = vcPoints[i].first.w = Utils::Math::RandomFloat(0.5f, 5.5f);
 
                         sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
                         vcPoints[i].second.r = static_cast<Uint8>((sineValue + 1.f) / 2.f * 255.f);
@@ -62,9 +62,9 @@ namespace Game {
                     bToggle = true;
                 } else if (bToggle) {
                     for (int i = countStars; i < countStars * 2; i++) {
-                        vcPoints[i].first.x = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
-                        vcPoints[i].first.y = Utils::GlobalVars::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
-                        vcPoints[i].first.h = vcPoints[i].first.w = Utils::GlobalVars::RandomFloat(0.5f, 5.5f);
+                        vcPoints[i].first.x = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlWidth * 0.6f);
+                        vcPoints[i].first.y = Utils::Math::RandomFloat(0, Utils::GlobalVars::lvlHeight * 0.6f);
+                        vcPoints[i].first.h = vcPoints[i].first.w = Utils::Math::RandomFloat(0.5f, 5.5f);
 
                         sineValue = sin(2.f * M_PI * (rand() % 1000) / 5.f);
                         vcPoints[i].second.r = static_cast<Uint8>((sineValue + 1.f) / 2.f * 255.f);

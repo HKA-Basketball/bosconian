@@ -85,7 +85,7 @@ namespace Drawing {
     SDL_Texture* Graphics::loadTexture(std::string filename) {
         SDL_Texture* tex = IMG_LoadTexture(g_renderer, filename.c_str());
         if(!tex) {
-            LOG(std::string("Image Load Error: Path(") + filename.c_str() + ")" + " - Error(" + IMG_GetError() + ")");
+            LOG(std::string("Texture Load Error: Path(") + filename.c_str() + ")" + " - Error(" + IMG_GetError() + ")");
             LOG(std::string("Create Texture Error: ") + SDL_GetError());
             return tex;
         }

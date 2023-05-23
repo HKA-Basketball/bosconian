@@ -1,11 +1,13 @@
 #include "Game.h"
 #include "../../Resources/imgs.h"
+#include "../Utilities/GlobalVars.h"
 
 namespace Game {
     Game::Game(Initialization::Initializer *g) : g(g) { }
 
     void Game::init()
     {
+        playersProjectiles.clear();
         // TODO: Move
         // Only for testing
         // -------------------------------------------------------------------------------------
@@ -70,7 +72,7 @@ namespace Game {
 
             }*/
 
-            Drawing::Image* img = new Drawing::Image(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
+            Drawing::Texture* img = new Drawing::Texture(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
 
             nonMovingEntitys[i] = new Entity(pos, ang, img, listPTS[ranImg]);
             nonMovingEntitys[i]->setAngle(ang);
@@ -82,9 +84,9 @@ namespace Game {
         }
 
 
-        Drawing::Image* spaceShip = new Drawing::Image(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
+        Drawing::Texture* spaceShip = new Drawing::Texture(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
-        player1 = new Entity(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
+        player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
         // -------------------------------------------------------------------------------------
 
@@ -157,7 +159,7 @@ namespace Game {
             SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
-            bool isOnScreen = Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
+            bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
             if (!isOnScreen)
                 continue;
 
@@ -174,6 +176,19 @@ namespace Game {
                     nonMovingEntitys.pop_back();
                     break;
                 }
+            }
+
+            if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
+            {
+                //trigger Dead screen
+                //player1->setActive(false);
+                this->init();
+                // TODO:
+                Utils::Config sw_cfg(".\\cfg\\config.ini");
+                sw_cfg.add_item("player", "cameraPos", Utils::GlobalVars::cameraPos);
+                sw_cfg.add_item("player", "points", Utils::GlobalVars::currenPTS);
+                sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+                sw_cfg.read();
             }
         }
     }

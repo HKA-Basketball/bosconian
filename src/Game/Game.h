@@ -5,6 +5,7 @@
 #include "../Utilities/Initializer.h"
 #include "Projectile.h"
 #include "EntityManager.h"
+#include "Player.h"
 
 namespace Game {
 
@@ -15,7 +16,7 @@ namespace Game {
 
         std::vector<Entity*> nonMovingEntitys;
         std::vector<Entity*> baseShipEntitys;
-        Entity* player1;
+        Player* player1;
         std::vector<Projectile*> playersProjectiles;
 
     public:

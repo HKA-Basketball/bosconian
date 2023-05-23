@@ -2,7 +2,7 @@
 #define BOSCONIAN_ENTITY_H
 
 #include "../../includes.h"
-#include "../Drawing/Image.h"
+#include "../Drawing/Texture.h"
 #include "Hitbox.h"
 
 namespace Game {
@@ -84,18 +84,18 @@ namespace Game {
 
     class EntityView {
     private:
-        Drawing::Image* obj;
+        Drawing::Texture* obj;
         const EntityModel& m_model;
 
     public:
-        EntityView(Drawing::Image* img, const EntityModel& model)
+        EntityView(Drawing::Texture* img, const EntityModel& model)
             : obj(img)
             , m_model(model)
         {}
 
         void update() {
             Utils::Vector2D newPosScreen;
-            Utils::GlobalVars::WorldToScreen(m_model.getOrigin(), newPosScreen);
+            Utils::render::WorldToScreen(m_model.getOrigin(), newPosScreen);
             obj->setPos(newPosScreen - (obj->getSize()*0.5f));
             obj->setAngel(m_model.getAngle());
         }
@@ -113,7 +113,7 @@ namespace Game {
         //TODO: may add Typ for movement things
 
     public:
-        Entity(Utils::Vector2D pos, float deg, Drawing::Image* img, Uint64 pts = 0)
+        Entity(Utils::Vector2D pos, float deg, Drawing::Texture* img, Uint64 pts = 0)
             : m_model(pos, deg, img->getSize(), pts)
             , m_view(img, m_model)
         {}
