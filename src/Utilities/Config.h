@@ -96,25 +96,15 @@ namespace Utils {
                                         }
                                         vectorValue.push_back(value);
                                     }
-                                } else if (inner_map[key].type == typeid(std::vector<Frame>).name()) {
-                                    std::vector<Frame>& frameValue = *reinterpret_cast<std::vector<Frame>*>(inner_map[key].value);
-                                    frameValue.clear();
-                                    std::istringstream frame_iss(value_str);
-                                    std::string frame_item;
-                                    while (std::getline(frame_iss, frame_item, ',')) {
-                                        size_t name_pos = frame_item.find(':');
-                                        if (name_pos != std::string::npos) {
-                                            std::string name = frame_item.substr(0, name_pos);
-                                            std::string rect_str = frame_item.substr(name_pos + 1);
-                                            size_t rect_pos = rect_str.find(';');
-                                            if (rect_pos != std::string::npos) {
-                                                std::istringstream xywh_iss(rect_str.substr(0, rect_pos));
-                                                std::istringstream wh_iss(rect_str.substr(rect_pos + 1));
-                                                int x, y, w, h;
-                                                xywh_iss >> x >> y >> w >> h;
-                                                frameValue.push_back({name, {x, y, w, h}});
-                                            }
-                                        }
+                                }
+                                else if (inner_map[key].type == typeid(std::vector<Frame>).name()) {
+                                    std::vector<Frame>& vectorValue = *reinterpret_cast<std::vector<Frame>*>(inner_map[key].value);
+                                    vectorValue.clear();
+                                    std::istringstream vector_iss(value_str);
+                                    std::string vector_item;
+                                    while (std::getline(vector_iss, vector_item, ',')) {
+                                        Frame frameValue = readFrame(vector_item);
+                                        vectorValue.push_back(frameValue);
                                     }
                                 }
                                 else if (inner_map[key].type == typeid(SDL_Rect).name()) {
@@ -143,9 +133,17 @@ namespace Utils {
                                     vectorValue.clear();
                                     std::istringstream vector_iss(value_str);
                                     std::string vector_item;
-                                    while (std::getline(vector_iss, vector_item, ',')) {
-                                        Level levelValue = readLevel(vector_item);
-                                        vectorValue.push_back(levelValue);
+                                    std::string current_element;
+                                    while (std::getline(vector_iss, vector_item, ';')) {
+                                        if (!current_element.empty()) {
+                                            current_element += ';';
+                                        }
+                                        current_element += vector_item;
+                                        if (vector_item.find(']') != std::string::npos) {
+                                            Level levelValue = readLevel(current_element);
+                                            vectorValue.push_back(levelValue);
+                                            current_element.clear();
+                                        }
                                     }
                                 }
                             }
@@ -208,9 +206,9 @@ namespace Utils {
                         const std::vector<Level>& vectorValue = *reinterpret_cast<const std::vector<Level>*>(item.value);
                         for (size_t i = 0; i < vectorValue.size(); ++i) {
                             if (i != 0) {
-                                outfile << ',';
+                                outfile << ';';
                             }
-                            outfile << writeLevel(vectorValue[i]);
+                            outfile << "[" << writeLevel(vectorValue[i]) << "]";
                         }
                     }
                     outfile << '\n';
@@ -244,24 +242,52 @@ namespace Utils {
             return items.end(); // Return the end iterator of the outer map
         }
 
+        Frame readFrame(const std::string& value_str) {
+            Frame frame;
+            size_t pos = value_str.find(':');
+            if (pos != std::string::npos) {
+                frame.filename = trim(value_str.substr(0, pos));
+                std::string rect_str = trim(value_str.substr(pos + 1));
+                size_t pos_sep = rect_str.find(';');
+                if (pos_sep != std::string::npos) {
+                    std::istringstream xiss(rect_str.substr(0, pos_sep));
+                    xiss >> frame.frame.x;
+                    size_t pos_sep2 = rect_str.find(';', pos_sep + 1);
+                    if (pos_sep2 != std::string::npos) {
+                        std::istringstream yiss(rect_str.substr(pos_sep + 1, pos_sep2 - pos_sep - 1));
+                        yiss >> frame.frame.y;
+                        size_t pos_sep3 = rect_str.find(';', pos_sep2 + 1);
+                        if (pos_sep3 != std::string::npos) {
+                            std::istringstream wiss(rect_str.substr(pos_sep2 + 1, pos_sep3 - pos_sep2 - 1));
+                            wiss >> frame.frame.w;
+                            std::istringstream hiss(rect_str.substr(pos_sep3 + 1));
+                            hiss >> frame.frame.h;
+                        }
+                    }
+                }
+            }
+            return frame;
+        }
+
         std::string writeLevel(const Level& level) {
             std::ostringstream oss;
             oss << "lvlNum:" << level.lvlNum << ",";
-            oss << "baseShipsPos:";
+            oss << "baseShipsPos:[";
             for (size_t i = 0; i < level.baseShipsPos.size(); ++i) {
                 if (i != 0) {
-                    oss << ',';
+                    oss << ';';
                 }
-                oss << level.baseShipsPos[i].x << ';' << level.baseShipsPos[i].y;
+                oss << level.baseShipsPos[i].x << "-" << level.baseShipsPos[i].y;
             }
-            oss << ",";
-            oss << "playerPos:" << level.playerPos.x << ';' << level.playerPos.y;
+            oss << "],";
+            oss << "playerPos:" << level.playerPos.x << "-" << level.playerPos.y;
             return oss.str();
         }
 
         Level readLevel(const std::string& value_str) {
             Level level;
-            std::istringstream iss(value_str);
+            std::string stripped_value = value_str.substr(1, value_str.size() - 2);  // Remove enclosing square brackets
+            std::istringstream iss(stripped_value);
             std::string token;
             while (std::getline(iss, token, ',')) {
                 size_t pos = token.find(':');
@@ -272,21 +298,26 @@ namespace Utils {
                         std::istringstream numiss(value);
                         numiss >> level.lvlNum;
                     } else if (key == "baseShipsPos") {
-                        std::istringstream vector_iss(value);
-                        std::string vector_item;
-                        while (std::getline(vector_iss, vector_item, ',')) {
-                            Vector2D pos;
-                            size_t pos_sep = vector_item.find(';');
-                            if (pos_sep != std::string::npos) {
-                                std::istringstream xyiss(vector_item.substr(0, pos_sep));
-                                xyiss >> pos.x;
-                                std::istringstream yiss(vector_item.substr(pos_sep + 1));
-                                yiss >> pos.y;
+                        size_t pos_start = value.find('[');
+                        size_t pos_end = value.find(']');
+                        if (pos_start != std::string::npos && pos_end != std::string::npos) {
+                            std::string vector_value = value.substr(pos_start + 1, pos_end - pos_start - 1);
+                            std::istringstream vector_iss(vector_value);
+                            std::string vector_item;
+                            while (std::getline(vector_iss, vector_item, ';')) {
+                                Vector2D pos;
+                                size_t pos_sep = vector_item.find('-');
+                                if (pos_sep != std::string::npos) {
+                                    std::istringstream xyiss(vector_item.substr(0, pos_sep));
+                                    xyiss >> pos.x;
+                                    std::istringstream yiss(vector_item.substr(pos_sep + 1));
+                                    yiss >> pos.y;
+                                }
+                                level.baseShipsPos.push_back(pos);
                             }
-                            level.baseShipsPos.push_back(pos);
                         }
                     } else if (key == "playerPos") {
-                        size_t pos_sep = value.find(';');
+                        size_t pos_sep = value.find('-');
                         if (pos_sep != std::string::npos) {
                             std::istringstream xiss(value.substr(0, pos_sep));
                             xiss >> level.playerPos.x;
