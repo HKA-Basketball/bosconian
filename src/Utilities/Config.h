@@ -135,6 +135,18 @@ namespace Utils {
                                         value.h = values[3];
                                     }
                                     *reinterpret_cast<SDL_Rect*>(inner_map[key].value) = value;
+                                } else if (inner_map[key].type == typeid(Level).name()) {
+                                    Level& levelValue = *reinterpret_cast<Level*>(inner_map[key].value);
+                                    levelValue = readLevel(value_str);
+                                } else if (inner_map[key].type == typeid(std::vector<Level>).name()) {
+                                    std::vector<Level>& vectorValue = *reinterpret_cast<std::vector<Level>*>(inner_map[key].value);
+                                    vectorValue.clear();
+                                    std::istringstream vector_iss(value_str);
+                                    std::string vector_item;
+                                    while (std::getline(vector_iss, vector_item, ',')) {
+                                        Level levelValue = readLevel(vector_item);
+                                        vectorValue.push_back(levelValue);
+                                    }
                                 }
                             }
                         }
@@ -189,6 +201,17 @@ namespace Utils {
                     else if (item.type == typeid(SDL_Rect).name()) {
                         SDL_Rect value = *reinterpret_cast<SDL_Rect*>(item.value);
                         outfile << value.x << ';' << value.y << ';' << value.w << ';' << value.h;
+                    } else if (item.type == typeid(Level).name()) {
+                        const Level& levelValue = *reinterpret_cast<const Level*>(item.value);
+                        outfile << writeLevel(levelValue);
+                    } else if (item.type == typeid(std::vector<Level>).name()) {
+                        const std::vector<Level>& vectorValue = *reinterpret_cast<const std::vector<Level>*>(item.value);
+                        for (size_t i = 0; i < vectorValue.size(); ++i) {
+                            if (i != 0) {
+                                outfile << ',';
+                            }
+                            outfile << writeLevel(vectorValue[i]);
+                        }
                     }
                     outfile << '\n';
                 }
@@ -199,6 +222,9 @@ namespace Utils {
         }
 
     private:
+        std::string filename;
+        std::map<std::string, std::map<std::string, item>> items;
+
         std::string trim(const std::string& str) {
             std::string result = str;
             result.erase(0, result.find_first_not_of(" \t\n\r\f\v"));
@@ -218,8 +244,60 @@ namespace Utils {
             return items.end(); // Return the end iterator of the outer map
         }
 
-        std::string filename;
-        std::map<std::string, std::map<std::string, item>> items;
+        std::string writeLevel(const Level& level) {
+            std::ostringstream oss;
+            oss << "lvlNum:" << level.lvlNum << ",";
+            oss << "baseShipsPos:";
+            for (size_t i = 0; i < level.baseShipsPos.size(); ++i) {
+                if (i != 0) {
+                    oss << ',';
+                }
+                oss << level.baseShipsPos[i].x << ';' << level.baseShipsPos[i].y;
+            }
+            oss << ",";
+            oss << "playerPos:" << level.playerPos.x << ';' << level.playerPos.y;
+            return oss.str();
+        }
+
+        Level readLevel(const std::string& value_str) {
+            Level level;
+            std::istringstream iss(value_str);
+            std::string token;
+            while (std::getline(iss, token, ',')) {
+                size_t pos = token.find(':');
+                if (pos != std::string::npos) {
+                    std::string key = trim(token.substr(0, pos));
+                    std::string value = trim(token.substr(pos + 1));
+                    if (key == "lvlNum") {
+                        std::istringstream numiss(value);
+                        numiss >> level.lvlNum;
+                    } else if (key == "baseShipsPos") {
+                        std::istringstream vector_iss(value);
+                        std::string vector_item;
+                        while (std::getline(vector_iss, vector_item, ',')) {
+                            Vector2D pos;
+                            size_t pos_sep = vector_item.find(';');
+                            if (pos_sep != std::string::npos) {
+                                std::istringstream xyiss(vector_item.substr(0, pos_sep));
+                                xyiss >> pos.x;
+                                std::istringstream yiss(vector_item.substr(pos_sep + 1));
+                                yiss >> pos.y;
+                            }
+                            level.baseShipsPos.push_back(pos);
+                        }
+                    } else if (key == "playerPos") {
+                        size_t pos_sep = value.find(';');
+                        if (pos_sep != std::string::npos) {
+                            std::istringstream xiss(value.substr(0, pos_sep));
+                            xiss >> level.playerPos.x;
+                            std::istringstream yiss(value.substr(pos_sep + 1));
+                            yiss >> level.playerPos.y;
+                        }
+                    }
+                }
+            }
+            return level;
+        }
     };
 } // Utils
 

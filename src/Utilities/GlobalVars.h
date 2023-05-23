@@ -14,6 +14,12 @@ namespace Utils {
         } frame;
     };
 
+    struct Level {
+        int lvlNum;
+        std::vector<Vector2D> baseShipsPos;
+        Vector2D playerPos;
+    };
+
     namespace GlobalVars {
         extern int windowWidth;
         extern int windowHeight;
@@ -25,6 +31,9 @@ namespace Utils {
         extern Uint64 currenPTS;
         extern Vector2D cameraPos;
         extern float playerAngle;
+
+
+        extern std::vector<Level> lvlsInfos;
 
         extern std::vector<Frame> frames;
 

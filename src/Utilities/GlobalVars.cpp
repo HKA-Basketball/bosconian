@@ -21,6 +21,8 @@ namespace Utils {
         Vector2D cameraPos((lvlWidth / 2), (lvlHeight / 2));
         float playerAngle = 0.f;
 
+        std::vector<Level> lvlsInfos;
+
         //
         bool menuActive = false;
 
