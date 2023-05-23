@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_CONFIG_H
 #define BOSCONIAN_CONFIG_H
 
+#include "GlobalVars.h"
+
 namespace fs = std::filesystem;
 
 namespace Utils {
@@ -78,6 +80,42 @@ namespace Utils {
                                         yiss >> value.y;
                                     }
                                     *reinterpret_cast<Vector2D*>(inner_map[key].value) = value;
+                                }  else if (inner_map[key].type == typeid(std::vector<Vector2D>).name()) {
+                                    std::vector<Vector2D>& vectorValue = *reinterpret_cast<std::vector<Vector2D>*>(inner_map[key].value);
+                                    vectorValue.clear();
+                                    std::istringstream vector_iss(value_str);
+                                    std::string vector_item;
+                                    while (std::getline(vector_iss, vector_item, ',')) {
+                                        Vector2D value;
+                                        size_t pos = vector_item.find(';');
+                                        if (pos != std::string::npos) {
+                                            std::istringstream xyiss(vector_item.substr(0, pos));
+                                            xyiss >> value.x;
+                                            std::istringstream yiss(vector_item.substr(pos + 1));
+                                            yiss >> value.y;
+                                        }
+                                        vectorValue.push_back(value);
+                                    }
+                                } else if (inner_map[key].type == typeid(std::vector<Frame>).name()) {
+                                    std::vector<Frame>& frameValue = *reinterpret_cast<std::vector<Frame>*>(inner_map[key].value);
+                                    frameValue.clear();
+                                    std::istringstream frame_iss(value_str);
+                                    std::string frame_item;
+                                    while (std::getline(frame_iss, frame_item, ',')) {
+                                        size_t name_pos = frame_item.find(':');
+                                        if (name_pos != std::string::npos) {
+                                            std::string name = frame_item.substr(0, name_pos);
+                                            std::string rect_str = frame_item.substr(name_pos + 1);
+                                            size_t rect_pos = rect_str.find(';');
+                                            if (rect_pos != std::string::npos) {
+                                                std::istringstream xywh_iss(rect_str.substr(0, rect_pos));
+                                                std::istringstream wh_iss(rect_str.substr(rect_pos + 1));
+                                                int x, y, w, h;
+                                                xywh_iss >> x >> y >> w >> h;
+                                                frameValue.push_back({name, {x, y, w, h}});
+                                            }
+                                        }
+                                    }
                                 }
                                 else if (inner_map[key].type == typeid(SDL_Rect).name()) {
                                     SDL_Rect value;
@@ -131,6 +169,22 @@ namespace Utils {
                     else if (item.type == typeid(Vector2D).name()) {
                         Vector2D value = *reinterpret_cast<Vector2D*>(item.value);
                         outfile << value.x << ';' << value.y;
+                    } else if (item.type == typeid(std::vector<Vector2D>).name()) {
+                        const std::vector<Vector2D>& vectorValue = *reinterpret_cast<const std::vector<Vector2D>*>(item.value);
+                        for (size_t i = 0; i < vectorValue.size(); ++i) {
+                            if (i != 0) {
+                                outfile << ',';
+                            }
+                            outfile << vectorValue[i].x << ';' << vectorValue[i].y;
+                        }
+                    } else if (item.type == typeid(std::vector<Frame>).name()) {
+                        const std::vector<Frame>& frameValue = *reinterpret_cast<const std::vector<Frame>*>(item.value);
+                        for (size_t i = 0; i < frameValue.size(); ++i) {
+                            if (i != 0) {
+                                outfile << ',';
+                            }
+                            outfile << frameValue[i].filename << ':' << frameValue[i].frame.x << ';' << frameValue[i].frame.y << ';' << frameValue[i].frame.w << ';' << frameValue[i].frame.h;
+                        }
                     }
                     else if (item.type == typeid(SDL_Rect).name()) {
                         SDL_Rect value = *reinterpret_cast<SDL_Rect*>(item.value);

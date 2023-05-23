@@ -6,14 +6,14 @@
 #include <string>
 #include <vector>
 
-struct Frame {
-    std::string filename;
-    struct {
-        int x, y, w, h;
-    } frame;
-};
-
 namespace Utils {
+    struct Frame {
+        std::string filename;
+        struct {
+            int x, y, w, h;
+        } frame;
+    };
+
     namespace GlobalVars {
         extern int windowWidth;
         extern int windowHeight;
