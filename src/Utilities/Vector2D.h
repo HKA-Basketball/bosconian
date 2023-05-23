@@ -62,6 +62,14 @@ namespace Utils {
             }
             return res;
         }
+
+        void normalize() {
+            float magnitude = this->length();
+            if (magnitude != 0) {
+                x /= magnitude;
+                y /= magnitude;
+            }
+        }
     };
 
 } // Utils
