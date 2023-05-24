@@ -24,6 +24,34 @@ namespace Game {
     public:
         explicit Game(Initialization::Initializer *g);
 
+        ~Game() {
+            // Clean up the non-moving entities
+            for (Entity* entity : nonMovingEntitys) {
+                delete entity;
+            }
+            nonMovingEntitys.clear();
+
+            // Clean up the base ship entities
+            for (Entity* entity : baseShipEntitys) {
+                delete entity;
+            }
+            baseShipEntitys.clear();
+
+            // Clean up the player
+            delete player1;
+            player1 = nullptr;
+
+            // Clean up the player projectiles
+            for (Projectile* projectile : playersProjectiles) {
+                delete projectile;
+            }
+            playersProjectiles.clear();
+
+            // Clean up the entity manager and level manager
+            delete entities;
+            delete lvlmgn;
+        }
+
         void update(float deltaTime);
         void postUpdate(float deltaTime);
         void render(float deltaTime);
