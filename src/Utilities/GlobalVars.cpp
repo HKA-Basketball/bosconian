@@ -105,8 +105,8 @@ namespace Utils {
         int windowHeight = 896;  // 224 * 4;
         int infoWidth = 256;    //  64 * 4
 
-        int lvlWidth = 2000;
-        int lvlHeight = 2000;
+        int lvlWidth = 2500;    // 768 * 4
+        int lvlHeight = 2500;   // 896 * 4
 
         Uint64 currenPTS = 0;
         Uint64 currenHiScore = 0;
