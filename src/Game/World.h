@@ -80,7 +80,7 @@ namespace Game {
             }
         }
 
-        bool isBInit() const {
+        bool isInit() const {
             return bInit;
         }
 
@@ -101,7 +101,7 @@ namespace Game {
         {}
 
         bool drawBackground() {
-            if (!m_model.isBInit())
+            if (!m_model.isInit())
                 return 0;
 
             for (auto& point : m_model.getVcPoints()) {
@@ -117,12 +117,23 @@ namespace Game {
             return 1;
         }
 
-        void draw2DRadar(Utils::Vector2D pos, Utils::Vector2D size) {
+        void draw2DRadar(Utils::Vector2D pos, Utils::Vector2D size, std::vector<Utils::Vector2D> baseShips) {
             SDL_Rect rec = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
             g_drawing->fillRectangle2({ 150, 0, 222, 255 }, rec);
 
-            int scaled_x = pos.x + (Utils::GlobalVars::cameraPos.x / Utils::GlobalVars::lvlWidth) * (size.x - 8);
-            int scaled_y = pos.y + (Utils::GlobalVars::cameraPos.y / Utils::GlobalVars::lvlHeight) * (size.y - 8);
+            int scaled_x = 0;
+            int scaled_y = 0;
+
+            for (auto& basePos : baseShips) {
+                scaled_x = pos.x + (basePos.x / Utils::GlobalVars::lvlWidth) * (size.x - 8);
+                scaled_y = pos.y + (basePos.y / Utils::GlobalVars::lvlHeight) * (size.y - 8);
+
+                SDL_Rect recPos = { scaled_x, scaled_y, 8, 8 };
+                g_drawing->fillRectangle2({ 0, 255, 0, 255 }, recPos);
+            }
+
+            scaled_x = pos.x + (Utils::GlobalVars::cameraPos.x / Utils::GlobalVars::lvlWidth) * (size.x - 8);
+            scaled_y = pos.y + (Utils::GlobalVars::cameraPos.y / Utils::GlobalVars::lvlHeight) * (size.y - 8);
 
             SDL_Rect recPos = { scaled_x, scaled_y, 8, 8 };
             g_drawing->fillRectangle2({ 255, 255, 255, 255 }, recPos);
@@ -150,8 +161,8 @@ namespace Game {
             }
         }
 
-        void render2DRadar(Utils::Vector2D pos, Utils::Vector2D size) {
-            m_view.draw2DRadar(pos, size);
+        void render2DRadar(Utils::Vector2D pos, Utils::Vector2D size, std::vector<Utils::Vector2D> baseShips) {
+            m_view.draw2DRadar(pos, size, baseShips);
         }
     };
 
