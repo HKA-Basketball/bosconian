@@ -36,6 +36,24 @@ namespace Initialization {
             return instance;
         }
 
+        ~Initializer() {
+            // Clean up the pointers
+            delete g_window;
+            delete g_renderer;
+            delete g_drawing;
+            delete g_world;
+            delete g_event;
+            delete g_sound;
+
+            // Set the pointers to nullptr
+            g_window = nullptr;
+            g_renderer = nullptr;
+            g_drawing = nullptr;
+            g_world = nullptr;
+            g_event = nullptr;
+            g_sound = nullptr;
+        }
+
         bool initGameObjs();
 
         Renderer::Window *window() const;

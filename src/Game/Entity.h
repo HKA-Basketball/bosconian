@@ -87,6 +87,8 @@ namespace Game {
         Drawing::Texture* obj;
         const EntityModel& m_model;
 
+        // TODO: Add Animation Manager
+
     public:
         EntityView(Drawing::Texture* img, const EntityModel& model)
             : obj(img)
@@ -110,7 +112,7 @@ namespace Game {
         EntityModel m_model;
         EntityView m_view;
 
-        //TODO: may add Typ for movement things
+        //TODO: may add Typ for movement stuff
 
     public:
         Entity(Utils::Vector2D pos, float deg, Drawing::Texture* img, Uint64 pts = 0)
@@ -133,7 +135,7 @@ namespace Game {
             m_view.drawEntity();
         }
 
-        bool isActiv() {
+        bool isActive() {
             return m_model.isActive();
         }
 

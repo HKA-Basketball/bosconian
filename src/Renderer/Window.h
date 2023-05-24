@@ -15,7 +15,13 @@ namespace Renderer {
 
         Window(const char* title, int width, int height, Uint32 flags);
 
-
+        ~Window() {
+            // Clean up the SDL window
+            if (sdl_HWND != nullptr) {
+                SDL_DestroyWindow(sdl_HWND);
+                sdl_HWND = nullptr;
+            }
+        }
     };
 
 } // Renderer

@@ -53,31 +53,13 @@ namespace Renderer {
     }
 
     void RendererSDL::beginScene() {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // TODO: add GlobalVars ==> BG color
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         //SDL_DestroyTexture(texture);
     }
 
     void RendererSDL::endScene() {
         SDL_RenderPresent(renderer);
-    }
-
-    void RendererSDL::clearScene() {
-
-    }
-
-    void RendererSDL::clearAll() {
-        SDL_DestroyRenderer(renderer);
-
-        //SDL_FreeSurface(surface);
-        //SDL_DestroyTexture(texture);
-
-        for (auto font : m_fonts)
-        {
-            TTF_CloseFont(font);
-        }
-        TTF_Quit();
-        // TODO: add TTF_CloseFont(), TTF_Quit(), SDL_DestroyTexture (for imgs), SDL_FreeSurface
     }
 
     //--------- Renderer D3D -------------

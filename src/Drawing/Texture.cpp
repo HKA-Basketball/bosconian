@@ -82,9 +82,7 @@ namespace Drawing {
     }
 
     void Texture::setAngel(float newAngel) {
-        // TODO: normalize
-
-        angle = newAngel;
+        angle = Utils::Math::normalizeAngle180(newAngel);
     }
 
     float Texture::getAngel() {

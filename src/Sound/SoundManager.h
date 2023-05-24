@@ -23,6 +23,15 @@ namespace Sound {
         std::vector<Mix_Chunk*> m_sound;
 
         SoundManager();
+
+        ~SoundManager() {
+            // Clean up the Mix chunks
+            for (Mix_Chunk* chunk : m_sound) {
+                Mix_FreeChunk(chunk);
+            }
+            m_sound.clear();
+        }
+
         void playSound(int soundIndex, int volume, int loops = -1);
         void setVolume(int soundIndex, int volume);
         void stopSound(int soundIndex);

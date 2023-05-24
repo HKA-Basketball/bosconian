@@ -10,6 +10,7 @@ namespace Sound {
 
         // credits: Music by Marllon Silva (xDeviruchi)
         addSound("./loop.wav", SOUND_BG);
+        // credits: Sound by Muncheybobo @ opengameart.org
         addSound("./shoot.wav", SOUND_SHOOT);
 
 

@@ -3,7 +3,6 @@
 namespace Utils {
     namespace Math {
 
-        // TODO: Move this to a math class or something
         float normalizeAngle180(float angle)
         {
             angle = fmod(angle, 360.0);
@@ -19,7 +18,6 @@ namespace Utils {
             return angle;
         }
 
-        // TODO: move to Math
         float RandomFloat(float min, float max)
         {
             float random = ((float)rand()) / (float)RAND_MAX;
@@ -105,8 +103,8 @@ namespace Utils {
         int windowHeight = 896;  // 224 * 4;
         int infoWidth = 256;    //  64 * 4
 
-        int lvlWidth = 2500;    // 768 * 4
-        int lvlHeight = 2500;   // 896 * 4
+        int lvlWidth = 2500;
+        int lvlHeight = 2500;
 
         Uint64 currenPTS = 0;
         Uint64 currenHiScore = 0;

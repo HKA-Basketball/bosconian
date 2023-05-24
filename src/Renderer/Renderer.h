@@ -27,12 +27,23 @@ namespace Renderer {
 
         RendererSDL(Window* window, Uint32 flags);
 
+        ~RendererSDL() {
+            // Clean up the fonts in the m_fonts vector
+            for (TTF_Font* font : m_fonts) {
+                TTF_CloseFont(font);
+            }
+            m_fonts.clear();
+            TTF_Quit();
+
+            // Clean up the renderer
+            if (renderer != nullptr) {
+                SDL_DestroyRenderer(renderer);
+                renderer = nullptr;
+            }
+        }
+
         void beginScene();
         void endScene();
-        void clearScene();
-
-        void clearAll(); //TODO: change to destruktor
-
     };
 
     /*class RendererD3D {

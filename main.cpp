@@ -15,9 +15,9 @@ int main(int argc, char* args[])
         return 0;
     }
 
-    Game::Game* g_game = new Game::Game(g);
-    g_game->init();
-    g_game->update(0.f);
+    Game::Game g_game(g);
+    g_game.init();
+    g_game.update(0.f);
 
     SDL_Rect menuRect = {Utils::GlobalVars::windowWidth/2, Utils::GlobalVars::windowHeight/2, 250, 250};
     menuRect.x -= menuRect.w/2;
@@ -26,6 +26,7 @@ int main(int argc, char* args[])
     Menu::Menu menu(g->drawing(), g->event(), g->renderer()->m_fonts[0]
                     , menuRect, {48, 48, 48, 255}
                     , {255, 255, 255, 255}, 45);
+
     menu.addOption("Start");
     menu.addOption("Options");
     menu.addOption("Exit");
@@ -42,8 +43,8 @@ int main(int argc, char* args[])
         g->event()->manageGameVars(deltaTime);
 
         if (!Utils::GlobalVars::menuActive) {
-            g_game->update(deltaTime);
-            g_game->postUpdate(deltaTime);
+            g_game.update(deltaTime);
+            g_game.postUpdate(deltaTime);
         }
         else {
             // Update menu
@@ -55,7 +56,7 @@ int main(int argc, char* args[])
 
         g->renderer()->beginScene();
 
-        g_game->render(deltaTime);
+        g_game.render(deltaTime);
 
         if (Utils::GlobalVars::menuActive) {
             // Render Menu
@@ -70,8 +71,7 @@ int main(int argc, char* args[])
         }*/
     }
 
-    g->renderer()->clearAll();
-    SDL_DestroyWindow(g->window()->sdl_HWND);
+    delete g;
     SDL_Quit();
 
     return 0;

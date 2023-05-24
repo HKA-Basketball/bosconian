@@ -35,6 +35,21 @@ namespace Drawing {
     public:
         Graphics(Renderer::RendererSDL* renderer);
 
+        ~Graphics() {
+            // Clean up the textures
+            for (auto& pair : textures) {
+                SDL_DestroyTexture(pair.second);
+            }
+            textures.clear();
+
+            // Clean up the text cache
+            for (auto& pair : textCache) {
+                SDL_DestroyTexture(pair.second.texture.get());
+            }
+            textCache.clear();
+            accessQueue.clear();
+        }
+
         void line(SDL_Color color, Utils::Vector2D from, Utils::Vector2D to);
         void rectangle(SDL_Color color, SDL_Rect rect);
         void fillRectangle2(SDL_Color color, SDL_Rect rect);
