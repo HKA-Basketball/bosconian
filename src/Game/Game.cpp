@@ -3,16 +3,12 @@
 #include "../Utilities/GlobalVars.h"
 
 namespace Game {
-    Game::Game(Initialization::Initializer *g) : g(g) { }
+    Game::Game(Initialization::Initializer *g) : g(g) {
+        lvlmgn = new LevelManager(Utils::GlobalVars::lvlsInfos);
+    }
 
     void Game::init()
     {
-        playersProjectiles.clear();
-        // TODO: Move
-        // Only for testing
-        // -------------------------------------------------------------------------------------
-        nonMovingEntitys.resize(50);
-
         std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
         std::vector<std::string> listIMG{"bomb", "astroid-01", "astroid-02", "astroid-03"};
         std::vector<int> listPTS{20, 10, 10, 10};
@@ -21,6 +17,40 @@ namespace Game {
         const int numCols = (Utils::GlobalVars::lvlWidth + cellSize - 1) / cellSize; // number of columns in the grid
         const int numRows = (Utils::GlobalVars::lvlHeight + cellSize - 1) / cellSize; // number of rows in the grid
         std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store non-moving entities
+
+
+        Utils::GlobalVars::cameraPos = lvlmgn->getPlayerSpawnLocation();
+
+        baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
+        for (int i = 0; i < baseShipEntitys.size(); i++) {
+            float ang = list[rand() % 2];
+            Drawing::Texture* img = new Drawing::Texture(g->drawing(), "base", ang, true, "spritesheet.png");
+
+            baseShipEntitys[i] = new Entity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, img, 1500);
+            baseShipEntitys[i]->setAngle(ang);
+
+            // Mark the grid cells around the base ship as occupied
+            int col = baseShipEntitys[i]->getOrigin().x / cellSize;
+            int row = baseShipEntitys[i]->getOrigin().y / cellSize;
+
+            int startCol = std::max(0, col - 1);
+            int endCol = std::min(numCols - 1, col + 1);
+            int startRow = std::max(0, row - 1);
+            int endRow = std::min(numRows - 1, row + 1);
+
+            for (int c = startCol; c <= endCol; c++) {
+                for (int r = startRow; r <= endRow; r++) {
+                    grid[c][r].push_back(baseShipEntitys[i]);
+                }
+            }
+        }
+
+
+        playersProjectiles.clear();
+        // TODO: Move
+        // Only for testing
+        // -------------------------------------------------------------------------------------
+        nonMovingEntitys.resize(50);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
             int ranImg = rand() % listIMG.size();
@@ -126,6 +156,13 @@ namespace Game {
             nonMovingEntitys[i]->update();
         }
 
+        for (int i = 0; i < baseShipEntitys.size(); i++) {
+            Utils::Vector2D newPos = Utils::Vector2D(baseShipEntitys[i]->getOrigin());
+
+            baseShipEntitys[i]->setOrigin(newPos);
+            baseShipEntitys[i]->update();
+        }
+
         static Uint64 timeSinceLastProjectile = 0;
         const Uint64 projectileInterval = 250;
 
@@ -180,15 +217,12 @@ namespace Game {
 
             if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
             {
-                //trigger Dead screen
+                // TODO: trigger Dead screen if ...
+                player1->setLives(player1->getLives()-1);
+                lvlmgn->increaseRound();
+
                 //player1->setActive(false);
                 this->init();
-                // TODO:
-                Utils::Config sw_cfg(".\\cfg\\config.ini");
-                sw_cfg.add_item("player", "cameraPos", Utils::GlobalVars::cameraPos);
-                sw_cfg.add_item("player", "points", Utils::GlobalVars::currenPTS);
-                sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
-                sw_cfg.read();
             }
         }
     }
@@ -217,6 +251,10 @@ namespace Game {
                 g->drawing()->rectangle({255, 0, 0, 255}, screenPosRect);
             else
                 g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);*/
+        }
+
+        for (int i = 0; i < baseShipEntitys.size(); i++) {
+            baseShipEntitys[i]->draw();
         }
 
         player1->draw();
@@ -261,6 +299,6 @@ namespace Game {
         SDL_Rect rec4 = { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 };
         g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, rec4);
 
-        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth, 448));
+        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), lvlmgn->getBaseShipsSpawnLocations());
     }
 } // Game

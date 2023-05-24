@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "EntityManager.h"
 #include "Player.h"
+#include "LevelManager.h"
 
 namespace Game {
 
@@ -13,6 +14,7 @@ namespace Game {
     private:
         Initialization::Initializer* g;
         EntityManager* entities;
+        LevelManager* lvlmgn;
 
         std::vector<Entity*> nonMovingEntitys;
         std::vector<Entity*> baseShipEntitys;
