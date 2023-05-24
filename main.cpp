@@ -7,11 +7,59 @@
 int main(int argc, char* args[])
 {
     CreateDirectoryA(".\\Logs", NULL);
+    CreateDirectoryA(".\\cfg", NULL);
+
+
+    Utils::Config lvl_cfg(".\\cfg\\level.ini");
+
+    Utils::Level level1;
+    level1.lvlNum = 1;
+    level1.baseShipsPos = {{10, 20}, {30, 40}};
+    level1.playerPos = {100, 200};
+    Utils::GlobalVars::lvlsInfos.push_back(level1);
+
+    Utils::Level level2;
+    level2.lvlNum = 2;
+    level2.baseShipsPos = {{50, 60}, {70, 80}};
+    level2.playerPos = {300, 400};
+    Utils::GlobalVars::lvlsInfos.push_back(level2);
+
+    lvl_cfg.add_item("Level", "baseShipPos", Utils::GlobalVars::lvlsInfos);
+
+    //lvl_cfg.write();
+    lvl_cfg.read();
+
+    printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
+           , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).x
+           , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).y
+           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.x
+           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);
+
+    Utils::Config frames_cfg(".\\cfg\\frame.ini");
+    frames_cfg.add_item("Frames", "frame", Utils::GlobalVars::frames);
+    //frames_cfg.write();
+    frames_cfg.read();
+
+    /*printf("LOG: filename: %s, frame: %d, %d, %d, %d \n", Utils::GlobalVars::frames.at(1).filename.c_str()
+            , Utils::GlobalVars::frames.at(1).frame.x
+            , Utils::GlobalVars::frames.at(1).frame.y
+            , Utils::GlobalVars::frames.at(1).frame.w
+            , Utils::GlobalVars::frames.at(1).frame.h);*/
+
+    Utils::Config sw_cfg(".\\cfg\\config.ini");
+
+    sw_cfg.add_item("player", "cameraPos", Utils::GlobalVars::cameraPos);
+    sw_cfg.add_item("player", "points", Utils::GlobalVars::currenPTS);
+    sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+    //sw_cfg.write();
+    sw_cfg.read();
 
     Initialization::Initializer* g = Initialization::Initializer::getInstance();
     if (!g->initGameObjs())
     {
         LOG(std::string("Initialization failed!"));
+        delete g;
+        SDL_Quit();
         return 0;
     }
 

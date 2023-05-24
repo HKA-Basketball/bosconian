@@ -13,6 +13,7 @@ namespace Initialization {
         g_window = new Renderer::Window("Bosconian - Playing", Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight, SDL_WINDOW_ALLOW_HIGHDPI);
 
         if (!g_window) {
+            delete g_window;
             LOG(std::string("Could not create window: ") + SDL_GetError());
             return 0;
         }
@@ -20,25 +21,22 @@ namespace Initialization {
         g_renderer = new Renderer::RendererSDL(g_window, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
 
         if (!g_renderer) {
-            g_renderer->clearAll();
-            SDL_DestroyWindow(g_window->sdl_HWND);
-            SDL_Quit();
+            LOG(std::string("Error: RendererSDL"));
+            delete g_renderer;
             return 0;
         }
 
         g_drawing = new Drawing::Graphics(g_renderer);
         if (!g_drawing) {
-            g_renderer->clearAll();
-            SDL_DestroyWindow(g_window->sdl_HWND);
-            SDL_Quit();
+            LOG(std::string("Error: Graphics"));
+            delete g_renderer;
             return 0;
         }
 
         g_world = new Game::World(g_drawing);
         if (!g_world) {
-            g_renderer->clearAll();
-            SDL_DestroyWindow(g_window->sdl_HWND);
-            SDL_Quit();
+            LOG(std::string("Error: World"));
+            delete g_renderer;
             return 0;
         }
 
@@ -46,19 +44,15 @@ namespace Initialization {
         if (!g_event)
         {
             LOG(std::string("Error: EventManager"));
-            g_renderer->clearAll();
-            SDL_DestroyWindow(g_window->sdl_HWND);
-            SDL_Quit();
+            delete g_renderer;
             return 0;
         }
 
         g_sound = new Sound::SoundManager();
         if (!g_sound)
         {
-            LOG(std::string("Error: EventManager"));
-            g_renderer->clearAll();
-            SDL_DestroyWindow(g_window->sdl_HWND);
-            SDL_Quit();
+            LOG(std::string("Error: SoundManager"));
+            delete g_renderer;
             return 0;
         }
 
