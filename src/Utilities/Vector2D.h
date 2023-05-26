@@ -38,7 +38,7 @@ namespace Utils {
 
         float length() const
         {
-            return sqrtf(x * x + y * y);
+            return std::sqrt(x * x + y * y);
         }
 
         __inline bool isValid() const
@@ -48,6 +48,20 @@ namespace Utils {
 
         float lengthSquared() const {
             return (x * x + y * y);
+        }
+
+        float dot(const Vector2D& other) const {
+            return x * other.x + y * other.y;
+        }
+
+        Vector2D rotate(float angle) const {
+            float cosAngle = std::cos(angle);
+            float sinAngle = std::sin(angle);
+
+            float rotatedX = x * cosAngle - y * sinAngle;
+            float rotatedY = x * sinAngle + y * cosAngle;
+
+            return Vector2D(rotatedX, rotatedY);
         }
 
         Vector2D normalized() const
