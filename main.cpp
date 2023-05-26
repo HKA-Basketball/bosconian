@@ -80,11 +80,11 @@ int main(int argc, char* args[])
     menu.addOption("Exit");
 
 
-    Uint32 previousTime = SDL_GetTicks64();
+    Uint64 previousTime = SDL_GetTicks64();
     //Loop
     while (!g->event()->logging())
     {
-        Uint32 currentTime = SDL_GetTicks64();
+        Uint64 currentTime = SDL_GetTicks64();
         float deltaTime = (currentTime - previousTime) / 1000.0f;
         previousTime = currentTime;
 
