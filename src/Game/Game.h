@@ -21,6 +21,8 @@ namespace Game {
         Player* player1;
         std::vector<Projectile*> playersProjectiles;
 
+        Entity* spyTest;
+
     public:
         explicit Game(Initialization::Initializer *g);
 
@@ -40,6 +42,10 @@ namespace Game {
             // Clean up the player
             delete player1;
             player1 = nullptr;
+
+
+            delete spyTest;
+            spyTest = nullptr;
 
             // Clean up the player projectiles
             for (Projectile* projectile : playersProjectiles) {

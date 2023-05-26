@@ -119,6 +119,11 @@ namespace Game {
             grid[col][row].push_back(nonMovingEntitys[i]);
         }
         // -------------------------------------------------------------------------------------
+
+        Drawing::Texture* img = new Drawing::Texture(g->drawing(), "spy", 0.f, true, "spritesheet.png");
+
+        spyTest = new Entity({Utils::GlobalVars::cameraPos.x - 200, Utils::GlobalVars::cameraPos.y}, 0.f, img, 600);
+        spyTest->setBehavior(new SpyBehavior());
     }
 
     int getFPS()
@@ -145,6 +150,8 @@ namespace Game {
         player1->setOrigin(Utils::GlobalVars::cameraPos);
         player1->setAngle(Utils::GlobalVars::playerAngle);
         player1->update();
+
+        spyTest->update(deltaTime);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
             Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i]->getOrigin());
@@ -274,6 +281,7 @@ namespace Game {
         }
 
         player1->draw();
+        spyTest->draw();
 
         // Render the player's projectiles
         for (auto& projectile : playersProjectiles) {

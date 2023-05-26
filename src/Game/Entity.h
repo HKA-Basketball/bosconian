@@ -107,10 +107,185 @@ namespace Game {
         }
     };
 
+    class Behavior {
+    public:
+        virtual void update(EntityModel& model, float deltaTime = 0.f) = 0;
+        virtual void update(EntityView& model, float deltaTime = 0.f) = 0;
+    };
+
+    class SpyBehavior : public Behavior {
+    private:
+        bool isPlayerSpotted;
+        bool isMovingTowardsPlayer;
+
+    public:
+        void update(EntityModel& model, float deltaTime = 0.f) override {
+            // Check if the spy has spotted the player
+            if (isPlayerSpotted) {
+                // Move away from the player
+                moveAwayFromPlayer(model, deltaTime);
+            } else {
+                // Search for the player
+                searchForPlayer(model, deltaTime);
+            }
+        }
+
+        void update(EntityView& model, float deltaTime = 0.f) {
+            // TODO: add animation
+        }
+    private:
+        int roundToNearestMultiple(int angleInDegrees, int multiple) {
+            int remainder = angleInDegrees % multiple;
+            int result = angleInDegrees - remainder;
+            if (remainder >= multiple / 2) {
+                result += multiple;
+            }
+            return result;
+        }
+
+        void searchForPlayer(EntityModel& model, float deltaTime = 0.f) {
+            // Perform search behavior to find the player
+
+            Utils::Vector2D direction = Utils::GlobalVars::cameraPos - model.getOrigin();
+
+            // Check if the player is spotted
+            float detectionRange = 150.f; // Adjust the range as needed
+            float distance = direction.length();
+
+            if (distance <= detectionRange) {
+                isPlayerSpotted = true;
+                isMovingTowardsPlayer = false;
+            }
+
+            direction.normalize();
+
+            float speed = 250 * deltaTime;
+            Utils::Vector2D newPosition;
+
+            // Calculate the closest 45-degree angle
+            float angle = std::atan2(direction.y, direction.x);
+            int angleInDegrees = static_cast<int>(std::round(angle * 180 / M_PI));
+            int closestAngleInDegrees = roundToNearestMultiple(angleInDegrees, 45);
+            float closestAngle = closestAngleInDegrees * M_PI / 180;
+
+            // Calculate the target direction based on the closest angle
+            Utils::Vector2D targetDirection(std::cos(closestAngle), std::sin(closestAngle));
+
+            // Calculate the dot product between the current direction and the target direction
+            float dotProduct = direction.dot(targetDirection);
+
+            // Calculate the turning angle based on the dot product and the turning speed
+            float turningAngle = std::acos(dotProduct) * speed;
+
+            // Rotate the direction towards the target direction by the turning angle
+            Utils::Vector2D newDirection = direction.rotate(turningAngle);
+
+            // Calculate the new position using the new direction and speed
+            newPosition = model.getOrigin() + newDirection * speed;
+
+            float angleF = std::atan2(newDirection.y, newDirection.x);
+            float angleInDegreesF = angleF * 180 / M_PI;
+            float targetAngle = Utils::Math::normalizeAngle180(angleInDegreesF + 90.f);
+
+            // Apply a smoothing factor
+            const float smoothingFactor = 0.1f;
+
+            float currentAngle = model.getAngle();
+            float smoothedAngle = currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
+
+            model.setAngle(smoothedAngle);
+
+            // Wrap the position around the map edges
+            while (newPosition.x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
+                newPosition.x += Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition.x > Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::lvlWidth / 2) {
+                newPosition.x -= Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition.y < Utils::GlobalVars::cameraPos.y - Utils::GlobalVars::lvlHeight / 2) {
+                newPosition.y += Utils::GlobalVars::lvlHeight;
+            }
+            while (newPosition.y > Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::lvlHeight / 2) {
+                newPosition.y -= Utils::GlobalVars::lvlHeight;
+            }
+
+            model.setOrigin(newPosition);
+        }
+
+        void moveAwayFromPlayer(EntityModel& model, float deltaTime = 0.f) {
+            // TODO: Go back to the Base Ship ?
+            // Calculate the direction away from the player
+            Utils::Vector2D direction = model.getOrigin() - Utils::GlobalVars::cameraPos;
+
+            float detectionRange = 600.f; // Adjust the range as needed
+            float distance = direction.length();
+
+            if (distance >= detectionRange) {
+                isPlayerSpotted = false;
+                isMovingTowardsPlayer = true;
+            }
+
+            direction.normalize();
+
+            float speed = 250 * deltaTime;
+            Utils::Vector2D newPosition;
+
+            // Calculate the closest 45-degree angle
+            float angle = std::atan2(direction.y, direction.x);
+            int angleInDegrees = static_cast<int>(std::round(angle * 180 / M_PI));
+            int closestAngleInDegrees = roundToNearestMultiple(angleInDegrees, 45);
+            float closestAngle = closestAngleInDegrees * M_PI / 180;
+
+            // Calculate the target direction based on the closest angle
+            Utils::Vector2D targetDirection(std::cos(closestAngle), std::sin(closestAngle));
+
+            // Calculate the dot product between the current direction and the target direction
+            float dotProduct = direction.dot(targetDirection);
+
+            // Calculate the turning angle based on the dot product and the turning speed
+            float turningAngle = std::acos(dotProduct) * speed;
+
+            // Rotate the direction towards the target direction by the turning angle
+            Utils::Vector2D newDirection = direction.rotate(turningAngle);
+
+            // Calculate the new position using the new direction and speed
+            newPosition = model.getOrigin() + newDirection * speed;
+
+            float angleF = std::atan2(newDirection.y, newDirection.x);
+            float angleInDegreesF = angleF * 180 / M_PI;
+            float targetAngle = Utils::Math::normalizeAngle180(angleInDegreesF + 90.f);
+
+            // Apply a smoothing factor
+            const float smoothingFactor = 0.1f;
+
+            float currentAngle = model.getAngle();
+            float smoothedAngle = currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
+
+            model.setAngle(smoothedAngle);
+
+            // Wrap the position around the map edges
+            while (newPosition.x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
+                newPosition.x += Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition.x > Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::lvlWidth / 2) {
+                newPosition.x -= Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition.y < Utils::GlobalVars::cameraPos.y - Utils::GlobalVars::lvlHeight / 2) {
+                newPosition.y += Utils::GlobalVars::lvlHeight;
+            }
+            while (newPosition.y > Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::lvlHeight / 2) {
+                newPosition.y -= Utils::GlobalVars::lvlHeight;
+            }
+
+            model.setOrigin(newPosition);
+        }
+    };
+
     class Entity {
     private:
         EntityModel m_model;
         EntityView m_view;
+        Behavior* m_behavior;
 
         //TODO: may add Typ for movement stuff
 
@@ -118,11 +293,22 @@ namespace Game {
         Entity(Utils::Vector2D pos, float deg, Drawing::Texture* img, Uint64 pts = 0)
             : m_model(pos, deg, img->getSize(), pts)
             , m_view(img, m_model)
+            , m_behavior(nullptr)
         {}
 
-        void update() {
+        void setBehavior(Behavior* behavior) {
+            if (m_behavior)
+                delete m_behavior;
+
+            m_behavior = behavior;
+        }
+
+        void update(float deltaTime = 0.f) {
             if (!m_model.isActive())
                 return;
+
+            if (m_behavior)
+                m_behavior->update(m_model, deltaTime);
 
             m_model.update();
             m_view.update();
@@ -171,7 +357,6 @@ namespace Game {
             return m_model.move2Pos(to, speed);
         }
     };
-
 } // Game
 
 #endif //BOSCONIAN_ENTITY_H
