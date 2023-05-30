@@ -260,19 +260,7 @@ namespace Game {
 
             model.setAngle(smoothedAngle);
 
-            // Wrap the position around the map edges
-            while (newPosition.x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
-                newPosition.x += Utils::GlobalVars::lvlWidth;
-            }
-            while (newPosition.x > Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::lvlWidth / 2) {
-                newPosition.x -= Utils::GlobalVars::lvlWidth;
-            }
-            while (newPosition.y < Utils::GlobalVars::cameraPos.y - Utils::GlobalVars::lvlHeight / 2) {
-                newPosition.y += Utils::GlobalVars::lvlHeight;
-            }
-            while (newPosition.y > Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::lvlHeight / 2) {
-                newPosition.y -= Utils::GlobalVars::lvlHeight;
-            }
+            Utils::Math::wrapPos(&newPosition);
 
             model.setOrigin(newPosition);
         }
@@ -328,19 +316,7 @@ namespace Game {
 
             model.setAngle(smoothedAngle);
 
-            // Wrap the position around the map edges
-            while (newPosition.x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
-                newPosition.x += Utils::GlobalVars::lvlWidth;
-            }
-            while (newPosition.x > Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::lvlWidth / 2) {
-                newPosition.x -= Utils::GlobalVars::lvlWidth;
-            }
-            while (newPosition.y < Utils::GlobalVars::cameraPos.y - Utils::GlobalVars::lvlHeight / 2) {
-                newPosition.y += Utils::GlobalVars::lvlHeight;
-            }
-            while (newPosition.y > Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::lvlHeight / 2) {
-                newPosition.y -= Utils::GlobalVars::lvlHeight;
-            }
+            Utils::Math::wrapPos(&newPosition);
 
             model.setOrigin(newPosition);
         }
@@ -351,8 +327,6 @@ namespace Game {
         EntityModel m_model;
         EntityView m_view;
         Behavior* m_behavior;
-
-        //TODO: may add Typ for movement stuff
 
     public:
         Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Uint64 pts = 0)

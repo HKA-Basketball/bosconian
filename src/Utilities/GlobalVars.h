@@ -25,6 +25,7 @@ namespace Utils {
         extern float normalizeAngle360(float angle);
         extern float RandomFloat(float min, float max);
         extern bool rectIntersect(SDL_Rect rect1, SDL_Rect rect2);
+        extern void wrapPos(Vector2D* newPosition);
     }
 
     namespace render {

@@ -34,25 +34,29 @@ namespace Utils {
                     rect1.y < rect2.y + rect2.h &&
                     rect1.y + rect1.h > rect2.y);
         }
+
+        void wrapPos(Vector2D* newPosition) {
+            // Wrap the position around the map edges
+            while (newPosition->x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
+                newPosition->x += Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition->x > Utils::GlobalVars::cameraPos.x + Utils::GlobalVars::lvlWidth / 2) {
+                newPosition->x -= Utils::GlobalVars::lvlWidth;
+            }
+            while (newPosition->y < Utils::GlobalVars::cameraPos.y - Utils::GlobalVars::lvlHeight / 2) {
+                newPosition->y += Utils::GlobalVars::lvlHeight;
+            }
+            while (newPosition->y > Utils::GlobalVars::cameraPos.y + Utils::GlobalVars::lvlHeight / 2) {
+                newPosition->y -= Utils::GlobalVars::lvlHeight;
+            }
+        }
     }
 
     namespace render {
 
         bool WorldToScreen(Vector2D worldPoint, Vector2D& screenPoint)
         {
-            // Wrap the world coordinates around the edges of the screen
-            while (worldPoint.x < GlobalVars::cameraPos.x - GlobalVars::lvlWidth / 2) {
-                worldPoint.x += GlobalVars::lvlWidth;
-            }
-            while (worldPoint.x > GlobalVars::cameraPos.x + GlobalVars::lvlWidth / 2) {
-                worldPoint.x -= GlobalVars::lvlWidth;
-            }
-            while (worldPoint.y < GlobalVars::cameraPos.y - GlobalVars::lvlHeight / 2) {
-                worldPoint.y += GlobalVars::lvlHeight;
-            }
-            while (worldPoint.y > GlobalVars::cameraPos.y + GlobalVars::lvlHeight / 2) {
-                worldPoint.y -= GlobalVars::lvlHeight;
-            }
+            Math::wrapPos(&worldPoint);
 
             // Calculate the screen coordinates of the wrapped world point
             screenPoint.x = worldPoint.x - GlobalVars::cameraPos.x + GlobalVars::windowWidth / 2;

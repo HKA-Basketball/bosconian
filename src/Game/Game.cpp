@@ -153,16 +153,16 @@ namespace Game {
         spyTest->update(deltaTime);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i]->getOrigin());
+            if (!nonMovingEntitys[i]->isActive())
+                continue;
 
-            nonMovingEntitys[i]->setOrigin(newPos);
             nonMovingEntitys[i]->update(deltaTime);
         }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
-            Utils::Vector2D newPos = Utils::Vector2D(baseShipEntitys[i]->getOrigin());
+            if (!baseShipEntitys[i]->isActive())
+                continue;
 
-            baseShipEntitys[i]->setOrigin(newPos);
             baseShipEntitys[i]->update(deltaTime);
         }
 
@@ -198,6 +198,9 @@ namespace Game {
 
     void Game::postUpdate(float deltaTime) {
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
+            if (!nonMovingEntitys[i]->isActive())
+                continue;
+
             SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
@@ -244,10 +247,10 @@ namespace Game {
                 sw_cfg.read();
             }
 
-            if (!nonMovingEntitys[i]->isActive()) {
+            /*if (!nonMovingEntitys[i]->isActive()) {
                 std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
                 nonMovingEntitys.pop_back();
-            }
+            }*/
         }
     }
 
@@ -256,6 +259,9 @@ namespace Game {
         g->world()->renderBackground();
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
+            if (!nonMovingEntitys[i]->isActive())
+                continue;
+
             nonMovingEntitys[i]->draw(deltaTime);
 
             /*SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
@@ -278,6 +284,9 @@ namespace Game {
         }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
+            if (!baseShipEntitys[i]->isActive())
+                continue;
+
             baseShipEntitys[i]->draw(deltaTime);
         }
 
