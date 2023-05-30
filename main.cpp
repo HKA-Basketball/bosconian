@@ -60,7 +60,7 @@ int main(int argc, char* args[])
         LOG(std::string("Initialization failed!"));
         delete g;
         SDL_Quit();
-        return 0;
+        throw std::runtime_error("Initialization failed");
     }
 
     Game::Game g_game(g);

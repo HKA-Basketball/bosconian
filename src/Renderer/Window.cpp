@@ -5,7 +5,7 @@ namespace Renderer {
     Window::Window(const char *title, int width, int height, Uint32 flags)
     {
         if (!initSDL())
-            return;
+            throw std::runtime_error("Failed to init SDL");
 
         windowW = width;
         windowH = height;
@@ -16,10 +16,9 @@ namespace Renderer {
                                     width, height,
                                     flags);
 
-        if (!sdl_HWND)
-        {
+        if (!sdl_HWND) {
             LOG(std::string("Error: Could not create Window: ") + SDL_GetError());
-            return;
+            throw std::runtime_error("Failed to create Window");
         }
         LOG(std::string("Window Successfully created"));
     }

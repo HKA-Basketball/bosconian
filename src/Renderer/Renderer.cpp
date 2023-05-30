@@ -7,14 +7,14 @@ namespace Renderer {
 
         if (!renderer) {
             LOG(std::string("Error: Could not create Renderer: ") + SDL_GetError());
-            return;
+            throw std::runtime_error("Failed to creat Renderer");
         }
         LOG(std::string("Renderer Successfully created"));
 
         m_fonts.resize(FONT_MAX);
 
         if (!initSDL_TTF())
-            return;
+            throw std::runtime_error("Failed to init SDL_TTF");
 
         addFont(joystix_ttf, sizeof(joystix_ttf), FONT_JOYSTIX_38PX, 38);
         addFont(joystix_ttf, sizeof(joystix_ttf), FONT_JOYSTIX_16PX, 16);

@@ -4,7 +4,7 @@ namespace Sound {
 
     SoundManager::SoundManager() {
         if (!initSDL_OA())
-            return;
+            throw std::runtime_error("Failed to init SDL_OpenAudio");
 
         m_sound.resize(SOUND_MAX);
 
