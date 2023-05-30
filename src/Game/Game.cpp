@@ -6,7 +6,7 @@ namespace Game {
     Game::Game(Initialization::Initializer *g) : g(g) {
         lvlmgn = new LevelManager(Utils::GlobalVars::lvlsInfos);
 
-        Drawing::Texture* spaceShip = new Drawing::Texture(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
+        std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
@@ -30,7 +30,7 @@ namespace Game {
         baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             float ang = list[rand() % 2];
-            Drawing::Texture* img = new Drawing::Texture(g->drawing(), "base", ang, true, "spritesheet.png");
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), "base", ang, true, "spritesheet.png");
 
             baseShipEntitys[i] = new Entity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, img, 1500);
             baseShipEntitys[i]->setAngle(ang);
@@ -108,10 +108,10 @@ namespace Game {
 
             }*/
 
-            Drawing::Texture* img = new Drawing::Texture(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
-
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
             nonMovingEntitys[i] = new Entity(pos, ang, img, listPTS[ranImg]);
             nonMovingEntitys[i]->setAngle(ang);
+            nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
 
             // add entity to the grid
             int col = pos.x / cellSize;
@@ -120,8 +120,7 @@ namespace Game {
         }
         // -------------------------------------------------------------------------------------
 
-        Drawing::Texture* img = new Drawing::Texture(g->drawing(), "spy", 0.f, true, "spritesheet.png");
-
+        std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), "spy", 0.f, true, "spritesheet.png");
         spyTest = new Entity({Utils::GlobalVars::cameraPos.x - 200, Utils::GlobalVars::cameraPos.y}, 0.f, img, 600);
         spyTest->setBehavior(new SpyBehavior());
     }
@@ -149,7 +148,7 @@ namespace Game {
 
         player1->setOrigin(Utils::GlobalVars::cameraPos);
         player1->setAngle(Utils::GlobalVars::playerAngle);
-        player1->update();
+        player1->update(deltaTime);
 
         spyTest->update(deltaTime);
 
@@ -157,14 +156,14 @@ namespace Game {
             Utils::Vector2D newPos = Utils::Vector2D(nonMovingEntitys[i]->getOrigin());
 
             nonMovingEntitys[i]->setOrigin(newPos);
-            nonMovingEntitys[i]->update();
+            nonMovingEntitys[i]->update(deltaTime);
         }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             Utils::Vector2D newPos = Utils::Vector2D(baseShipEntitys[i]->getOrigin());
 
             baseShipEntitys[i]->setOrigin(newPos);
-            baseShipEntitys[i]->update();
+            baseShipEntitys[i]->update(deltaTime);
         }
 
         static Uint64 timeSinceLastProjectile = 0;
@@ -211,16 +210,13 @@ namespace Game {
                     continue;
 
                 if (nonMovingEntitys[i]->isActive() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
-                    nonMovingEntitys[i]->setActive(false);
+                    nonMovingEntitys[i]->setTriggerAnimation(true);
                     playersProjectiles[y]->setActive(false);
                     Utils::GlobalVars::currenPTS += nonMovingEntitys[i]->getPTS();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
 
-                    // TODO: Run Animation
-                    std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
-                    nonMovingEntitys.pop_back();
                     break;
                 }
             }
@@ -247,6 +243,11 @@ namespace Game {
                 sw_cfg.write();
                 sw_cfg.read();
             }
+
+            if (!nonMovingEntitys[i]->isActive()) {
+                std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
+                nonMovingEntitys.pop_back();
+            }
         }
     }
 
@@ -255,7 +256,7 @@ namespace Game {
         g->world()->renderBackground();
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            nonMovingEntitys[i]->draw();
+            nonMovingEntitys[i]->draw(deltaTime);
 
             /*SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
@@ -277,11 +278,11 @@ namespace Game {
         }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
-            baseShipEntitys[i]->draw();
+            baseShipEntitys[i]->draw(deltaTime);
         }
 
-        player1->draw();
-        spyTest->draw();
+        player1->draw(deltaTime);
+        spyTest->draw(deltaTime);
 
         // Render the player's projectiles
         for (auto& projectile : playersProjectiles) {

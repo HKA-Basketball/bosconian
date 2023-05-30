@@ -13,7 +13,7 @@ namespace Game {
         int currentLevel;
 
     public:
-        Player(Utils::Vector2D pos, float deg, Drawing::Texture* img, int lives = 3)
+        Player(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, int lives = 3)
             : Entity(pos, deg, img, 0), lives(3), score(0), currentLevel(1)
         {}
 

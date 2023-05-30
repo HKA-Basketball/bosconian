@@ -15,6 +15,7 @@ namespace Game {
         Utils::Vector2D size;
         float angle;
         Game::Hitbox* hitbox;
+        bool triggerAnimation;
         bool active;
 
     public:
@@ -24,6 +25,7 @@ namespace Game {
             pts = points;
             this->size = size;
             hitbox = new Game::Hitbox(origin, size);
+            triggerAnimation = false;
             active = true;
         }
 
@@ -31,6 +33,14 @@ namespace Game {
             // Update the hitbox position and angle based on the entity's properties
             hitbox->updateHitboxPos(origin);
             //hitbox->updateHitboxAngle(angle);
+        }
+
+        bool isTriggerAnimation() const {
+            return triggerAnimation;
+        }
+
+        void setTriggerAnimation(bool triggerAnimation) {
+            this->triggerAnimation = triggerAnimation;
         }
 
         void setOrigin(Utils::Vector2D newOrigin) {
@@ -84,18 +94,19 @@ namespace Game {
 
     class EntityView {
     private:
-        Drawing::Texture* obj;
+        std::shared_ptr<Drawing::Texture> obj;
         const EntityModel& m_model;
 
-        // TODO: Add Animation Manager
-
     public:
-        EntityView(Drawing::Texture* img, const EntityModel& model)
+        EntityView(std::shared_ptr<Drawing::Texture> img, const EntityModel& model)
             : obj(img)
             , m_model(model)
         {}
 
         void update() {
+            if (!obj)
+                return;
+
             Utils::Vector2D newPosScreen;
             Utils::render::WorldToScreen(m_model.getOrigin(), newPosScreen);
             obj->setPos(newPosScreen - (obj->getSize()*0.5f));
@@ -103,14 +114,68 @@ namespace Game {
         }
 
         void drawEntity() {
+            if (!obj)
+                return;
+
             obj->draw();
+        }
+
+        void setTexture(std::string name) {
+            if (!obj)
+                return;
+
+            obj->changeTexture(name, true, "spritesheet.png");
+            Utils::Vector2D newPosScreen;
+            Utils::render::WorldToScreen(m_model.getOrigin(), newPosScreen);
+            obj->setPos(newPosScreen - (obj->getSize()*0.5f));
+            obj->setAngel(m_model.getAngle());
         }
     };
 
     class Behavior {
     public:
         virtual void update(EntityModel& model, float deltaTime = 0.f) = 0;
-        virtual void update(EntityView& model, float deltaTime = 0.f) = 0;
+        virtual void update(EntityView& view, float deltaTime = 0.f) = 0;
+    };
+
+    class NonMovingBehavior : public Behavior {
+    private:
+        bool animationStart = false;
+        bool animationEnd = false;
+        float animationTime = 0.f;
+        const float animationDuration = 250.f;
+        std::vector<std::string> explosionImages = {
+                "astro-explo-01",
+                "astro-explo-02",
+                "astro-explo-03"
+        };
+
+    public:
+        void update(EntityModel& model, float deltaTime = 0.f) override {
+            if (model.isTriggerAnimation() && !animationStart) {
+                animationStart = true;
+                animationTime = 0.f;
+            }
+
+            if (animationEnd)
+                model.setActive(false);
+        }
+
+        void update(EntityView& view, float deltaTime = 0.f) override {
+            if (!animationStart)
+                return;
+
+            animationTime += deltaTime * 1000.f;
+
+            float progress = animationTime / animationDuration;
+            progress = std::clamp(progress, 0.f, 1.f);
+            int imageIndex = static_cast<int>(progress * (explosionImages.size() - 1));
+
+            view.setTexture(explosionImages[imageIndex]);
+
+            if (animationTime >= animationDuration)
+                animationEnd = true;
+        }
     };
 
     class SpyBehavior : public Behavior {
@@ -130,7 +195,7 @@ namespace Game {
             }
         }
 
-        void update(EntityView& model, float deltaTime = 0.f) {
+        void update(EntityView& view, float deltaTime = 0.f) override {
             // TODO: add animation
         }
     private:
@@ -290,11 +355,17 @@ namespace Game {
         //TODO: may add Typ for movement stuff
 
     public:
-        Entity(Utils::Vector2D pos, float deg, Drawing::Texture* img, Uint64 pts = 0)
+        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Uint64 pts = 0)
             : m_model(pos, deg, img->getSize(), pts)
             , m_view(img, m_model)
             , m_behavior(nullptr)
         {}
+
+        ~Entity() {
+            if (m_behavior)
+                delete m_behavior;
+            m_behavior = nullptr;
+        }
 
         void setBehavior(Behavior* behavior) {
             if (m_behavior)
@@ -314,9 +385,12 @@ namespace Game {
             m_view.update();
         }
 
-        void draw() {
+        void draw(float deltaTime = 0.f) {
             if (!m_model.isActive())
                 return;
+
+            if (m_behavior)
+                m_behavior->update(m_view, deltaTime);
 
             m_view.drawEntity();
         }
@@ -325,8 +399,8 @@ namespace Game {
             return m_model.isActive();
         }
 
-        void setActive(bool val) {
-            m_model.setActive(val);
+        void setTriggerAnimation(bool val) {
+            m_model.setTriggerAnimation(val);
         }
 
         void setOrigin(Utils::Vector2D newOrigin) {
