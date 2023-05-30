@@ -3,7 +3,7 @@
 
 namespace Drawing {
     Texture::Texture(Drawing::Graphics* drawing, std::string filename, float deg, bool clipped, std::string spritesheet) {
-        this->name = name;
+        this->name = filename;
         this->g_drawing = drawing;
         angle = deg;
 
@@ -59,6 +59,68 @@ namespace Drawing {
             renderRect.w = w;
             renderRect.h = h;
         }
+        renderRect.x = 0;
+        renderRect.y = 0;
+    }
+
+    bool Texture::changeTexture(std::string filename, bool clipped, std::string spritesheet) {
+        imgTex = nullptr;
+
+        this->name = filename;
+
+        if (clipped) {
+            this->clipped = true;
+
+            int x;
+            int y;
+            int width;
+            int height;
+            bool found = false;
+
+            for (const auto& frame : Utils::GlobalVars::frames) {
+                if (!frame.filename.compare(filename)) {
+                    width = frame.frame.w;
+                    height = frame.frame.h;
+                    x = frame.frame.x;
+                    y = frame.frame.y;
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                LOG(std::string("Error frame not found!: ") + SDL_GetError());
+                return 0;
+            }
+
+            imgTex = g_drawing->getTexture(spritesheet);
+            if (!imgTex) {
+                LOG(std::string("Error loading Texture: ") + SDL_GetError());
+                return 0;
+            }
+
+            renderRect.w = width;
+            renderRect.h = height;
+
+            //Setting the clipped rectangle to only get the needed texture from the spritesheet
+            clipRect.x = x;
+            clipRect.y = y;
+            clipRect.w = width;
+            clipRect.h = height;
+        } else {
+            imgTex = g_drawing->getTexture(filename);
+            if (!imgTex) {
+                LOG(std::string("Error loading Texture: ") + SDL_GetError());
+                return 0;
+            }
+            int w, h;
+            SDL_QueryTexture(imgTex, NULL, NULL, &w, &h);
+
+            clipped = false;
+
+            renderRect.w = w;
+            renderRect.h = h;
+        }
+
         renderRect.x = 0;
         renderRect.y = 0;
     }

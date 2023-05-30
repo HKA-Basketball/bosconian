@@ -22,6 +22,16 @@ namespace Drawing {
 
         Texture(Drawing::Graphics* drawing, std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
 
+        ~Texture() {
+            // Clean up the SDL texture
+            if (imgTex != nullptr) {
+                SDL_DestroyTexture(imgTex);
+                imgTex = nullptr;
+            }
+        }
+
+        bool changeTexture(std::string filename, bool clipped = false, std::string spritesheet = "");
+
         void setSize(Utils::Vector2D newSize);
         Utils::Vector2D getSize();
 
