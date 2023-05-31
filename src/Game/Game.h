@@ -7,6 +7,7 @@
 #include "EntityManager.h"
 #include "Player.h"
 #include "LevelManager.h"
+#include "BaseEntity.h"
 
 namespace Game {
 
@@ -17,7 +18,7 @@ namespace Game {
         LevelManager* lvlmgn;
 
         std::vector<Entity*> nonMovingEntitys;
-        std::vector<Entity*> baseShipEntitys;
+        std::vector<BaseEntity*> baseShipEntitys;
         Player* player1;
         std::vector<Projectile*> playersProjectiles;
 
@@ -34,7 +35,7 @@ namespace Game {
             nonMovingEntitys.clear();
 
             // Clean up the base ship entities
-            for (Entity* entity : baseShipEntitys) {
+            for (BaseEntity* entity : baseShipEntitys) {
                 delete entity;
             }
             baseShipEntitys.clear();

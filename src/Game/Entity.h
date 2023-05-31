@@ -14,6 +14,7 @@ namespace Game {
         Utils::Vector2D center;
         Utils::Vector2D size;
         float angle;
+        Utils::Vector2D hitboxPos;
         Game::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
@@ -29,9 +30,26 @@ namespace Game {
             active = true;
         }
 
+        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Utils::Vector2D size, Uint64 points = 0) {
+            origin = pos;
+            angle = deg;
+            pts = points;
+            this->size = size;
+            this->hitboxPos = hitboxPos;
+            //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
+            hitbox = new Game::Hitbox(origin + this->hitboxPos, hitboxSize);
+            triggerAnimation = false;
+            active = true;
+        }
+
+        ~EntityModel() {
+            delete hitbox;
+            hitbox = nullptr;
+        }
+
         void update() {
             // Update the hitbox position and angle based on the entity's properties
-            hitbox->updateHitboxPos(origin);
+            hitbox->updateHitboxPos(origin + hitboxPos);
             //hitbox->updateHitboxAngle(angle);
         }
 
@@ -125,10 +143,12 @@ namespace Game {
                 return;
 
             obj->changeTexture(name, true, "spritesheet.png");
-            Utils::Vector2D newPosScreen;
-            Utils::render::WorldToScreen(m_model.getOrigin(), newPosScreen);
-            obj->setPos(newPosScreen - (obj->getSize()*0.5f));
-            obj->setAngel(m_model.getAngle());
+            update();
+        }
+
+        void setSize(Utils::Vector2D size) {
+            obj->setSize(size);
+            update();
         }
     };
 
@@ -136,6 +156,78 @@ namespace Game {
     public:
         virtual void update(EntityModel& model, float deltaTime = 0.f) = 0;
         virtual void update(EntityView& view, float deltaTime = 0.f) = 0;
+    };
+
+    class CoreBehavior : public Behavior {
+    private:
+        bool animationStart = false;
+        bool animationEnd = false;
+        float animationTime = 0.f;
+        const float animationDuration = 450.f;
+        std::vector<std::string> explosionImages = {
+                "astro-explo-01",
+                "astro-explo-02",
+                "astro-explo-03"
+        };
+
+    public:
+        void update(EntityModel& model, float deltaTime = 0.f) override {
+            if (model.isTriggerAnimation() && !animationStart) {
+                animationStart = true;
+                animationTime = 0.f;
+            }
+
+            if (animationEnd)
+                model.setActive(false);
+        }
+
+        void update(EntityView& view, float deltaTime = 0.f) override {
+            if (!animationStart)
+                return;
+
+            animationTime += deltaTime * 1000.f;
+
+            float progress = animationTime / animationDuration;
+            progress = std::clamp(progress, 0.f, 1.f);
+            int imageIndex = static_cast<int>(progress * (explosionImages.size() - 1));
+
+            view.setTexture(explosionImages[imageIndex]);
+            //xD may add new Texture
+            view.setSize({288, 256});
+
+            if (animationTime >= animationDuration)
+                animationEnd = true;
+        }
+    };
+
+    class CanonBehavior : public Behavior {
+    private:
+        bool animationStart = false;
+        bool animationEnd = false;
+        std::string texture;
+
+    public:
+        CanonBehavior(std::string afterShoot)
+            : texture(afterShoot)
+        {}
+
+        void update(EntityModel& model, float deltaTime = 0.f) override {
+            if (model.isTriggerAnimation() && !animationStart) {
+                animationStart = true;
+            }
+
+            if (animationEnd)
+                model.setActive(false);
+        }
+
+        void update(EntityView& view, float deltaTime = 0.f) override {
+            if (!animationStart)
+                return;
+
+            view.setTexture(texture);
+
+            animationEnd = true;
+        }
     };
 
     class NonMovingBehavior : public Behavior {
@@ -335,6 +427,12 @@ namespace Game {
             , m_behavior(nullptr)
         {}
 
+        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Uint64 pts = 0)
+                : m_model(pos, deg, hitboxPos, hitboxSize, img->getSize(), pts)
+                , m_view(img, m_model)
+                , m_behavior(nullptr)
+        {}
+
         ~Entity() {
             if (m_behavior)
                 delete m_behavior;
@@ -349,9 +447,6 @@ namespace Game {
         }
 
         void update(float deltaTime = 0.f) {
-            if (!m_model.isActive())
-                return;
-
             if (m_behavior)
                 m_behavior->update(m_model, deltaTime);
 
@@ -360,9 +455,6 @@ namespace Game {
         }
 
         void draw(float deltaTime = 0.f) {
-            if (!m_model.isActive())
-                return;
-
             if (m_behavior)
                 m_behavior->update(m_view, deltaTime);
 
@@ -375,6 +467,10 @@ namespace Game {
 
         void setTriggerAnimation(bool val) {
             m_model.setTriggerAnimation(val);
+        }
+
+        bool isTriggerAnimation() {
+            return m_model.isTriggerAnimation();
         }
 
         void setOrigin(Utils::Vector2D newOrigin) {

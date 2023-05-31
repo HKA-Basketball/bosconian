@@ -29,15 +29,13 @@ namespace Game {
 
         baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
         for (int i = 0; i < baseShipEntitys.size(); i++) {
-            float ang = list[rand() % 2];
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), "base", ang, true, "spritesheet.png");
+            float ang = 0.f;//list[rand() % 2];
 
-            baseShipEntitys[i] = new Entity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, img, 1500);
-            baseShipEntitys[i]->setAngle(ang);
+            baseShipEntitys[i] = new BaseEntity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, g->drawing());
 
             // Mark the grid cells around the base ship as occupied
-            int col = baseShipEntitys[i]->getOrigin().x / cellSize;
-            int row = baseShipEntitys[i]->getOrigin().y / cellSize;
+            int col = baseShipEntitys[i]->getEntitys()[0]->getOrigin().x / cellSize;
+            int row = baseShipEntitys[i]->getEntitys()[0]->getOrigin().y / cellSize;
 
             int startCol = std::max(0, col - 1);
             int endCol = std::min(numCols - 1, col + 1);
@@ -46,7 +44,7 @@ namespace Game {
 
             for (int c = startCol; c <= endCol; c++) {
                 for (int r = startRow; r <= endRow; r++) {
-                    grid[c][r].push_back(baseShipEntitys[i]);
+                    grid[c][r].push_back(baseShipEntitys[i]->getEntitys()[0]);
                 }
             }
         }
@@ -252,6 +250,40 @@ namespace Game {
                 nonMovingEntitys.pop_back();
             }*/
         }
+
+        for (int i = 0; i < baseShipEntitys.size(); i++) {
+            if (!baseShipEntitys[i]->isActive())
+                continue;
+
+            std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
+            for (int x = 0; x < ent.size(); x++) {
+
+                SDL_Rect worldPosRec = ent[x]->getHitbox()->getHitbox();
+                Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
+                Utils::Vector2D screenPos;
+                bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
+
+                for (int y = 0; y < playersProjectiles.size(); y++) {
+                    if (!playersProjectiles[y]->getActive())
+                        continue;
+
+                    if (ent[x]->isActive() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
+                        ent[x]->setTriggerAnimation(true);
+                        playersProjectiles[y]->setActive(false);
+                        Utils::GlobalVars::currenPTS += ent[x]->getPTS();
+                        if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+                            Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
+                        }
+
+                        break;
+                    }
+                    if (ent[x]->isTriggerAnimation() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
+                        playersProjectiles[y]->setActive(false);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     void Game::render(float deltaTime) {
@@ -283,11 +315,36 @@ namespace Game {
                 g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);*/
         }
 
+        std::vector<Utils::Vector2D> baseShipPos;
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
                 continue;
 
             baseShipEntitys[i]->draw(deltaTime);
+            baseShipPos.push_back(baseShipEntitys[i]->getEntitys()[0]->getOrigin());
+
+            /*std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
+            for (int x = 0; x < ent.size(); x++) {
+                SDL_Rect worldPosRec = ent[x]->getHitbox()->getHitbox();
+                Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
+                Utils::Vector2D screenPos;
+                bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
+
+                SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w,
+                                          worldPosRec.h};
+
+                char pos[256];
+                snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int) worldPosRec.x, (int) worldPosRec.y);
+                SDL_Rect destR = {0, 0, 0, 0};
+                TTF_SizeText(g->renderer()->m_fonts[1], pos, &destR.w, &destR.h);
+                g->drawing()->string(std::string(pos), g->renderer()->m_fonts[1], {255, 255, 255},
+                                     Utils::Vector2D(screenPos.x, screenPos.y));
+
+                if (!ent[x]->isActive())
+                    g->drawing()->rectangle({255, 0, 0, 255}, screenPosRect);
+                else
+                    g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);
+            }*/
         }
 
         player1->draw(deltaTime);
@@ -336,7 +393,7 @@ namespace Game {
         SDL_Rect rec4 = { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 };
         g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, rec4);
 
-        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), lvlmgn->getBaseShipsSpawnLocations());
+        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);//lvlmgn->getBaseShipsSpawnLocations()
 
         g->drawing()->string(std::to_string(player1->getLives()), g->renderer()->m_fonts[0], { 255, 255, 255 }
                 , Utils::Vector2D(destScor.x, destScor.y + (28 + 320 + 448)), 1);
