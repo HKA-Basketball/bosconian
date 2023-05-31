@@ -34,7 +34,7 @@ namespace Drawing {
             }
 
             if (!found) {
-                LOG(std::string("Error frame not found!: ") + SDL_GetError());
+                LOG(std::string("Error frame not found!: ") + filename);
                 return 0;
             }
 
