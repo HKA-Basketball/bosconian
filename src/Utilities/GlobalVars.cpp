@@ -92,6 +92,20 @@ namespace Utils {
             SDL_Rect p = {x, y};
             return ( (p.x >= xy.x) && (p.x < (xy.x + wh.x)) && (p.y >= xy.y) && (p.y < (xy.y + wh.y)) );
         }
+
+        SDL_Rect getFrameInfo(std::string name) {
+            SDL_Rect out;
+            for (const auto& frame : Utils::GlobalVars::frames) {
+                if (!frame.filename.compare(name)) {
+                    out.w = frame.frame.w;
+                    out.h = frame.frame.h;
+                    out.x = frame.frame.x;
+                    out.y = frame.frame.y;
+                    return out;
+                }
+            }
+            return out;
+        }
     }
 
     namespace GlobalVars {

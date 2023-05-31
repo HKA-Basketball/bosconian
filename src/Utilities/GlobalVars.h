@@ -32,6 +32,7 @@ namespace Utils {
         extern bool WorldToScreen(Utils::Vector2D worldPoint, Utils::Vector2D& screenPoint);
         extern bool ScreenToWorld(Utils::Vector2D screenPoint, Utils::Vector2D& worldPoint);
         extern bool isCursorInRect(Utils::Vector2D xy, Utils::Vector2D wh);
+        extern SDL_Rect getFrameInfo(std::string name);
     }
 
     namespace GlobalVars {
