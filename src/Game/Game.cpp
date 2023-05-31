@@ -224,9 +224,6 @@ namespace Game {
 
             if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
             {
-                // TODO: Only increase if there are no more base ships
-                lvlmgn->increaseRound();
-
                 // TODO: trigger Dead screen if ...
                 player1->setLives(player1->getLives()-1);
 
@@ -251,9 +248,12 @@ namespace Game {
             }*/
         }
 
+        int count = 0;
+
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
                 continue;
+            count++;
 
             std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
             for (int x = 0; x < ent.size(); x++) {
@@ -283,6 +283,16 @@ namespace Game {
                     }
                 }
             }
+        }
+
+        if (count == 0) {
+            lvlmgn->increaseRound();
+            this->init();
+
+            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+            sw_cfg.write();
+            sw_cfg.read();
         }
     }
 
