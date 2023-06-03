@@ -29,7 +29,7 @@ namespace Game {
 
         baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
         for (int i = 0; i < baseShipEntitys.size(); i++) {
-            float ang = 0.f;//list[rand() % 2];
+            float ang = list[rand() % 2];
 
             baseShipEntitys[i] = new BaseEntity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, g->drawing());
 

@@ -14,22 +14,30 @@ namespace Game {
         {
             baseShipEntitys.resize(7);
 
+            std::vector<Utils::Vector2D> hitboxSizeList{{32, 32}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}};
+
             std::vector<std::string> baseExpoIMG{"kern", "canon_L", "canon_L_Up", "canon_L_Down", "canon_R", "canon_R_Up", "canon_R_Down"};
             std::vector<std::string> baseIMG{"kern", "canon_L_norm", "canon_L_Up_norm", "canon_L_Down_norm", "canon_R_norm", "canon_R_Up_norm", "canon_R_Down_norm"};
-            std::vector<Utils::Vector2D> hitboxSizeList{{32, 32}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}};
-            // From center 0° TODO: 90°
+            // 0°
             std::vector<Utils::Vector2D> hitboxPosList{{0, 0}, {0, 0}, {14, -16}, {14, 16}, {0, 0}, {-14, -16}, {-14, 16}};
             std::vector<Utils::Vector2D> posOffsetList{{0, 0}, {-112, 0}, {-62, -80}, {-62, 80}, {112, 0}, {62, -80}, {62, 80}};
 
-            for (int i = 0; i < baseIMG.size(); i++) {
-                std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, baseIMG[i], deg, true, "spritesheet.png");
+            if (deg > 1.f) {
+                baseExpoIMG = {"kern_90", "canon_L_90", "canon_L_Up_90", "canon_L_Down_90", "canon_R_90", "canon_R_Up_90", "canon_R_Down_90"};
+                baseIMG = {"kern_90", "canon_L_norm_90", "canon_L_Up_norm_90", "canon_L_Down_norm_90", "canon_R_norm_90", "canon_R_Up_norm_90", "canon_R_Down_norm_90"};
+                // 90°
+                hitboxPosList = {{0, 0}, {0, 0}, {14, 16}, {-14, 16}, {0, 0}, {14, -16}, {-14, -16}};
+                posOffsetList = {{0, 0}, {0, -112}, {80, -62}, {-80, -62}, {0, 112}, {80, 62}, {-80, 62}};
+            }
 
-                baseShipEntitys[i] = new Entity(pos + posOffsetList[i], deg, img, hitboxPosList[i], hitboxSizeList[i], baseIMG[i].compare("kern") ? 200 : 1500);
-                baseShipEntitys[i]->setAngle(deg);
-                if (baseIMG[i].compare("kern"))
-                    baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i]));
-                else
+            for (int i = 0; i < baseIMG.size(); i++) {
+                std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, baseIMG[i], 0.f, true, "spritesheet.png");
+
+                baseShipEntitys[i] = new Entity(pos + posOffsetList[i], 0.f, img, hitboxPosList[i], hitboxSizeList[i], (baseIMG[i].find("kern") != std::string::npos) ? 200 : 1500);
+                if (baseIMG[i].compare("kern") != std::string::npos)
                     baseShipEntitys[i]->setBehavior(new CoreBehavior());
+                else
+                    baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i]));
             }
         }
 
