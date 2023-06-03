@@ -23,7 +23,7 @@ namespace Event {
                 case SDL_MOUSEBUTTONDOWN:
                 case SDL_MOUSEBUTTONUP:
                     // Handle mouse button event
-                    switch (event.key.keysym.scancode) {
+                    switch (event.button.button) {
                         case SDL_BUTTON_LEFT:
                             mState = event.type == SDL_MOUSEBUTTONDOWN ? MouseState::Down : MouseState::Up;
                             mButton = MouseButton::Left;

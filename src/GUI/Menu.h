@@ -48,6 +48,14 @@ namespace Menu {
             }
         }
 
+        void setSelectOption(int newSelect) {
+            if (newSelect < 0 || newSelect > m_options.size() - 1) {
+                return;
+            }
+
+            m_selectedIndex = newSelect;
+        }
+
         int getSelectedIndex() const {
             return m_selectedIndex;
         }
@@ -82,6 +90,7 @@ namespace Menu {
         SDL_Color m_normalColor;
         SDL_Color m_selectedColor;
         int m_lineHeight;
+        int m_textHeight;
 
     public:
         MenuView(Drawing::Graphics* drawing, TTF_Font* font, SDL_Rect menuRect, SDL_Color normalColor, SDL_Color selectedColor, int lineHeight)
@@ -102,6 +111,7 @@ namespace Menu {
 
                 int textWidth, textHeight;
                 TTF_SizeText(m_font, model.getOption(i).c_str(), &textWidth, &textHeight);
+                m_textHeight = textHeight;
 
                 m_drawing->string(model.getOption(i), m_font, color,
                                   {static_cast<float>(m_menuRect.x + (m_menuRect.w/2)), static_cast<float>(y + (textHeight/2))},
@@ -109,6 +119,18 @@ namespace Menu {
 
                 y += m_lineHeight;
             }
+        }
+
+        int getTextHeight() const {
+            return m_textHeight;
+        }
+
+        const SDL_Rect &getMenuRect() const {
+            return m_menuRect;
+        }
+
+        int getLineHeight() const {
+            return m_lineHeight;
         }
     };
 
@@ -133,6 +155,16 @@ namespace Menu {
             if (!g_event)
                 return;
 
+            SDL_Rect rec = m_view.getMenuRect();
+            int y = rec.y;
+            for (size_t i = 0; i < m_model.getNumOptions(); i++) {
+                SDL_FRect inRect = {static_cast<float>(rec.x), static_cast<float>(y), static_cast<float>(rec.w), static_cast<float>(y + m_view.getTextHeight())};
+                if (Utils::render::isCursorInRect({inRect.x, inRect.y}, {inRect.w, inRect.h})) {
+                    m_model.setSelectOption(i);
+                }
+                y += m_view.getLineHeight();
+            }
+
             if (g_event->isKeyClicked(SDL_SCANCODE_UP, true)) {
                 m_model.selectPreviousOption();
             }
@@ -140,7 +172,7 @@ namespace Menu {
                 m_model.selectNextOption();
             }
 
-            if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true)) {
+            if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true) || g_event->isMouseClicked(1, true)) {
                 m_model.callbackSelectedOption(); // Invoke the associated callback
             }
         }

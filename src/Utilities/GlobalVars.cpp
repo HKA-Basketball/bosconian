@@ -132,7 +132,7 @@ namespace Utils {
         std::vector<Level> lvlsInfos;
 
         //
-        bool menuActive = false;
+        bool menuActive = true;
 
         bool accesDebugMode = false;
         bool drawHitboxes = false;
