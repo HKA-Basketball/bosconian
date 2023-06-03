@@ -8,16 +8,26 @@
 
 namespace Menu {
 
+    struct MenuOption {
+        std::string option;
+        std::function<void()> callback;
+
+        MenuOption(const std::string& option, std::function<void()> callback)
+                : option(option), callback(callback)
+        {}
+    };
+
+
     class MenuModel {
     private:
-        std::vector<std::string> m_options;
+        std::vector<MenuOption> m_options;
         int m_selectedIndex;
 
     public:
         MenuModel() : m_selectedIndex(0) {}
 
-        void addOption(std::string option) {
-            m_options.push_back(option);
+        void addOption(std::string option, std::function<void()> callback) {
+            m_options.emplace_back(option, callback);
         }
 
         void selectNextOption() {
@@ -43,7 +53,7 @@ namespace Menu {
         }
 
         const std::string& getSelectedOption() const {
-            return m_options[m_selectedIndex];
+            return m_options[m_selectedIndex].option;
         }
 
         size_t getNumOptions() const {
@@ -51,7 +61,15 @@ namespace Menu {
         }
 
         const std::string& getOption(size_t index) const {
-            return m_options[index];
+            return m_options[index].option;
+        }
+
+        void callbackSelectedOption() const {
+             m_options[m_selectedIndex].callback();
+        }
+
+        void callbackOption(size_t index) const {
+            m_options[index].callback();
         }
     };
 
@@ -107,8 +125,8 @@ namespace Menu {
                 , g_event(event)
         {}
 
-        void addOption(std::string option) {
-            m_model.addOption(option);
+        void addOption(std::string option, std::function<void()> callback) {
+            m_model.addOption(option, callback);
         }
 
         void handleEvent() {
@@ -122,9 +140,8 @@ namespace Menu {
                 m_model.selectNextOption();
             }
 
-            // TODO: Add addEvent()
-            if (m_model.getSelectedOption() == "Exit" && g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true)) {
-                ExitProcess(1);
+            if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true)) {
+                m_model.callbackSelectedOption(); // Invoke the associated callback
             }
         }
 

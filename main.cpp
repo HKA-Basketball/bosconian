@@ -40,6 +40,13 @@ int main(int argc, char* args[])
     //frames_cfg.write();
     frames_cfg.read();
 
+    /*for (auto& in : Utils::GlobalVars::frames) {
+        printf("LOG: filename: %s, frame: %d, %d, %d, %d \n", in.filename.c_str()
+                , in.frame.x
+                , in.frame.y
+                , in.frame.w
+                , in.frame.h);
+    }*/
     /*printf("LOG: filename: %s, frame: %d, %d, %d, %d \n", Utils::GlobalVars::frames.at(1).filename.c_str()
             , Utils::GlobalVars::frames.at(1).frame.x
             , Utils::GlobalVars::frames.at(1).frame.y
@@ -75,9 +82,15 @@ int main(int argc, char* args[])
                     , menuRect, {48, 48, 48, 255}
                     , {255, 255, 255, 255}, 45);
 
-    menu.addOption("Start");
-    menu.addOption("Options");
-    menu.addOption("Exit");
+    menu.addOption("Start", []() {
+        Utils::GlobalVars::menuActive = false;
+    });
+    menu.addOption("Options", []() {
+        // TODO:
+    });
+    menu.addOption("Exit", []() {
+        ExitProcess(1);
+    });
 
 
     Uint64 previousTime = SDL_GetTicks64();
