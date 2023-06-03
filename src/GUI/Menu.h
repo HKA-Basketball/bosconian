@@ -158,7 +158,7 @@ namespace Menu {
             SDL_Rect rec = m_view.getMenuRect();
             int y = rec.y;
             for (size_t i = 0; i < m_model.getNumOptions(); i++) {
-                SDL_FRect inRect = {static_cast<float>(rec.x), static_cast<float>(y), static_cast<float>(rec.w), static_cast<float>(y + m_view.getTextHeight())};
+                SDL_FRect inRect = {static_cast<float>(rec.x), static_cast<float>(y), static_cast<float>(rec.w), static_cast<float>(m_view.getTextHeight())};
                 if (Utils::render::isCursorInRect({inRect.x, inRect.y}, {inRect.w, inRect.h})) {
                     m_model.setSelectOption(i);
                 }
