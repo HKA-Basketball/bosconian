@@ -3,9 +3,11 @@
 #include "../Utilities/GlobalVars.h"
 
 namespace Game {
-    Game::Game(Initialization::Initializer *g) : g(g) {
-        lvlmgn = new LevelManager(Utils::GlobalVars::lvlsInfos);
-
+    Game::Game(Initialization::Initializer *g)
+        : g(g)
+        , lvlEditor("lvl.ini")
+        , lvlmgn(Utils::GlobalVars::lvlsInfos)
+    {
         std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
@@ -32,10 +34,10 @@ namespace Game {
         const int numRows = (Utils::GlobalVars::lvlHeight + cellSize - 1) / cellSize; // number of rows in the grid
         std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store non-moving entities
 
+        if (!Utils::GlobalVars::lvlEditorActive)
+            Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
 
-        Utils::GlobalVars::cameraPos = lvlmgn->getPlayerSpawnLocation();
-
-        baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
+        baseShipEntitys.resize(lvlmgn.getBaseShipsSpawnLocations().size());
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (baseShipEntitys[i]) {
                 delete baseShipEntitys[i];
@@ -44,7 +46,7 @@ namespace Game {
 
             float ang = list[rand() % 2];
 
-            baseShipEntitys[i] = new BaseEntity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, g->drawing());
+            baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), ang, g->drawing());
 
             // Mark the grid cells around the base ship as occupied
             int col = baseShipEntitys[i]->getEntitys()[0]->getOrigin().x / cellSize;
@@ -161,7 +163,52 @@ namespace Game {
         return lastFps;
     }
 
+    void Game::doLvlEditorStuff() {
+        if (!Utils::GlobalVars::lvlEditorActive)
+            return;
+
+        if (g->event()->isKeyClicked(SDL_SCANCODE_B)) {
+            lvlEditor.placeBase(lvlmgn.getCurrentLevel(), Utils::GlobalVars::cameraPos);
+            lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
+            this->init();
+        }
+        if (g->event()->isKeyClicked(SDL_SCANCODE_P)) {
+            lvlEditor.setPlayerSpawnPos(lvlmgn.getCurrentLevel(), Utils::GlobalVars::cameraPos);
+            lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
+            this->init();
+        }
+        if (g->event()->isKeyClicked(SDL_SCANCODE_U)) {
+            lvlEditor.undoBase(lvlmgn.getCurrentLevel());
+            lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
+            this->init();
+        }
+        if (g->event()->isKeyClicked(SDL_SCANCODE_K)) {
+            lvlEditor.saveLvls();
+            lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
+            this->init();
+        }
+
+        if (g->event()->isKeyClicked(SDL_SCANCODE_M)) {
+            lvlmgn.increaseLevel();
+            this->init();
+        }
+        if (g->event()->isKeyClicked(SDL_SCANCODE_N)) {
+            lvlmgn.decreaseLevel();
+            this->init();
+        }
+
+        if (g->event()->isKeyClicked(SDL_SCANCODE_C)) {
+            Utils::GlobalVars::lvlEditorActive = false;
+            lvlEditor.saveLvls();
+            lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
+            lvlmgn.selectLevel(1);
+            this->init();
+        }
+    }
+
     void Game::update(float deltaTime) {
+        doLvlEditorStuff();
+
         g->world()->update(deltaTime);
 
         player1->setOrigin(Utils::GlobalVars::cameraPos);
@@ -213,6 +260,9 @@ namespace Game {
     }
 
     void Game::postUpdate(float deltaTime) {
+        if (Utils::GlobalVars::lvlEditorActive)
+            return;
+
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
             if (!nonMovingEntitys[i]->isActive())
                 continue;
@@ -247,7 +297,7 @@ namespace Game {
 
                 if (player1->getLives() <= 0) {
                     player1->setLives(3);
-                    lvlmgn->selectLevel(1);
+                    lvlmgn.selectLevel(1);
                     Utils::GlobalVars::currenPTS = 0;
                 }
 
@@ -304,7 +354,7 @@ namespace Game {
         }
 
         if (count == 0) {
-            lvlmgn->increaseRound();
+            lvlmgn.increaseRound();
             this->init();
 
             Utils::Config sw_cfg(".\\cfg\\config.ini");
@@ -433,5 +483,46 @@ namespace Game {
             lives[i]->draw();
         }
 
+
+        if (Utils::GlobalVars::lvlEditorActive)
+        {
+            int textWidth, textHeight;
+            TTF_SizeText(g->renderer()->m_fonts[1], "C: Exit Editor Mode", &textWidth, &textHeight);
+            int y_Offset = 50;
+
+            g->drawing()->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*8+(8*2)+10});
+
+            g->drawing()->string(std::string("Editor Mode!"), g->renderer()->m_fonts[1], { 255, 0, 0 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("B: Add Base"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("P: Set Player Spawn"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("U: Undo"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("K: Save in File"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("M: Next Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("N: Previous Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+
+            g->drawing()->string(std::string("C: Exit Editor Mode"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight+2;
+        }
     }
 } // Game

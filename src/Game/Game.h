@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "LevelManager.h"
 #include "BaseEntity.h"
+#include "LevelEditor.h"
 
 namespace Game {
 
@@ -15,7 +16,8 @@ namespace Game {
     private:
         Initialization::Initializer* g;
         //EntityManager* entities;
-        LevelManager* lvlmgn;
+        LevelManager lvlmgn;
+        LevelEditor lvlEditor;
 
         std::vector<Entity*> nonMovingEntitys;
         std::vector<BaseEntity*> baseShipEntitys;
@@ -58,8 +60,10 @@ namespace Game {
             // Clean up the entity manager and level manager
             //delete entities;
             //entities = nullptr;
-            delete lvlmgn;
-            lvlmgn = nullptr;
+        }
+
+        LevelManager getLevelManager() {
+            return lvlmgn;
         }
 
         void update(float deltaTime);
@@ -69,6 +73,8 @@ namespace Game {
         void init();
 
         void HUD(std::vector<Utils::Vector2D> baseShipPos);
+
+        void doLvlEditorStuff();
     };
 
 } // Game

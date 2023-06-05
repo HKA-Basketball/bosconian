@@ -67,6 +67,9 @@ namespace Event {
 
         float movement = 200 * deltaTime;
 
+        if (Utils::GlobalVars::lvlEditorActive && isKeyClicked(SDL_SCANCODE_LSHIFT, false))
+            movement = 10 * deltaTime;
+
 
         if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false))
             Utils::GlobalVars::cameraPos.x -= movement;

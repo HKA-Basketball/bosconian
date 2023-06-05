@@ -34,6 +34,34 @@ namespace Game {
             LOG("Round " + std::to_string(round) + " - Selected Level: " + std::to_string(currentLevel));
         }
 
+        int getCurrentLevel() const {
+            return currentLevel;
+        }
+
+        void updateLevels(std::vector<Utils::Level>& levels) {
+            lvlsInfos = levels;
+        }
+
+        void increaseLevel() {
+            if (currentLevel < 14) {
+                currentLevel++;
+            }
+            else {
+                currentLevel = 1;
+            }
+            LOG("Selected Level: " + std::to_string(currentLevel));
+        }
+
+        void decreaseLevel() {
+            if (currentLevel > 1) {
+                currentLevel--;
+            }
+            else {
+                currentLevel = 14;
+            }
+            LOG("Selected Level: " + std::to_string(currentLevel));
+        }
+
         void increaseRound() {
             selectLevel(currentRound+1);
         }
