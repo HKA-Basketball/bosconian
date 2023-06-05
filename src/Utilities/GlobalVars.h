@@ -127,6 +127,8 @@ namespace Utils {
         extern bool dipSwitchActive;
         extern bool need2ExitProc;
 
+        extern bool lvlEditorActive;
+
         extern bool accesDebugMode;
         extern bool drawHitboxes;
     };

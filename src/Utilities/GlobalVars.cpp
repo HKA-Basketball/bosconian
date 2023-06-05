@@ -133,8 +133,8 @@ namespace Utils {
         int windowHeight = 896;  // 224 * 4;
         int infoWidth = 256;    //  64 * 4
 
-        int lvlWidth = 2500;
-        int lvlHeight = 2500;
+        int lvlWidth = 3000;
+        int lvlHeight = 4000;
 
         Uint64 currenPTS = 0;
         Uint64 currenHiScore = 0;
@@ -147,6 +147,8 @@ namespace Utils {
         bool menuActive = true;
         bool dipSwitchActive = false;
         bool need2ExitProc = false;
+
+        bool lvlEditorActive = false;
 
         bool accesDebugMode = false;
         bool drawHitboxes = false;
