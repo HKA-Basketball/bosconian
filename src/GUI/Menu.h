@@ -159,9 +159,15 @@ namespace Menu {
             int y = rec.y;
             for (size_t i = 0; i < m_model.getNumOptions(); i++) {
                 SDL_FRect inRect = {static_cast<float>(rec.x), static_cast<float>(y), static_cast<float>(rec.w), static_cast<float>(m_view.getTextHeight())};
+                bool isIn = false;
                 if (Utils::render::isCursorInRect({inRect.x, inRect.y}, {inRect.w, inRect.h})) {
                     m_model.setSelectOption(i);
+                    isIn = true;
                 }
+                if (isIn && g_event->isMouseClicked(1, true)) {
+                    m_model.callbackSelectedOption(); // Invoke the associated callback
+                }
+
                 y += m_view.getLineHeight();
             }
 
@@ -172,7 +178,7 @@ namespace Menu {
                 m_model.selectNextOption();
             }
 
-            if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true) || g_event->isMouseClicked(1, true)) {
+            if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true)) {
                 m_model.callbackSelectedOption(); // Invoke the associated callback
             }
         }
