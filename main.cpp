@@ -3,6 +3,7 @@
 #include "./src/Utilities/Initializer.h"
 #include "./src/Game/Game.h"
 #include "./src/GUI/Menu.h"
+#include "src/GUI/DipSwitch.h"
 
 int main(int argc, char* args[])
 {
@@ -82,14 +83,17 @@ int main(int argc, char* args[])
                     , menuRect, {48, 48, 48, 255}
                     , {255, 255, 255, 255}, 45);
 
+    Menu::DipSwitch* swa = new Menu::DipSwitch(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWA", 200, 200, 8);
+    Menu::DipSwitch* swb = new Menu::DipSwitch(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWB", 600, 200, 8);
+
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
     });
     menu.addOption("Options", []() {
-        // TODO:
+        Utils::GlobalVars::dipSwitchActive = true;
     });
     menu.addOption("Exit", []() {
-        ExitProcess(1);
+        Utils::GlobalVars::need2ExitProc = true;
     });
 
 
@@ -109,7 +113,12 @@ int main(int argc, char* args[])
         }
         else {
             // Update menu
-            menu.handleEvent();
+            if (Utils::GlobalVars::dipSwitchActive) {
+                swa->handleEvent();
+                swb->handleEvent();
+            }
+            else
+                menu.handleEvent();
 
             // for our background if needed
             g->world()->update(deltaTime);
@@ -122,6 +131,11 @@ int main(int argc, char* args[])
         if (Utils::GlobalVars::menuActive) {
             // Render Menu
             menu.render();
+
+            if (Utils::GlobalVars::dipSwitchActive) {
+                swa->render();
+                swb->render();
+            }
         }
 
         g->renderer()->endScene();
@@ -133,6 +147,8 @@ int main(int argc, char* args[])
     }
 
     delete g;
+    delete swa;
+    delete swb;
     SDL_Quit();
 
     return 0;
