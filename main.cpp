@@ -10,20 +10,7 @@ int main(int argc, char* args[])
     CreateDirectoryA(".\\Logs", NULL);
     CreateDirectoryA(".\\cfg", NULL);
 
-
     Utils::Config lvl_cfg(".\\cfg\\level.ini");
-
-    Utils::Level level1;
-    level1.lvlNum = 1;
-    level1.baseShipsPos = {{10, 20}, {30, 40}};
-    level1.playerPos = {100, 200};
-    Utils::GlobalVars::lvlsInfos.push_back(level1);
-
-    Utils::Level level2;
-    level2.lvlNum = 2;
-    level2.baseShipsPos = {{50, 60}, {70, 80}};
-    level2.playerPos = {300, 400};
-    Utils::GlobalVars::lvlsInfos.push_back(level2);
 
     lvl_cfg.add_item("Level", "baseShipPos", Utils::GlobalVars::lvlsInfos);
 
@@ -75,12 +62,12 @@ int main(int argc, char* args[])
     g_game.init();
     g_game.update(0.f);
 
-    SDL_Rect menuRect = {Utils::GlobalVars::windowWidth/2, Utils::GlobalVars::windowHeight/2, 250, 250};
+    SDL_Rect menuRect = {Utils::GlobalVars::windowWidth/2, Utils::GlobalVars::windowHeight/2, 350, 250};
     menuRect.x -= menuRect.w/2;
     menuRect.y -= menuRect.h/2;
 
     Menu::Menu menu(g->drawing(), g->event(), g->renderer()->m_fonts[0]
-                    , menuRect, {48, 48, 48, 255}
+                    , menuRect, {148, 148, 148, 255}
                     , {255, 255, 255, 255}, 45);
 
     Menu::DipSwitch swa(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWA", 200, 200, 8);
@@ -88,6 +75,9 @@ int main(int argc, char* args[])
 
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
+    });
+    menu.addOption("Level Editor", []() {
+        Utils::GlobalVars::lvlEditorActive = !Utils::GlobalVars::lvlEditorActive;
     });
     menu.addOption("Options", []() {
         Utils::GlobalVars::dipSwitchActive = true;
