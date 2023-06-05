@@ -8,10 +8,12 @@ namespace Game {
     class BaseEntity {
     private:
         std::vector<Entity*> baseShipEntitys;
+        Entity* m_spy;
 
     public:
         BaseEntity(Utils::Vector2D pos, float deg, Drawing::Graphics* drawing)
         {
+            m_spy = nullptr;
             baseShipEntitys.resize(7);
 
             std::vector<Utils::Vector2D> hitboxSizeList{{32, 32}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}, {64, 64}};
@@ -34,11 +36,22 @@ namespace Game {
                 std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, baseIMG[i], 0.f, true, "spritesheet.png");
 
                 baseShipEntitys[i] = new Entity(pos + posOffsetList[i], 0.f, img, hitboxPosList[i], hitboxSizeList[i], (baseIMG[i].find("kern") != std::string::npos) ? 200 : 1500);
-                if (baseIMG[i].compare("kern") != std::string::npos)
+                if (baseIMG[i].compare("kern") != std::string::npos) {
+                    if (Utils::PlayOptions::maxSpy > 0) {
+                        std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, "spy", 0.f, true, "spritesheet.png");
+                        m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, 600);
+                        m_spy->setBehavior(new SpyBehavior());
+                        Utils::PlayOptions::maxSpy--;
+                    }
+
                     baseShipEntitys[i]->setBehavior(new CoreBehavior());
+                }
                 else
                     baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i]));
             }
+
+            if (m_spy)
+                baseShipEntitys.push_back(m_spy);
         }
 
         ~BaseEntity() {

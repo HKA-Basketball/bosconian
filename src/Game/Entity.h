@@ -77,6 +77,10 @@ namespace Game {
             return angle;
         }
 
+        const Utils::Vector2D &getSize() const {
+            return size;
+        }
+
         Uint64 getPts() const {
             return pts;
         }
@@ -274,9 +278,16 @@ namespace Game {
     private:
         bool isPlayerSpotted;
         bool isMovingTowardsPlayer;
+        Utils::Vector2D startPos;
+        bool once = false;
 
     public:
         void update(EntityModel& model, float deltaTime = 0.f) override {
+            if (!once) {
+                startPos = model.getOrigin();
+                once = true;
+            }
+
             // Check if the spy has spotted the player
             if (isPlayerSpotted) {
                 // Move away from the player
@@ -358,17 +369,19 @@ namespace Game {
         }
 
         void moveAwayFromPlayer(EntityModel& model, float deltaTime = 0.f) {
-            // TODO: Go back to the Base Ship ?
             // Calculate the direction away from the player
-            Utils::Vector2D direction = model.getOrigin() - Utils::GlobalVars::cameraPos;
+            Utils::Vector2D direction2Player = model.getOrigin() - Utils::GlobalVars::cameraPos;
+            Utils::Vector2D direction = startPos - model.getOrigin();
 
             float detectionRange = 600.f; // Adjust the range as needed
-            float distance = direction.length();
+            float distance = direction2Player.length();
 
             if (distance >= detectionRange) {
                 isPlayerSpotted = false;
                 isMovingTowardsPlayer = true;
             }
+
+            // TODO: Change the alert level when we get back.
 
             direction.normalize();
 
@@ -422,9 +435,9 @@ namespace Game {
 
     public:
         Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Uint64 pts = 0)
-            : m_model(pos, deg, img->getSize(), pts)
-            , m_view(img, m_model)
-            , m_behavior(nullptr)
+                : m_model(pos, deg, img->getSize(), pts)
+                , m_view(img, m_model)
+                , m_behavior(nullptr)
         {}
 
         Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Uint64 pts = 0)
@@ -483,6 +496,10 @@ namespace Game {
 
         Utils::Vector2D getOrigin() {
             return m_model.getOrigin();
+        }
+
+        Utils::Vector2D getSize() {
+            return m_model.getSize();
         }
 
         void setAngle(float newAngle) {
