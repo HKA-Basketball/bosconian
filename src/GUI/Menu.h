@@ -103,7 +103,7 @@ namespace Menu {
         {}
 
         void render(const MenuModel& model) {
-            m_drawing->fillRectangleOutline({155, 155, 155, 50}, m_menuRect);
+            m_drawing->fillRectangleOutline({78, 78, 78, 100}, m_menuRect);
 
             int y = m_menuRect.y;
             for (size_t i = 0; i < model.getNumOptions(); i++) {
