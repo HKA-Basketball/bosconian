@@ -1,8 +1,20 @@
 #include "GlobalVars.h"
 
 namespace Utils {
-    namespace Math {
+    namespace PlayOptions {
+        Coinage conage = Coinage::One_One;
+        BonusFighter bonusFighter = BonusFighter::Opt0_5;
+        Lives lives = Lives::Three;
+        Difficulty difficulty = Difficulty::Medium;
+        bool allowContinue = true;
+        bool demoSound = true;
+        bool freeze = false;
+        Cabinet cabinet = Cabinet::Upright;
 
+        int maxSpy = 1;
+    }
+
+    namespace Math {
         float normalizeAngle180(float angle)
         {
             angle = fmod(angle, 360.0);
@@ -133,6 +145,8 @@ namespace Utils {
 
         //
         bool menuActive = true;
+        bool dipSwitchActive = false;
+        bool need2ExitProc = false;
 
         bool accesDebugMode = false;
         bool drawHitboxes = false;

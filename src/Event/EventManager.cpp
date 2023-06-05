@@ -10,6 +10,9 @@ namespace Event {
     }
 
     bool EventManager::logging() {
+        if (Utils::GlobalVars::need2ExitProc)
+            return 1;
+
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -43,7 +46,7 @@ namespace Event {
     }
 
     void EventManager::manageGameVars(float deltaTime) {
-        if (isKeyClicked(SDL_SCANCODE_ESCAPE)) {
+        if (!Utils::GlobalVars::dipSwitchActive && isKeyClicked(SDL_SCANCODE_ESCAPE)) {
             Utils::GlobalVars::menuActive = !Utils::GlobalVars::menuActive;
         }
 
