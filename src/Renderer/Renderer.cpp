@@ -11,6 +11,8 @@ namespace Renderer {
         }
         LOG(std::string("Renderer Successfully created"));
 
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
         m_fonts.resize(FONT_MAX);
 
         if (!initSDL_TTF())
