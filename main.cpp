@@ -30,11 +30,11 @@ int main(int argc, char* args[])
     //lvl_cfg.write();
     lvl_cfg.read();
 
-    printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
+    /*printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).x
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).y
            , Utils::GlobalVars::lvlsInfos.at(0).playerPos.x
-           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);
+           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);*/
 
     Utils::Config frames_cfg(".\\cfg\\frame.ini");
     frames_cfg.add_item("Frames", "frame", Utils::GlobalVars::frames);
@@ -83,8 +83,8 @@ int main(int argc, char* args[])
                     , menuRect, {48, 48, 48, 255}
                     , {255, 255, 255, 255}, 45);
 
-    Menu::DipSwitch* swa = new Menu::DipSwitch(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWA", 200, 200, 8);
-    Menu::DipSwitch* swb = new Menu::DipSwitch(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWB", 600, 200, 8);
+    Menu::DipSwitch swa(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWA", 200, 200, 8);
+    Menu::DipSwitch swb(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWB", 600, 200, 8);
 
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
@@ -114,8 +114,8 @@ int main(int argc, char* args[])
         else {
             // Update menu
             if (Utils::GlobalVars::dipSwitchActive) {
-                swa->handleEvent();
-                swb->handleEvent();
+                swa.handleEvent();
+                swb.handleEvent();
             }
             else
                 menu.handleEvent();
@@ -133,8 +133,8 @@ int main(int argc, char* args[])
             menu.render();
 
             if (Utils::GlobalVars::dipSwitchActive) {
-                swa->render();
-                swb->render();
+                swa.render();
+                swb.render();
             }
         }
 
@@ -147,8 +147,6 @@ int main(int argc, char* args[])
     }
 
     delete g;
-    delete swa;
-    delete swb;
     SDL_Quit();
 
     return 0;
