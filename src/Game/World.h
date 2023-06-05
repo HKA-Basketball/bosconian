@@ -125,11 +125,11 @@ namespace Game {
             int scaled_y = 0;
 
             for (auto& basePos : baseShips) {
-                scaled_x = pos.x + (basePos.x / Utils::GlobalVars::lvlWidth) * (size.x - 8);
-                scaled_y = pos.y + (basePos.y / Utils::GlobalVars::lvlHeight) * (size.y - 8);
+                scaled_x = pos.x + (basePos.x / Utils::GlobalVars::lvlWidth) * (size.x - 10);
+                scaled_y = pos.y + (basePos.y / Utils::GlobalVars::lvlHeight) * (size.y - 10);
 
-                SDL_Rect recPos = { scaled_x, scaled_y, 8, 8 };
-                g_drawing->fillRectangle2({ 0, 255, 0, 255 }, recPos);
+                SDL_Rect recPos = { scaled_x, scaled_y, 10, 10 };
+                g_drawing->fillRectangleOutline({ 0, 255, 0, 255 }, recPos);
             }
 
             scaled_x = pos.x + (Utils::GlobalVars::cameraPos.x / Utils::GlobalVars::lvlWidth) * (size.x - 8);

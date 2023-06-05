@@ -10,6 +10,14 @@ namespace Game {
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
+        for (size_t i = 0; i < 5; i++) {
+            Drawing::Texture* miniSpaceShip = new Drawing::Texture(g->drawing(), "ship", 0.f, true, "spritesheet.png");
+
+            miniSpaceShip->setSize({42, 42});
+            miniSpaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth + (i * 45), Utils::GlobalVars::windowHeight - 50));
+            lives.push_back(miniSpaceShip);
+        }
+
         g->sound()->playSound(Sound::SOUND_BG, 2);
     }
 
@@ -29,6 +37,11 @@ namespace Game {
 
         baseShipEntitys.resize(lvlmgn->getBaseShipsSpawnLocations().size());
         for (int i = 0; i < baseShipEntitys.size(); i++) {
+            if (baseShipEntitys[i]) {
+                delete baseShipEntitys[i];
+                baseShipEntitys[i] = nullptr;
+            }
+
             float ang = list[rand() % 2];
 
             baseShipEntitys[i] = new BaseEntity(lvlmgn->getBaseShipsSpawnLocations().at(i), ang, g->drawing());
@@ -57,6 +70,11 @@ namespace Game {
         nonMovingEntitys.resize(50);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
+            if (nonMovingEntitys[i]) {
+                delete nonMovingEntitys[i];
+                nonMovingEntitys[i] = nullptr;
+            }
+
             int ranImg = rand() % listIMG.size();
             float ang = ranImg == 4 ? list[rand() % 2] : list[rand() % list.size()];
 
@@ -364,6 +382,7 @@ namespace Game {
             projectile->render();
         }
 
+        // -------------------------------------------------------------------------------------
         char text[32];
         char pos[256];
 
@@ -377,34 +396,42 @@ namespace Game {
 
         // -------------------------------------------------------------------------------------
 
-        // TODO: Move to UI Class
-        SDL_Rect rec3 = { Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight };
-        g->drawing()->fillRectangle2({ 0, 0, 0, 255 }, rec3);
+        HUD(baseShipPos);
+    }
+
+    void Game::HUD(std::vector<Utils::Vector2D> baseShipPos) {
+        g->drawing()->fillRectangle2({ 0, 0, 0, 255 }
+                , { Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight });
 
         SDL_Rect destScor = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
         destScor.x = Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10;
         destScor.y = 1;
         g->drawing()->string(std::string("HI-SCORE"), g->renderer()->m_fonts[0], { 255, 0, 0 }
-            , Utils::Vector2D(destScor.x, destScor.y), 1);
+                , Utils::Vector2D(destScor.x, destScor.y), 1);
+
 
         g->drawing()->string(std::to_string(Utils::GlobalVars::currenHiScore), g->renderer()->m_fonts[0], { 255, 255, 255 }
                 , Utils::Vector2D(destScor.x, destScor.y + 28), 1);
 
+
         g->drawing()->string(std::to_string(Utils::GlobalVars::currenPTS), g->renderer()->m_fonts[0], { 255, 255, 255 }
                 , Utils::Vector2D(destScor.x, destScor.y + (28 + (38*2))), 1);
 
-        SDL_Rect destCon = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
-        destCon.x = Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10;
-        destCon.y = 192 - destCon.h;
+
         g->drawing()->string(std::string("CONDITION"), g->renderer()->m_fonts[0], { 255, 255, 255 }
-            , Utils::Vector2D(destCon.x, destCon.y), 1);
+                , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
-        SDL_Rect rec4 = { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 };
-        g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, rec4);
+        g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 });
 
-        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320), Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);//lvlmgn->getBaseShipsSpawnLocations()
+        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320)
+                                  , Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);
 
-        g->drawing()->string(std::to_string(player1->getLives()), g->renderer()->m_fonts[0], { 255, 255, 255 }
-                , Utils::Vector2D(destScor.x, destScor.y + (28 + 320 + 448)), 1);
+        for (size_t i = 0; i < player1->getLives(); i++) {
+            if (!lives[i])
+                continue;
+
+            lives[i]->draw();
+        }
+
     }
 } // Game

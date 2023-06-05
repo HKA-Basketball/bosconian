@@ -8,7 +8,7 @@ namespace Game {
     class BaseEntity {
     private:
         std::vector<Entity*> baseShipEntitys;
-        Entity* m_spy;
+        Entity* m_spy = nullptr;
 
     public:
         BaseEntity(Utils::Vector2D pos, float deg, Drawing::Graphics* drawing)
@@ -55,6 +55,9 @@ namespace Game {
         }
 
         ~BaseEntity() {
+            if (m_spy)
+                Utils::PlayOptions::maxSpy++;
+
             // Clean up the entities
             for (Entity *entity: baseShipEntitys) {
                 delete entity;

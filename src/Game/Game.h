@@ -22,6 +22,8 @@ namespace Game {
         Player* player1;
         std::vector<Projectile*> playersProjectiles;
 
+        std::vector<Drawing::Texture*> lives;
+
     public:
         explicit Game(Initialization::Initializer *g);
 
@@ -31,6 +33,11 @@ namespace Game {
                 delete entity;
             }
             nonMovingEntitys.clear();
+
+            for (Drawing::Texture* texture : lives) {
+                delete texture;
+            }
+            lives.clear();
 
             // Clean up the base ship entities
             for (BaseEntity* entity : baseShipEntitys) {
@@ -50,7 +57,9 @@ namespace Game {
 
             // Clean up the entity manager and level manager
             //delete entities;
+            //entities = nullptr;
             delete lvlmgn;
+            lvlmgn = nullptr;
         }
 
         void update(float deltaTime);
@@ -58,6 +67,8 @@ namespace Game {
         void render(float deltaTime);
 
         void init();
+
+        void HUD(std::vector<Utils::Vector2D> baseShipPos);
     };
 
 } // Game
