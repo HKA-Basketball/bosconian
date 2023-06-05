@@ -63,6 +63,7 @@ namespace Game {
             Utils::Vector2D pos;
             bool positionValid = false;
             int maxAttempts = 100; // Maximum number of attempts to find a valid position
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
 
             while (!positionValid && maxAttempts > 0) {
                 int col = rand() % numCols;
@@ -72,20 +73,33 @@ namespace Game {
                 pos = Utils::Vector2D(x, y);
 
                 // Check if the position is within the map boundaries
-                if (pos.x >= 0 && pos.x < Utils::GlobalVars::lvlWidth && pos.y >= 0 && pos.y < Utils::GlobalVars::lvlHeight) {
-                    // Check distance from entities in the same and adjacent cells
-                    positionValid = true;
-                    int startCol = std::max(0, col - 1);
-                    int endCol = std::min(numCols - 1, col + 1);
-                    int startRow = std::max(0, row - 1);
-                    int endRow = std::min(numRows - 1, row + 1);
+                if (pos.x >= 0 && pos.x < Utils::GlobalVars::lvlWidth - img->getSize().x && pos.y >= 0 && pos.y < Utils::GlobalVars::lvlHeight - img->getSize().y) {
 
-                    for (int c = startCol; c <= endCol; c++) {
-                        for (int r = startRow; r <= endRow; r++) {
-                            for (const auto& entity : grid[c][r]) {
-                                float dist = (pos - entity->getOrigin()).length();
-                                if (dist < minDistance) {
-                                    positionValid = false;
+                    float distToPlayer = (pos - Utils::GlobalVars::cameraPos).length();
+                    if (distToPlayer >= minDistance) {
+                        // Check distance from entities in the same and adjacent cells
+                        positionValid = true;
+                        int startCol = std::max(0, col - 1);
+                        int endCol = std::min(numCols - 1, col + 1);
+                        int startRow = std::max(0, row - 1);
+                        int endRow = std::min(numRows - 1, row + 1);
+
+                        for (int c = startCol; c <= endCol; c++) {
+                            for (int r = startRow; r <= endRow; r++) {
+                                for (const auto &entity: grid[c][r]) {
+                                    float distX = std::abs(pos.x - entity->getOrigin().x);
+                                    float distY = std::abs(pos.y - entity->getOrigin().y);
+                                    int otherEntityWidth = entity->getSize().x;
+                                    int otherEntityHeight = entity->getSize().y;
+                                    float minDistanceWithSizeX = minDistance + img->getSize().x + otherEntityWidth;
+                                    float minDistanceWithSizeY = minDistance + img->getSize().y + otherEntityHeight;
+
+                                    if (distX < minDistanceWithSizeX && distY < minDistanceWithSizeY) {
+                                        positionValid = false;
+                                        break;
+                                    }
+                                }
+                                if (!positionValid) {
                                     break;
                                 }
                             }
@@ -93,20 +107,12 @@ namespace Game {
                                 break;
                             }
                         }
-                        if (!positionValid) {
-                            break;
-                        }
                     }
                 }
 
                 maxAttempts--;
             }
 
-            /*if (!positionValid) {
-
-            }*/
-
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
             nonMovingEntitys[i] = new Entity(pos, ang, img, listPTS[ranImg]);
             nonMovingEntitys[i]->setAngle(ang);
             nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
@@ -117,10 +123,6 @@ namespace Game {
             grid[col][row].push_back(nonMovingEntitys[i]);
         }
         // -------------------------------------------------------------------------------------
-
-        std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), "spy", 0.f, true, "spritesheet.png");
-        spyTest = new Entity({Utils::GlobalVars::cameraPos.x - 200, Utils::GlobalVars::cameraPos.y}, 0.f, img, 600);
-        spyTest->setBehavior(new SpyBehavior());
     }
 
     int getFPS()
@@ -147,8 +149,6 @@ namespace Game {
         player1->setOrigin(Utils::GlobalVars::cameraPos);
         player1->setAngle(Utils::GlobalVars::playerAngle);
         player1->update(deltaTime);
-
-        spyTest->update(deltaTime);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
             if (!nonMovingEntitys[i]->isActive())
@@ -358,7 +358,6 @@ namespace Game {
         }
 
         player1->draw(deltaTime);
-        spyTest->draw(deltaTime);
 
         // Render the player's projectiles
         for (auto& projectile : playersProjectiles) {

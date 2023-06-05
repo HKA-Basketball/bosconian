@@ -14,15 +14,13 @@ namespace Game {
     class Game {
     private:
         Initialization::Initializer* g;
-        EntityManager* entities;
+        //EntityManager* entities;
         LevelManager* lvlmgn;
 
         std::vector<Entity*> nonMovingEntitys;
         std::vector<BaseEntity*> baseShipEntitys;
         Player* player1;
         std::vector<Projectile*> playersProjectiles;
-
-        Entity* spyTest;
 
     public:
         explicit Game(Initialization::Initializer *g);
@@ -44,10 +42,6 @@ namespace Game {
             delete player1;
             player1 = nullptr;
 
-
-            delete spyTest;
-            spyTest = nullptr;
-
             // Clean up the player projectiles
             for (Projectile* projectile : playersProjectiles) {
                 delete projectile;
@@ -55,7 +49,7 @@ namespace Game {
             playersProjectiles.clear();
 
             // Clean up the entity manager and level manager
-            delete entities;
+            //delete entities;
             delete lvlmgn;
         }
 
