@@ -26,6 +26,8 @@ namespace Game {
 
     void Game::init()
     {
+        player1->clearProjectiels();
+
         std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
         std::vector<std::string> listIMG{"bomb", "astroid-01", "astroid-02", "astroid-03"};
         std::vector<int> listPTS{20, 10, 10, 10};
@@ -239,6 +241,8 @@ namespace Game {
         if (Utils::GlobalVars::lvlEditorActive)
             return;
 
+        bool dead = false;
+
         for (int i = 0; i < entities->getEntities().size(); i++) {
             if (!entities->getEntities()[i]->isActive())
                 continue;
@@ -261,23 +265,7 @@ namespace Game {
             if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
             {
                 entities->getEntities()[i]->setTriggerAnimation(true);
-
-                // TODO: trigger Dead screen if ...
-                player1->setLives(player1->getLives()-1);
-
-                if (player1->getLives() <= 0) {
-                    player1->setLives(3);
-                    lvlmgn.selectLevel(1);
-                    Utils::GlobalVars::currenPTS = 0;
-                }
-
-                //player1->setActive(false);
-                this->init();
-
-                Utils::Config sw_cfg(".\\cfg\\config.ini");
-                sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
-                sw_cfg.write();
-                sw_cfg.read();
+                dead = true;
             }
         }
 
@@ -309,25 +297,46 @@ namespace Game {
                 if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
                 {
                     ent[0]->setTriggerAnimation(true);
-
-                    // TODO: trigger Dead screen if ...
-                    player1->setLives(player1->getLives()-1);
-
-                    if (player1->getLives() <= 0) {
-                        player1->setLives(3);
-                        lvlmgn.selectLevel(1);
-                        Utils::GlobalVars::currenPTS = 0;
-                    }
-
-                    //player1->setActive(false);
-                    this->init();
-
-                    Utils::Config sw_cfg(".\\cfg\\config.ini");
-                    sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
-                    sw_cfg.write();
-                    sw_cfg.read();
+                    dead = true;
                 }
             }
+
+            if (baseShipEntitys[i]->getSpy()) {
+                if (baseShipEntitys[i]->getSpy()->isActive() &&
+                    player1->checkProjectiels(baseShipEntitys[i]->getSpy()->getHitbox()->getHitbox())) {
+                    baseShipEntitys[i]->getSpy()->setTriggerAnimation(true);
+                    Utils::GlobalVars::currenPTS += baseShipEntitys[i]->getSpy()->getPTS();
+                    if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+                        Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
+                    }
+                }
+
+                if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(),
+                                               baseShipEntitys[i]->getSpy()->getHitbox()->getHitbox())) {
+                    ent[0]->setTriggerAnimation(true);
+                    dead = true;
+                }
+            }
+        }
+
+        if (dead)
+        {
+            // TODO: trigger Dead screen if ...
+            player1->setLives(player1->getLives()-1);
+
+            if (player1->getLives() <= 0) {
+                player1->setLives(3);
+                lvlmgn.selectLevel(1);
+                Utils::GlobalVars::currenPTS = 0;
+            }
+
+            //player1->setActive(false);
+            this->init();
+
+            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+            sw_cfg.write();
+            sw_cfg.read();
         }
 
         if (count == 0) {
