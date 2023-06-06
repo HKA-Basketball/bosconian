@@ -49,16 +49,16 @@ int main(int argc, char* args[])
     //sw_cfg.write();
     sw_cfg.read();
 
-    Initialization::Initializer* g = Initialization::Initializer::getInstance();
+    Init::Initializer* g = Init::Initializer::getInstance();
     if (!g->initGameObjs())
     {
-        LOG(std::string("Initialization failed!"));
+        LOG(std::string("Init failed!"));
         delete g;
         SDL_Quit();
-        throw std::runtime_error("Initialization failed");
+        throw std::runtime_error("Init failed");
     }
 
-    Game::Game g_game(g);
+    Game::Game g_game;
     g_game.init();
     g_game.update(0.f);
 
@@ -66,12 +66,12 @@ int main(int argc, char* args[])
     menuRect.x -= menuRect.w/2;
     menuRect.y -= menuRect.h/2;
 
-    Menu::Menu menu(g->drawing(), g->event(), g->renderer()->m_fonts[0]
+    Menu::Menu menu(Renderer::g_renderer->m_fonts[0]
                     , menuRect, {148, 148, 148, 255}
                     , {255, 255, 255, 255}, 45);
 
-    Menu::DipSwitch swa(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWA", 200, 200, 8);
-    Menu::DipSwitch swb(g->drawing(), g->event(), g->renderer()->m_fonts[0], "SWB", 600, 200, 8);
+    Menu::DipSwitch swa(Renderer::g_renderer->m_fonts[0], "SWA", 200, 200, 8);
+    Menu::DipSwitch swb(Renderer::g_renderer->m_fonts[0], "SWB", 600, 200, 8);
 
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
@@ -89,13 +89,13 @@ int main(int argc, char* args[])
 
     Uint64 previousTime = SDL_GetTicks64();
     //Loop
-    while (!g->event()->logging())
+    while (!Event::g_event->logging())
     {
         Uint64 currentTime = SDL_GetTicks64();
         float deltaTime = (currentTime - previousTime) / 1000.0f;
         previousTime = currentTime;
 
-        g->event()->manageGameVars(deltaTime);
+        Event::g_event->manageGameVars(deltaTime);
 
         if (!Utils::GlobalVars::menuActive) {
             g_game.update(deltaTime);
@@ -111,10 +111,10 @@ int main(int argc, char* args[])
                 menu.handleEvent();
 
             // for our background if needed
-            g->world()->update(deltaTime);
+            Game::g_world->update(deltaTime);
         }
 
-        g->renderer()->beginScene();
+        Renderer::g_renderer->beginScene();
 
         g_game.render(deltaTime);
 
@@ -128,7 +128,7 @@ int main(int argc, char* args[])
             }
         }
 
-        g->renderer()->endScene();
+        Renderer::g_renderer->endScene();
 
         /*Uint32 frameTime = SDL_GetTicks64() - currentTime;
         if (frameTime < 1000 / 120) {

@@ -1,6 +1,6 @@
 #include "Initializer.h"
 
-namespace Initialization {
+namespace Init {
     Initializer* Initializer::instance = nullptr;
 
     bool Initializer::initGameObjs() {
@@ -18,41 +18,41 @@ namespace Initialization {
             return 0;
         }
 
-        g_renderer = new Renderer::RendererSDL(g_window, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+        Renderer::g_renderer = new Renderer::RendererSDL(g_window, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
 
-        if (!g_renderer) {
+        if (!Renderer::g_renderer) {
             LOG(std::string("Error: RendererSDL"));
-            delete g_renderer;
+            delete Renderer::g_renderer;
             return 0;
         }
 
-        g_drawing = new Drawing::Graphics(g_renderer);
-        if (!g_drawing) {
+        Drawing::g_drawing = new Drawing::Graphics();
+        if (!Drawing::g_drawing) {
             LOG(std::string("Error: Graphics"));
-            delete g_renderer;
+            delete Renderer::g_renderer;
             return 0;
         }
 
-        g_world = new Game::World(g_drawing);
-        if (!g_world) {
+        Game::g_world = new Game::World();
+        if (!Game::g_world) {
             LOG(std::string("Error: World"));
-            delete g_renderer;
+            delete Renderer::g_renderer;
             return 0;
         }
 
-        g_event = new Event::EventManager();
-        if (!g_event)
+        Event::g_event = new Event::EventManager();
+        if (!Event::g_event)
         {
             LOG(std::string("Error: EventManager"));
-            delete g_renderer;
+            delete Renderer::g_renderer;
             return 0;
         }
 
-        g_sound = new Sound::SoundManager();
-        if (!g_sound)
+        Sound::g_sound = new Sound::SoundManager();
+        if (!Sound::g_sound)
         {
             LOG(std::string("Error: SoundManager"));
-            delete g_renderer;
+            delete Renderer::g_renderer;
             return 0;
         }
 
@@ -66,22 +66,22 @@ namespace Initialization {
     }
 
     Renderer::RendererSDL *Initializer::renderer() const {
-        return g_renderer;
+        return Renderer::g_renderer;
     }
 
     Drawing::Graphics *Initializer::drawing() const {
-        return g_drawing;
+        return Drawing::g_drawing;
     }
 
     Game::World *Initializer::world() const {
-        return g_world;
+        return Game::g_world;
     }
 
     Event::EventManager *Initializer::event() const {
-        return g_event;
+        return Event::g_event;
     }
 
     Sound::SoundManager *Initializer::sound() const {
-        return g_sound;
+        return Sound::g_sound;
     }
-} // Initialization
+} // Init

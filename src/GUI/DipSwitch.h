@@ -153,10 +153,10 @@ namespace Menu {
         Event::EventManager* g_event;
 
     public:
-        DipSwitch(Drawing::Graphics* drawing, Event::EventManager* event, TTF_Font* font, std::string label, int x, int y, int numOptions)
+        DipSwitch(TTF_Font* font, std::string label, int x, int y, int numOptions)
             : m_model(label, x, y, numOptions)
-            , m_view(drawing, font, m_model)
-            , g_event(event)
+            , m_view(Drawing::g_drawing, font, m_model)
+            , g_event(Event::g_event)
         {}
 
         void handleEvent()

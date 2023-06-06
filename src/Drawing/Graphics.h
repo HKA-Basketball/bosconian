@@ -33,12 +33,13 @@ namespace Drawing {
         std::list<std::string> accessQueue;
 
     public:
-        Graphics(Renderer::RendererSDL* renderer);
+        Graphics();
 
         ~Graphics() {
             // Clean up the textures
             for (auto& pair : textures) {
                 SDL_DestroyTexture(pair.second);
+                pair.second = nullptr;
             }
             textures.clear();
 
@@ -64,7 +65,9 @@ namespace Drawing {
 
         std::shared_ptr<SDL_Texture> getText(std::string text, TTF_Font *font, SDL_Color color);
         std::shared_ptr<SDL_Texture> creatTextTexture(std::string text, TTF_Font* font, SDL_Color color);
-    };
+
+        void fillRectangleOutline(SDL_Color color, SDL_FRect rect);
+    }; extern Graphics* g_drawing;
 
 } // Drawing
 

@@ -141,10 +141,10 @@ namespace Menu {
         Event::EventManager* g_event;
 
     public:
-        Menu(Drawing::Graphics* drawing, Event::EventManager* event, TTF_Font* font, SDL_Rect menuRect, SDL_Color normalColor, SDL_Color selectedColor, int lineHeight)
+        Menu(TTF_Font* font, SDL_Rect menuRect, SDL_Color normalColor, SDL_Color selectedColor, int lineHeight)
                 : m_model()
-                , m_view(drawing, font, menuRect, normalColor, selectedColor, lineHeight)
-                , g_event(event)
+                , m_view(Drawing::g_drawing, font, menuRect, normalColor, selectedColor, lineHeight)
+                , g_event(Event::g_event)
         {}
 
         void addOption(std::string option, std::function<void()> callback) {

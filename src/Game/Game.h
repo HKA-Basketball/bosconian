@@ -2,7 +2,7 @@
 #define BOSCONIAN_GAME_H
 
 #include "../../includes.h"
-#include "../Utilities/Initializer.h"
+#include "World.h"
 #include "Projectile.h"
 #include "EntityManager.h"
 #include "Player.h"
@@ -14,36 +14,29 @@ namespace Game {
 
     class Game {
     private:
-        Initialization::Initializer* g;
-        //EntityManager* entities;
+        EntityManager* entities;
         LevelManager lvlmgn;
         LevelEditor lvlEditor;
 
-        std::vector<Entity*> nonMovingEntitys;
         std::vector<BaseEntity*> baseShipEntitys;
         Player* player1;
-        std::vector<Projectile*> playersProjectiles;
 
         std::vector<Drawing::Texture*> lives;
 
     public:
-        explicit Game(Initialization::Initializer *g);
+        explicit Game();
 
         ~Game() {
-            // Clean up the non-moving entities
-            for (Entity* entity : nonMovingEntitys) {
-                delete entity;
-            }
-            nonMovingEntitys.clear();
-
             for (Drawing::Texture* texture : lives) {
                 delete texture;
+                texture = nullptr;
             }
             lives.clear();
 
             // Clean up the base ship entities
             for (BaseEntity* entity : baseShipEntitys) {
                 delete entity;
+                entity = nullptr;
             }
             baseShipEntitys.clear();
 
@@ -51,15 +44,9 @@ namespace Game {
             delete player1;
             player1 = nullptr;
 
-            // Clean up the player projectiles
-            for (Projectile* projectile : playersProjectiles) {
-                delete projectile;
-            }
-            playersProjectiles.clear();
-
             // Clean up the entity manager
-            //delete entities;
-            //entities = nullptr;
+            delete entities;
+            entities = nullptr;
         }
 
         LevelManager getLevelManager() {

@@ -16,6 +16,7 @@ namespace Game {
         if (it != entities.end()) {
             entities.erase(it);
             delete entity;
+            entity = nullptr;
         }
     }
 
@@ -26,15 +27,24 @@ namespace Game {
         entities.clear();
     }
 
-    void EntityManager::update() {
+    void EntityManager::update(float deltaTime) {
         for (Entity* entity : entities) {
-            entity->update();
+            if (!entity->isActive()) {
+                removeEntity(entity);
+                continue;
+            }
+
+            entity->update(deltaTime);
         }
     }
 
-    void EntityManager::render() {
+    const std::vector<Entity*> &EntityManager::getEntities() const {
+        return entities;
+    }
+
+    void EntityManager::render(float deltaTime) {
         for (Entity* entity : entities) {
-            entity->draw();
+            entity->draw(deltaTime);
         }
     }
 

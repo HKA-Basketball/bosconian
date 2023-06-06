@@ -44,7 +44,7 @@ namespace Renderer {
 
         void beginScene();
         void endScene();
-    };
+    }; extern RendererSDL* g_renderer;
 
     /*class RendererD3D {
     private:

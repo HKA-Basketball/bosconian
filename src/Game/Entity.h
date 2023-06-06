@@ -4,6 +4,7 @@
 #include "../../includes.h"
 #include "../Drawing/Texture.h"
 #include "Hitbox.h"
+#include "Projectile.h"
 
 namespace Game {
 
@@ -18,6 +19,7 @@ namespace Game {
         Game::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
+        std::vector<Projectile*> projectiles;
 
     public:
         EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D size, Uint64 points = 0) {
@@ -43,6 +45,12 @@ namespace Game {
         }
 
         ~EntityModel() {
+            for (Projectile* projectile : projectiles) {
+                delete projectile;
+                projectile = nullptr;
+            }
+            projectiles.clear();
+
             delete hitbox;
             hitbox = nullptr;
         }
@@ -51,6 +59,24 @@ namespace Game {
             // Update the hitbox position and angle based on the entity's properties
             hitbox->updateHitboxPos(origin + hitboxPos);
             //hitbox->updateHitboxAngle(angle);
+        }
+
+        const std::vector<Projectile*> &getProjectiles() const {
+            return projectiles;
+        }
+
+        void removeProjectile(int index) {
+            if (!projectiles[index])
+                return;
+
+            delete projectiles[index];
+            projectiles[index] = nullptr;
+            std::swap(projectiles[index], projectiles.back());
+            projectiles.pop_back();
+        }
+
+        void addProjectile(Projectile* pro) {
+            projectiles.push_back(pro);
         }
 
         bool isTriggerAnimation() const {
@@ -208,6 +234,9 @@ namespace Game {
     private:
         bool animationStart = false;
         bool animationEnd = false;
+        bool canShoot = false;
+        Uint64 timeSinceLastProjectile = 0;
+        const Uint64 projectileInterval = 1500;
         std::string texture;
 
     public:
@@ -218,6 +247,40 @@ namespace Game {
         void update(EntityModel& model, float deltaTime = 0.f) override {
             if (model.isTriggerAnimation() && !animationStart) {
                 animationStart = true;
+            }
+
+            Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
+            Utils::Vector2D canonPosition = model.getOrigin();
+
+            Utils::Vector2D direction = playerPosition - canonPosition;
+            float distance = direction.length();
+            direction.normalize();
+
+            // Calculate the angle between the Canon and the player
+            float angle = std::atan2(direction.y, direction.x);
+            angle = angle * (180.0f / M_PI); // Convert radians to degrees
+            float targetAngle = Utils::Math::normalizeAngle180(angle + 90.f);
+
+            float maxShootingDistance = 400.0f;
+            float viewAngleRange = 45.0f;
+
+            float angleDifference = std::abs(angle - model.getAngle());
+
+            // Check if the player is within the view area
+            bool playerInViewArea = angleDifference <= viewAngleRange || angleDifference >= (360.0f - viewAngleRange);
+            bool playerWithinDistance = distance <= maxShootingDistance;
+
+            if (playerInViewArea && playerWithinDistance && model.isActive()) {
+                Uint64 currentTime = SDL_GetTicks64();
+                if (currentTime - timeSinceLastProjectile >= projectileInterval) {
+                    canShoot = true;
+
+                    Projectile* newProjectile = new Projectile(model.getOrigin().x, model.getOrigin().y
+                            , 180, targetAngle);
+
+                    model.addProjectile(newProjectile);
+                    timeSinceLastProjectile = currentTime;
+                }
             }
 
             if (animationEnd)
@@ -465,6 +528,16 @@ namespace Game {
 
             m_model.update();
             m_view.update();
+
+            // Update the positions of the entity projectiles
+            for (int i = 0; i < m_model.getProjectiles().size(); i++) {
+                m_model.getProjectiles()[i]->update(deltaTime);
+                // Check if the projectile is out of bounds
+                if (m_model.getProjectiles()[i]->isOffscreen() || !m_model.getProjectiles()[i]->getActive()) {
+                    m_model.removeProjectile(i);
+                    i--;
+                }
+            }
         }
 
         void draw(float deltaTime = 0.f) {
@@ -472,6 +545,28 @@ namespace Game {
                 m_behavior->update(m_view, deltaTime);
 
             m_view.drawEntity();
+
+            // Render the player's projectiles
+            for (auto& projectile : m_model.getProjectiles()) {
+                projectile->render();
+            }
+        }
+
+        void addProjectile(Projectile* pro) {
+            m_model.addProjectile(pro);
+        }
+
+        bool checkProjectiels(SDL_Rect entityHitbox) {
+            for (int y = 0; y < m_model.getProjectiles().size(); y++){
+                if (!m_model.getProjectiles()[y]->getActive())
+                    continue;
+
+                if (m_model.getProjectiles()[y]->ProjectileHitsEntity(entityHitbox)) {
+                    m_model.getProjectiles()[y]->setActive(false);
+                    return true;
+                }
+            }
+            return false;
         }
 
         bool isActive() {

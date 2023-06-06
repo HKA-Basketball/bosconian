@@ -2,6 +2,8 @@
 #define BOSCONIAN_PLAYER_H
 
 #include "Entity.h"
+#include "../Event/EventManager.h"
+#include "../Sound/SoundManager.h"
 
 namespace Game {
 
@@ -39,6 +41,27 @@ namespace Game {
 
         int getCurrentLevel() const {
             return currentLevel;
+        }
+
+        void updateProjectiels(float deltaTime) {
+            static Uint64 timeSinceLastProjectile = 0;
+            const Uint64 projectileInterval = 250;
+
+            if (Event::g_event->isKeyClicked(SDL_SCANCODE_LCTRL, false))
+            {
+                Uint64 currentTime = SDL_GetTicks64();
+                if (currentTime - timeSinceLastProjectile >= projectileInterval) {
+                    Sound::g_sound->playSound(Sound::SOUND_SHOOT, 3, 0);
+                    // Add a new Projectile object to the vector
+                    Projectile* newProjectile1 = new Projectile(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
+                            , 1000, Utils::GlobalVars::playerAngle);
+                    Projectile* newProjectile2 = new Projectile(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
+                            , 1000, Utils::GlobalVars::playerAngle + 180);
+                    addProjectile(newProjectile1);
+                    addProjectile(newProjectile2);
+                    timeSinceLastProjectile = currentTime;
+                }
+            }
         }
     };
 

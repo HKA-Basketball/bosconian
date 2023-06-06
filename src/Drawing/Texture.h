@@ -20,7 +20,7 @@ namespace Drawing {
         SDL_Rect clipRect;
         float angle;
 
-        Texture(Drawing::Graphics* drawing, std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
+        Texture(std::string filename, float deg = 0.f, bool clipped = false, std::string spritesheet = "");
 
         bool changeTexture(std::string filename, bool clipped = false, std::string spritesheet = "");
 

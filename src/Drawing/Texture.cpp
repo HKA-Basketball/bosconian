@@ -2,8 +2,8 @@
 #include "Texture.h"
 
 namespace Drawing {
-    Texture::Texture(Drawing::Graphics* drawing, std::string filename, float deg, bool clipped, std::string spritesheet) {
-        this->g_drawing = drawing;
+    Texture::Texture(std::string filename, float deg, bool clipped, std::string spritesheet) {
+        this->g_drawing = Drawing::g_drawing;
         angle = deg;
 
         if (!changeTexture(filename, clipped, spritesheet))

@@ -13,17 +13,11 @@
 #include "../Game/World.h"
 #include "../Sound/SoundManager.h"
 
-namespace Initialization {
+namespace Init {
 
     class Initializer {
     private:
         Renderer::Window* g_window;
-        Renderer::RendererSDL* g_renderer;
-        Drawing::Graphics* g_drawing;
-        Game::World* g_world;
-        Event::EventManager* g_event;
-        Sound::SoundManager* g_sound;
-
 
         static Initializer* instance;
         Initializer() {}
@@ -39,19 +33,19 @@ namespace Initialization {
         ~Initializer() {
             // Clean up the pointers
             delete g_window;
-            delete g_renderer;
-            delete g_drawing;
-            delete g_world;
-            delete g_event;
-            delete g_sound;
+            delete Renderer::g_renderer;
+            delete Drawing::g_drawing;
+            delete Game::g_world;
+            delete Event::g_event;
+            delete Sound::g_sound;
 
             // Set the pointers to nullptr
             g_window = nullptr;
-            g_renderer = nullptr;
-            g_drawing = nullptr;
-            g_world = nullptr;
-            g_event = nullptr;
-            g_sound = nullptr;
+            Renderer::g_renderer = nullptr;
+            Drawing::g_drawing = nullptr;
+            Game::g_world = nullptr;
+            Event::g_event = nullptr;
+            Sound::g_sound = nullptr;
         }
 
         bool initGameObjs();
@@ -65,6 +59,6 @@ namespace Initialization {
 
     };
 
-} // Initialization
+} // Init
 
 #endif //BOSCONIAN_INITIALIZER_H

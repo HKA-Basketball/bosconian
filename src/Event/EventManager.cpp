@@ -2,6 +2,8 @@
 #include "../Utilities/GlobalVars.h"
 
 namespace Event {
+    EventManager* g_event;
+
     EventManager::EventManager() {
         mState = MouseState::Unknown;
         mButton = MouseButton::None;

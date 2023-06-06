@@ -101,7 +101,7 @@ namespace Game {
         {}
 
         bool drawBackground() {
-            if (!m_model.isInit())
+            if (!m_model.isInit() || !g_drawing)
                 return 0;
 
             for (auto& point : m_model.getVcPoints()) {
@@ -118,6 +118,9 @@ namespace Game {
         }
 
         void draw2DRadar(Utils::Vector2D pos, Utils::Vector2D size, std::vector<Utils::Vector2D> baseShips) {
+            if (!g_drawing)
+                return;
+
             SDL_Rect rec = { (int)pos.x, (int)pos.y, (int)size.x, (int)size.y };
             g_drawing->fillRectangle2({ 150, 0, 222, 255 }, rec);
 
@@ -146,9 +149,9 @@ namespace Game {
         WorldView m_view;
 
     public:
-        World(Drawing::Graphics* drawing)
+        World()
             : m_model()
-            , m_view(drawing, m_model)
+            , m_view(Drawing::g_drawing, m_model)
         {}
 
         void update(float deltaTime) {
@@ -164,7 +167,7 @@ namespace Game {
         void render2DRadar(Utils::Vector2D pos, Utils::Vector2D size, std::vector<Utils::Vector2D> baseShips) {
             m_view.draw2DRadar(pos, size, baseShips);
         }
-    };
+    }; extern World* g_world;
 
 } // Game
 

@@ -1,8 +1,15 @@
 #include "Graphics.h"
 
 namespace Drawing {
-    Graphics::Graphics(Renderer::RendererSDL* renderer) {
-        g_renderer = renderer->renderer;
+    Graphics* g_drawing;
+
+    Graphics::Graphics() {
+        g_renderer = Renderer::g_renderer->renderer;
+        if (!g_renderer) {
+            LOG("Error: Renderer is nullptr");
+            throw std::runtime_error("Failed to init Graphics");
+        }
+
         LOG(std::string("Graphics Successfully created"));
     }
 
@@ -36,6 +43,15 @@ namespace Drawing {
 
         SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, color.a);
         SDL_RenderDrawRect(g_renderer, &rect);
+    }
+
+    void Graphics::fillRectangleOutline(SDL_Color color, SDL_FRect rect)
+    {
+        SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderFillRectF(g_renderer, &rect);
+
+        SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, color.a);
+        SDL_RenderDrawRectF(g_renderer, &rect);
     }
 
     void Graphics::texture(SDL_Texture* tex, SDL_Rect* clip, SDL_Rect* rend, float angle, SDL_RendererFlip flip)

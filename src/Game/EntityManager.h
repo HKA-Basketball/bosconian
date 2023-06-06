@@ -18,8 +18,10 @@ namespace Game {
         void removeEntity(Entity* entity);
         void clearEntities();
 
-        void update();
-        void render();
+        void update(float deltaTime);
+        void render(float deltaTime);
+
+        const std::vector<Entity *> &getEntities() const;
     };
 
 

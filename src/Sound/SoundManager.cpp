@@ -1,6 +1,7 @@
 #include "SoundManager.h"
 
 namespace Sound {
+    SoundManager* g_sound;
 
     SoundManager::SoundManager() {
         if (!initSDL_OA())

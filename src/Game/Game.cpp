@@ -3,24 +3,25 @@
 #include "../Utilities/GlobalVars.h"
 
 namespace Game {
-    Game::Game(Initialization::Initializer *g)
-        : g(g)
-        , lvlEditor("lvl.ini")
+    Game::Game()
+        : lvlEditor("lvl.ini")
         , lvlmgn(Utils::GlobalVars::lvlsInfos)
     {
-        std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(g->drawing(), std::string("ship"), 0.f, true, "spritesheet.png");
+        entities = new EntityManager();
+
+        std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(std::string("ship"), 0.f, true, "spritesheet.png");
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
         for (size_t i = 0; i < 5; i++) {
-            Drawing::Texture* miniSpaceShip = new Drawing::Texture(g->drawing(), "ship", 0.f, true, "spritesheet.png");
+            Drawing::Texture* miniSpaceShip = new Drawing::Texture("ship", 0.f, true, "spritesheet.png");
 
             miniSpaceShip->setSize({42, 42});
             miniSpaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth + (i * 45), Utils::GlobalVars::windowHeight - 50));
             lives.push_back(miniSpaceShip);
         }
 
-        g->sound()->playSound(Sound::SOUND_BG, 2);
+        Sound::g_sound->playSound(Sound::SOUND_BG, 2);
     }
 
     void Game::init()
@@ -32,7 +33,7 @@ namespace Game {
         const int cellSize = 500; // size of each cell in the grid
         const int numCols = (Utils::GlobalVars::lvlWidth + cellSize - 1) / cellSize; // number of columns in the grid
         const int numRows = (Utils::GlobalVars::lvlHeight + cellSize - 1) / cellSize; // number of rows in the grid
-        std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store non-moving entities
+        std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store entities
 
         if (!Utils::GlobalVars::lvlEditorActive)
             Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
@@ -46,7 +47,7 @@ namespace Game {
 
             float ang = list[rand() % 2];
 
-            baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), ang, g->drawing());
+            baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), ang);
 
             // Mark the grid cells around the base ship as occupied
             int col = baseShipEntitys[i]->getEntitys()[0]->getOrigin().x / cellSize;
@@ -64,15 +65,14 @@ namespace Game {
             }
         }
 
-
-        playersProjectiles.clear();
-        // TODO: Move
-        // Only for testing
         // -------------------------------------------------------------------------------------
+        std::vector<Entity*> nonMovingEntitys;
         nonMovingEntitys.resize(50);
+        entities->clearEntities();
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
             if (nonMovingEntitys[i]) {
+                LOG("Need to del!");
                 delete nonMovingEntitys[i];
                 nonMovingEntitys[i] = nullptr;
             }
@@ -83,7 +83,7 @@ namespace Game {
             Utils::Vector2D pos;
             bool positionValid = false;
             int maxAttempts = 100; // Maximum number of attempts to find a valid position
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(g->drawing(), listIMG[ranImg], ang, true, "spritesheet.png");
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(listIMG[ranImg], ang, true, "spritesheet.png");
 
             while (!positionValid && maxAttempts > 0) {
                 int col = rand() % numCols;
@@ -136,6 +136,7 @@ namespace Game {
             nonMovingEntitys[i] = new Entity(pos, ang, img, listPTS[ranImg]);
             nonMovingEntitys[i]->setAngle(ang);
             nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
+            entities->addEntity(nonMovingEntitys[i]);
 
             // add entity to the grid
             int col = pos.x / cellSize;
@@ -167,39 +168,39 @@ namespace Game {
         if (!Utils::GlobalVars::lvlEditorActive)
             return;
 
-        if (g->event()->isKeyClicked(SDL_SCANCODE_B)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_B)) {
             lvlEditor.placeBase(lvlmgn.getCurrentLevel(), Utils::GlobalVars::cameraPos);
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             this->init();
         }
-        if (g->event()->isKeyClicked(SDL_SCANCODE_P)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_P)) {
             lvlEditor.setPlayerSpawnPos(lvlmgn.getCurrentLevel(), Utils::GlobalVars::cameraPos);
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             this->init();
         }
-        if (g->event()->isKeyClicked(SDL_SCANCODE_U)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_U)) {
             lvlEditor.undoBase(lvlmgn.getCurrentLevel());
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             this->init();
         }
-        if (g->event()->isKeyClicked(SDL_SCANCODE_K)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_K)) {
             lvlEditor.saveLvls();
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             this->init();
         }
 
-        if (g->event()->isKeyClicked(SDL_SCANCODE_M)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_M)) {
             lvlmgn.increaseLevel();
             this->init();
         }
-        if (g->event()->isKeyClicked(SDL_SCANCODE_N)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_N)) {
             lvlmgn.decreaseLevel();
             this->init();
         }
 
-        if (g->event()->isKeyClicked(SDL_SCANCODE_C)) {
+        if (Event::g_event->isKeyClicked(SDL_SCANCODE_C)) {
             Utils::GlobalVars::lvlEditorActive = false;
-            lvlEditor.saveLvls();
+            //lvlEditor.saveLvls();
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             lvlmgn.selectLevel(1);
             this->init();
@@ -209,24 +210,10 @@ namespace Game {
     void Game::update(float deltaTime) {
         doLvlEditorStuff();
 
-        g->world()->update(deltaTime);
+        g_world->update(deltaTime);
 
         player1->setOrigin(Utils::GlobalVars::cameraPos);
         player1->setAngle(Utils::GlobalVars::playerAngle);
-        player1->update(deltaTime);
-
-        for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            if (!nonMovingEntitys[i]->isActive()) {
-                delete nonMovingEntitys[i];
-                nonMovingEntitys[i] = nullptr;
-                std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
-                nonMovingEntitys.pop_back();
-                i--;
-                continue;
-            }
-
-            nonMovingEntitys[i]->update(deltaTime);
-        }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive()) {
@@ -241,72 +228,40 @@ namespace Game {
             baseShipEntitys[i]->update(deltaTime);
         }
 
-        static Uint64 timeSinceLastProjectile = 0;
-        const Uint64 projectileInterval = 250;
+        entities->update(deltaTime);
 
-        if (g->event()->isKeyClicked(SDL_SCANCODE_LCTRL, false))
-        {
-            Uint64 currentTime = SDL_GetTicks64();
-            if (currentTime - timeSinceLastProjectile >= projectileInterval) {
-                g->sound()->playSound(Sound::SOUND_SHOOT, 3, 0);
-                // Add a new Projectile object to the vector
-                Projectile* newProjectile1 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
-                                                            , 1000 * deltaTime, Utils::GlobalVars::playerAngle);
-                Projectile* newProjectile2 = new Projectile(g->drawing(), Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
-                                                            , 1000 * deltaTime, Utils::GlobalVars::playerAngle + 180);
-                playersProjectiles.push_back(newProjectile1);
-                playersProjectiles.push_back(newProjectile2);
-                timeSinceLastProjectile = currentTime;
-            }
-        }
+        player1->update(deltaTime);
+        player1->updateProjectiels(deltaTime);
 
-        // Update the positions of the player's projectiles
-        for (int i = 0; i < playersProjectiles.size(); i++) {
-            playersProjectiles[i]->update(1000 * deltaTime);
-            // Check if the projectile is out of bounds
-            if (playersProjectiles[i]->isOffscreen() || !playersProjectiles[i]->getActive()) {
-                delete playersProjectiles[i];
-                playersProjectiles[i] = nullptr;
-                std::swap(playersProjectiles[i], playersProjectiles.back());
-                playersProjectiles.pop_back();
-                i--;
-            }
-        }
     }
 
     void Game::postUpdate(float deltaTime) {
         if (Utils::GlobalVars::lvlEditorActive)
             return;
 
-        for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            if (!nonMovingEntitys[i]->isActive())
+        for (int i = 0; i < entities->getEntities().size(); i++) {
+            if (!entities->getEntities()[i]->isActive())
                 continue;
 
-            SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
+            SDL_Rect worldPosRec = entities->getEntities()[i]->getHitbox()->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
             if (!isOnScreen)
                 continue;
 
-            for (int y = 0; y < playersProjectiles.size(); y++){
-                if (!playersProjectiles[y]->getActive())
-                    continue;
-
-                if (nonMovingEntitys[i]->isActive() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
-                    nonMovingEntitys[i]->setTriggerAnimation(true);
-                    playersProjectiles[y]->setActive(false);
-                    Utils::GlobalVars::currenPTS += nonMovingEntitys[i]->getPTS();
-                    if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
-                        Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
-                    }
-
-                    break;
+            if (player1->checkProjectiels(worldPosRec)) {
+                entities->getEntities()[i]->setTriggerAnimation(true);
+                Utils::GlobalVars::currenPTS += entities->getEntities()[i]->getPTS();
+                if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+                    Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                 }
             }
 
             if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
             {
+                entities->getEntities()[i]->setTriggerAnimation(true);
+
                 // TODO: trigger Dead screen if ...
                 player1->setLives(player1->getLives()-1);
 
@@ -324,11 +279,6 @@ namespace Game {
                 sw_cfg.write();
                 sw_cfg.read();
             }
-
-            /*if (!nonMovingEntitys[i]->isActive()) {
-                std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
-                nonMovingEntitys.pop_back();
-            }*/
         }
 
         int count = 0;
@@ -340,30 +290,42 @@ namespace Game {
 
             std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
             for (int x = 0; x < ent.size(); x++) {
-
                 SDL_Rect worldPosRec = ent[x]->getHitbox()->getHitbox();
                 Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
                 Utils::Vector2D screenPos;
                 bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
 
-                for (int y = 0; y < playersProjectiles.size(); y++) {
-                    if (!playersProjectiles[y]->getActive())
-                        continue;
-
-                    if (ent[x]->isActive() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
-                        ent[x]->setTriggerAnimation(true);
-                        playersProjectiles[y]->setActive(false);
-                        Utils::GlobalVars::currenPTS += ent[x]->getPTS();
-                        if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
-                            Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
-                        }
-
-                        break;
+                if (ent[x]->isActive() && player1->checkProjectiels(worldPosRec)) {
+                    ent[x]->setTriggerAnimation(true);
+                    Utils::GlobalVars::currenPTS += ent[x]->getPTS();
+                    if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+                        Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
-                    if (ent[x]->isTriggerAnimation() && playersProjectiles[y]->ProjectileHitsEntity(worldPosRec)) {
-                        playersProjectiles[y]->setActive(false);
-                        break;
+                }
+                if (ent[x]->isTriggerAnimation() && player1->checkProjectiels(worldPosRec)) {
+
+                }
+
+                if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
+                {
+                    ent[0]->setTriggerAnimation(true);
+
+                    // TODO: trigger Dead screen if ...
+                    player1->setLives(player1->getLives()-1);
+
+                    if (player1->getLives() <= 0) {
+                        player1->setLives(3);
+                        lvlmgn.selectLevel(1);
+                        Utils::GlobalVars::currenPTS = 0;
                     }
+
+                    //player1->setActive(false);
+                    this->init();
+
+                    Utils::Config sw_cfg(".\\cfg\\config.ini");
+                    sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+                    sw_cfg.write();
+                    sw_cfg.read();
                 }
             }
         }
@@ -381,13 +343,16 @@ namespace Game {
 
     void Game::render(float deltaTime) {
         //Drawing
-        g->world()->renderBackground();
+        g_world->renderBackground();
 
-        for (int i = 0; i < nonMovingEntitys.size(); i++) {
+
+        entities->render(deltaTime);
+
+        /*for (int i = 0; i < nonMovingEntitys.size(); i++) {
             if (!nonMovingEntitys[i]->isActive())
                 continue;
 
-            nonMovingEntitys[i]->draw(deltaTime);
+            nonMovingEntitys[i]->draw(deltaTime);*/
 
             /*SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
@@ -406,7 +371,7 @@ namespace Game {
                 g->drawing()->rectangle({255, 0, 0, 255}, screenPosRect);
             else
                 g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);*/
-        }
+        //}
 
         std::vector<Utils::Vector2D> baseShipPos;
         for (int i = 0; i < baseShipEntitys.size(); i++) {
@@ -442,22 +407,18 @@ namespace Game {
 
         player1->draw(deltaTime);
 
-        // Render the player's projectiles
-        for (auto& projectile : playersProjectiles) {
-            projectile->render();
-        }
 
         // -------------------------------------------------------------------------------------
         char text[32];
         char pos[256];
 
         snprintf(text, sizeof(text), "FPS: %i", getFPS());
-        g->drawing()->string(std::string(text), g->renderer()->m_fonts[0], {255, 255, 255}, { 10, 5 });
+        Drawing::g_drawing->string(std::string(text), Renderer::g_renderer->m_fonts[0], {255, 255, 255}, { 10, 5 });
 
         snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)Utils::GlobalVars::cameraPos.x, (int)Utils::GlobalVars::cameraPos.y);
         SDL_Rect destR = { 0, 0, 0, 0 };
-        TTF_SizeText(g->renderer()->m_fonts[0], pos, &destR.w, &destR.h);
-        g->drawing()->string(std::string(pos), g->renderer()->m_fonts[0], { 255, 255, 255 }, Utils::Vector2D(Utils::GlobalVars::windowWidth - (destR.w + 15), 5));
+        TTF_SizeText(Renderer::g_renderer->m_fonts[0], pos, &destR.w, &destR.h);
+        Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[0], { 255, 255, 255 }, Utils::Vector2D(Utils::GlobalVars::windowWidth - (destR.w + 15), 5));
 
         // -------------------------------------------------------------------------------------
 
@@ -465,38 +426,38 @@ namespace Game {
     }
 
     void Game::HUD(std::vector<Utils::Vector2D> baseShipPos) {
-        g->drawing()->fillRectangle2({ 0, 0, 0, 255 }
+        Drawing::g_drawing->fillRectangle2({ 0, 0, 0, 255 }
                 , { Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight });
 
         SDL_Rect destScor = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
         destScor.x = Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10;
         destScor.y = 1;
-        g->drawing()->string(std::string("HI-SCORE"), g->renderer()->m_fonts[0], { 255, 0, 0 }
+        Drawing::g_drawing->string(std::string("HI-SCORE"), Renderer::g_renderer->m_fonts[0], { 255, 0, 0 }
                                     , Utils::Vector2D(destScor.x, destScor.y), 1);
 
         destScor.y += 28;
 
-        g->drawing()->string(std::to_string(Utils::GlobalVars::currenHiScore), g->renderer()->m_fonts[0], { 255, 255, 255 }
+        Drawing::g_drawing->string(std::to_string(Utils::GlobalVars::currenHiScore), Renderer::g_renderer->m_fonts[0], { 255, 255, 255 }
                                     , Utils::Vector2D(destScor.x, destScor.y), 1);
 
 
         destScor.y += 38*2;
-        g->drawing()->string(std::to_string(Utils::GlobalVars::currenPTS), g->renderer()->m_fonts[0], { 255, 255, 255 }
+        Drawing::g_drawing->string(std::to_string(Utils::GlobalVars::currenPTS), Renderer::g_renderer->m_fonts[0], { 255, 255, 255 }
                                     , Utils::Vector2D(destScor.x, destScor.y), 1);
 
 
-        g->drawing()->string(std::string("CONDITION"), g->renderer()->m_fonts[0], { 255, 255, 255 }
+        Drawing::g_drawing->string(std::string("CONDITION"), Renderer::g_renderer->m_fonts[0], { 255, 255, 255 }
                                     , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
-        g->drawing()->fillRectangle2(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition]
+        Drawing::g_drawing->fillRectangle2(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition]
                                      , { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 });
 
         std::string condition = Utils::GlobalVars::condition == 0 ? "GREEN" : Utils::GlobalVars::condition == 1 ? "YELLOW" : "RED!!!";
 
-        g->drawing()->string(condition, g->renderer()->m_fonts[0], { 0, 0, 0, 255 }
+        Drawing::g_drawing->string(condition, Renderer::g_renderer->m_fonts[0], { 0, 0, 0, 255 }
                 , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth/2, 240+32), 2);
 
-        g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320)
+        g_world->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320)
                                     , Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);
 
         for (size_t i = 0; i < player1->getLives(); i++) {
@@ -509,45 +470,45 @@ namespace Game {
         if (Utils::GlobalVars::lvlEditorActive)
         {
             int textWidth, textHeight;
-            TTF_SizeText(g->renderer()->m_fonts[1], "C: Exit Editor Mode", &textWidth, &textHeight);
+            TTF_SizeText(Renderer::g_renderer->m_fonts[1], "C: Exit Editor Mode", &textWidth, &textHeight);
             textHeight += 2;
             int y_Offset = 50;
 
-            g->drawing()->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*9+10});
+            Drawing::g_drawing->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*9+10});
 
-            g->drawing()->string(std::string("Editor Mode!"), g->renderer()->m_fonts[1], { 255, 0, 0 }
+            Drawing::g_drawing->string(std::string("Editor Mode!"), Renderer::g_renderer->m_fonts[1], { 255, 0, 0 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("Current Level: ") + std::to_string(lvlmgn.getCurrentLevel()), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("Current Level: ") + std::to_string(lvlmgn.getCurrentLevel()), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("B: Add Base"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("B: Add Base"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("P: Set Player Spawn"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("P: Set Player Spawn"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("U: Undo"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("U: Undo"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("K: Save in File"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("K: Save in File"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("M: Next Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("M: Next Level"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("N: Previous Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("N: Previous Level"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             y_Offset += textHeight;
 
-            g->drawing()->string(std::string("C: Exit Editor Mode"), g->renderer()->m_fonts[1], { 255, 255, 255 }
+            Drawing::g_drawing->string(std::string("C: Exit Editor Mode"), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
             //y_Offset += textHeight;
         }

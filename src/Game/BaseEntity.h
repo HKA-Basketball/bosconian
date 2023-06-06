@@ -11,7 +11,7 @@ namespace Game {
         Entity* m_spy = nullptr;
 
     public:
-        BaseEntity(Utils::Vector2D pos, float deg, Drawing::Graphics* drawing)
+        BaseEntity(Utils::Vector2D pos, float deg)
         {
             m_spy = nullptr;
             baseShipEntitys.resize(7);
@@ -33,12 +33,12 @@ namespace Game {
             }
 
             for (int i = 0; i < baseIMG.size(); i++) {
-                std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, baseIMG[i], 0.f, true, "spritesheet.png");
+                std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(baseIMG[i], 0.f, true, "spritesheet.png");
 
                 baseShipEntitys[i] = new Entity(pos + posOffsetList[i], 0.f, img, hitboxPosList[i], hitboxSizeList[i], (baseIMG[i].find("kern") != std::string::npos) ? 200 : 1500);
                 if (baseIMG[i].compare("kern") != std::string::npos) {
                     if (Utils::PlayOptions::maxSpy > 0) {
-                        std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(drawing, "spy", 0.f, true, "spritesheet.png");
+                        std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
                         m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, 600);
                         m_spy->setBehavior(new SpyBehavior());
                         Utils::PlayOptions::maxSpy--;
@@ -61,6 +61,7 @@ namespace Game {
             // Clean up the entities
             for (Entity *entity: baseShipEntitys) {
                 delete entity;
+                entity = nullptr;
             }
             baseShipEntitys.clear();
         }

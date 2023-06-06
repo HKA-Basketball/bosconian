@@ -41,7 +41,7 @@ namespace Sound {
         void freeAllSounds();
 
 
-    };
+    }; extern SoundManager* g_sound;
 
 } // Sound
 

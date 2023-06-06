@@ -11,7 +11,7 @@ namespace Game {
 
     class ProjectileModel {
     public:
-        ProjectileModel(int x, int y, int speed, float angle) :
+        ProjectileModel(float x, float y, float speed, float angle) :
                 m_x(x - 4),
                 m_y(y - 4),
                 m_speed(speed),
@@ -21,15 +21,25 @@ namespace Game {
             m_active = true;
         }
 
-        void update(float speed) {
+        void update(float deltaTime) {
             // Calculate the new position of the projectile based on the angle.
             float angleInRadians = Utils::Math::normalizeAngle360(m_angle - 90.f) * M_PI / 180.0;
-            float dx = speed * cos(angleInRadians);
-            float dy = speed * sin(angleInRadians);
 
-            // Update the position of the projectile in world coordinates.
-            m_x += static_cast<int>(std::round(dx));
-            m_y += static_cast<int>(std::round(dy));
+            // Calculate the direction components based on the angle.
+            Utils::Vector2D direction = {static_cast<float>(cos(angleInRadians)), static_cast<float>(sin(angleInRadians))};
+            direction.normalize();
+
+            // Calculate the velocity components based on the speed.
+            float velocityX = m_speed * direction.x;
+            float velocityY = m_speed * direction.y;
+
+            // Calculate the displacement in x and y directions.
+            float dx = velocityX * deltaTime;
+            float dy = velocityY * deltaTime;
+
+            // Update the position of the projectile with subpixel positioning.
+            m_x += dx;
+            m_y += dy;
 
             if ((m_x < 0))
                 m_x += Utils::GlobalVars::lvlWidth;
@@ -44,11 +54,11 @@ namespace Game {
                 m_y -= Utils::GlobalVars::lvlHeight;
         }
 
-        int getX() const {
+        float getX() const {
             return m_x;
         }
 
-        int getY() const {
+        float getY() const {
             return m_y;
         }
 
@@ -69,9 +79,9 @@ namespace Game {
         }
 
     private:
-        int m_x;
-        int m_y;
-        int m_speed;
+        float m_x;
+        float m_y;
+        float m_speed;
         int m_width;
         int m_height;
         float m_angle;
@@ -93,7 +103,7 @@ namespace Game {
 
             Utils::render::WorldToScreen(worldPos, screenPos);
 
-            SDL_Rect rect = { (int)screenPos.x, (int)screenPos.y, m_model.getWidth(), m_model.getHeight() };
+            SDL_FRect rect = { screenPos.x, screenPos.y, (float)m_model.getWidth(), (float)m_model.getHeight() };
             m_drawing->fillRectangleOutline({ 255, 255, 255, 255 }, rect);
         }
 
@@ -108,19 +118,16 @@ namespace Game {
 
     class Projectile {
     public:
-        Projectile(Drawing::Graphics* graphics, int x, int y, int speed, float angle) :
+        Projectile(int x, int y, int speed, float angle) :
                 m_model(x, y, speed, angle),
-                m_view(graphics, m_model) {
+                m_view(Drawing::g_drawing, m_model) {
         }
 
         bool isOffscreen() const {
-            int m_x = m_model.getX();
-            int m_y = m_model.getY();
-
-            Utils::Vector2D worldPos = Utils::Vector2D(m_x, m_y);
+            Utils::Vector2D worldPos = Utils::Vector2D(m_model.getX(), m_model.getY());
             Utils::Vector2D screenPos;
             Utils::render::WorldToScreen(worldPos, screenPos);
-            return (screenPos.x < -50 || screenPos.x > Utils::GlobalVars::windowWidth || screenPos.y < -50 || screenPos.y > Utils::GlobalVars::windowHeight);
+            return (screenPos.x < -200 || screenPos.x > Utils::GlobalVars::windowWidth || screenPos.y < -200 || screenPos.y > Utils::GlobalVars::windowHeight);
         }
 
         bool ProjectileHitsEntity(SDL_Rect entityHitbox)
@@ -155,9 +162,9 @@ namespace Game {
             return m_model.getActive();
         }
 
-        void update(float speed) {
+        void update(float deltaTime) {
             if (m_model.getActive()) {
-                m_model.update(speed);
+                m_model.update(deltaTime);
             }
         }
 

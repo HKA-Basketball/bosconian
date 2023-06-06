@@ -2,6 +2,8 @@
 #include "Renderer.h"
 
 namespace Renderer {
+    RendererSDL* g_renderer;
+
     RendererSDL::RendererSDL(Window *window, Uint32 flags) {
         renderer = SDL_CreateRenderer(window->sdl_HWND, -1, flags);
 

@@ -115,7 +115,7 @@ namespace Event {
             }
         }
 
-    };
+    }; extern EventManager* g_event;
 
 } // Event
 
