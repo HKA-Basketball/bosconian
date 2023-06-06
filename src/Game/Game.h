@@ -57,7 +57,7 @@ namespace Game {
             }
             playersProjectiles.clear();
 
-            // Clean up the entity manager and level manager
+            // Clean up the entity manager
             //delete entities;
             //entities = nullptr;
         }

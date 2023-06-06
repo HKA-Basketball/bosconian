@@ -216,15 +216,27 @@ namespace Game {
         player1->update(deltaTime);
 
         for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            if (!nonMovingEntitys[i]->isActive())
+            if (!nonMovingEntitys[i]->isActive()) {
+                delete nonMovingEntitys[i];
+                nonMovingEntitys[i] = nullptr;
+                std::swap(nonMovingEntitys[i], nonMovingEntitys.back());
+                nonMovingEntitys.pop_back();
+                i--;
                 continue;
+            }
 
             nonMovingEntitys[i]->update(deltaTime);
         }
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
-            if (!baseShipEntitys[i]->isActive())
+            if (!baseShipEntitys[i]->isActive()) {
+                delete baseShipEntitys[i];
+                baseShipEntitys[i] = nullptr;
+                std::swap(baseShipEntitys[i], baseShipEntitys.back());
+                baseShipEntitys.pop_back();
+                i--;
                 continue;
+            }
 
             baseShipEntitys[i]->update(deltaTime);
         }
@@ -253,8 +265,11 @@ namespace Game {
             playersProjectiles[i]->update(1000 * deltaTime);
             // Check if the projectile is out of bounds
             if (playersProjectiles[i]->isOffscreen() || !playersProjectiles[i]->getActive()) {
+                delete playersProjectiles[i];
+                playersProjectiles[i] = nullptr;
                 std::swap(playersProjectiles[i], playersProjectiles.back());
                 playersProjectiles.pop_back();
+                i--;
             }
         }
     }
@@ -457,24 +472,32 @@ namespace Game {
         destScor.x = Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10;
         destScor.y = 1;
         g->drawing()->string(std::string("HI-SCORE"), g->renderer()->m_fonts[0], { 255, 0, 0 }
-                , Utils::Vector2D(destScor.x, destScor.y), 1);
+                                    , Utils::Vector2D(destScor.x, destScor.y), 1);
 
+        destScor.y += 28;
 
         g->drawing()->string(std::to_string(Utils::GlobalVars::currenHiScore), g->renderer()->m_fonts[0], { 255, 255, 255 }
-                , Utils::Vector2D(destScor.x, destScor.y + 28), 1);
+                                    , Utils::Vector2D(destScor.x, destScor.y), 1);
 
 
+        destScor.y += 38*2;
         g->drawing()->string(std::to_string(Utils::GlobalVars::currenPTS), g->renderer()->m_fonts[0], { 255, 255, 255 }
-                , Utils::Vector2D(destScor.x, destScor.y + (28 + (38*2))), 1);
+                                    , Utils::Vector2D(destScor.x, destScor.y), 1);
 
 
         g->drawing()->string(std::string("CONDITION"), g->renderer()->m_fonts[0], { 255, 255, 255 }
-                , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
+                                    , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
-        g->drawing()->fillRectangle2({ 0, 255, 0, 255 }, { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 });
+        g->drawing()->fillRectangle2(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition]
+                                     , { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 });
+
+        std::string condition = Utils::GlobalVars::condition == 0 ? "GREEN" : Utils::GlobalVars::condition == 1 ? "YELLOW" : "RED!!!";
+
+        g->drawing()->string(condition, g->renderer()->m_fonts[0], { 0, 0, 0, 255 }
+                , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth/2, 240+32), 2);
 
         g->world()->render2DRadar(Utils::Vector2D(Utils::GlobalVars::windowWidth, 320)
-                                  , Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);
+                                    , Utils::Vector2D(Utils::GlobalVars::infoWidth, 448), baseShipPos);
 
         for (size_t i = 0; i < player1->getLives(); i++) {
             if (!lives[i])
@@ -483,46 +506,50 @@ namespace Game {
             lives[i]->draw();
         }
 
-
         if (Utils::GlobalVars::lvlEditorActive)
         {
             int textWidth, textHeight;
             TTF_SizeText(g->renderer()->m_fonts[1], "C: Exit Editor Mode", &textWidth, &textHeight);
+            textHeight += 2;
             int y_Offset = 50;
 
-            g->drawing()->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*8+(8*2)+10});
+            g->drawing()->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*9+10});
 
             g->drawing()->string(std::string("Editor Mode!"), g->renderer()->m_fonts[1], { 255, 0, 0 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
+
+            g->drawing()->string(std::string("Current Level: ") + std::to_string(lvlmgn.getCurrentLevel()), g->renderer()->m_fonts[1], { 255, 255, 255 }
+                    , Utils::Vector2D(10, y_Offset), 0);
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("B: Add Base"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("P: Set Player Spawn"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("U: Undo"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("K: Save in File"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("M: Next Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("N: Previous Level"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            y_Offset += textHeight;
 
             g->drawing()->string(std::string("C: Exit Editor Mode"), g->renderer()->m_fonts[1], { 255, 255, 255 }
                     , Utils::Vector2D(10, y_Offset), 0);
-            y_Offset += textHeight+2;
+            //y_Offset += textHeight;
         }
     }
 } // Game

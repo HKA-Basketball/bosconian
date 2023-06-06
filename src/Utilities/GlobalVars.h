@@ -116,7 +116,8 @@ namespace Utils {
         extern Uint64 currenHiScore;
         extern Vector2D cameraPos;
         extern float playerAngle;
-
+        extern int condition;
+        extern std::vector<SDL_Color> conditionColors;
 
         extern std::vector<Level> lvlsInfos;
 

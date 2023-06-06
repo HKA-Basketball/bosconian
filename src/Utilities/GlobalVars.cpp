@@ -140,6 +140,12 @@ namespace Utils {
         Uint64 currenHiScore = 0;
         Vector2D cameraPos((lvlWidth / 2), (lvlHeight / 2));
         float playerAngle = 0.f;
+        int condition = 0;
+        std::vector<SDL_Color> conditionColors = {
+                {0, 255, 0, 255},
+                {255, 255, 0, 255},
+                {255, 0, 0, 255}
+        };
 
         std::vector<Level> lvlsInfos;
 
