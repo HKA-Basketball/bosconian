@@ -12,12 +12,15 @@ namespace Game {
     public:
         LevelEditor(std::string cfg) {
             //lvl_cfg = Utils::Config(".\\cfg\\level.ini");
+            lvl_cfg.add_item("Level", "baseShipPos", Utils::GlobalVars::lvlsInfos);
         }
 
         void saveLvls() {
-            lvl_cfg.add_item("Level", "baseShipPos", Utils::GlobalVars::lvlsInfos);
-
             lvl_cfg.write();
+            lvl_cfg.read();
+        }
+
+        void readLvls() {
             lvl_cfg.read();
         }
 

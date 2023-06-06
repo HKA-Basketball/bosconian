@@ -202,7 +202,7 @@ namespace Game {
 
         if (Event::g_event->isKeyClicked(SDL_SCANCODE_C)) {
             Utils::GlobalVars::lvlEditorActive = false;
-            //lvlEditor.saveLvls();
+            lvlEditor.readLvls();
             lvlmgn.updateLevels(Utils::GlobalVars::lvlsInfos);
             lvlmgn.selectLevel(1);
             this->init();
