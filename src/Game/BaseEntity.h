@@ -90,6 +90,7 @@ namespace Game {
                 if (m_spy->isActive())
                     m_spy->update(deltaTime);
                 else {
+                    Utils::PlayOptions::maxSpy++;
                     delete m_spy;
                     m_spy = nullptr;
                 }
