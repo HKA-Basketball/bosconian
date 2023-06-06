@@ -49,14 +49,14 @@ namespace Game {
                 else
                     baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i]));
             }
-
-            if (m_spy)
-                baseShipEntitys.push_back(m_spy);
         }
 
         ~BaseEntity() {
-            if (m_spy)
+            if (m_spy) {
                 Utils::PlayOptions::maxSpy++;
+                delete m_spy;
+                m_spy = nullptr;
+            }
 
             // Clean up the entities
             for (Entity *entity: baseShipEntitys) {
@@ -86,12 +86,24 @@ namespace Game {
         }
 
         void update(float deltaTime) {
+            if (m_spy) {
+                if (m_spy->isActive())
+                    m_spy->update(deltaTime);
+                else {
+                    delete m_spy;
+                    m_spy = nullptr;
+                }
+            }
+
             for (auto& ent : baseShipEntitys) {
                 ent->update(deltaTime);
             }
         }
 
         void draw(float deltaTime) {
+            if (m_spy && m_spy->isActive())
+                m_spy->draw(deltaTime);
+
             if (baseShipEntitys[0]->isTriggerAnimation() && baseShipEntitys[0]->isActive()) {
                 baseShipEntitys[0]->draw(deltaTime);
                 return;
@@ -100,6 +112,10 @@ namespace Game {
             for (auto& ent : baseShipEntitys) {
                 ent->draw(deltaTime);
             }
+        }
+
+        Entity *getSpy() const {
+            return m_spy;
         }
     };
 
