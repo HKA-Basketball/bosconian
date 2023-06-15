@@ -13,7 +13,7 @@ namespace Init {
         g_window = new Renderer::Window("Bosconian - Playing", Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight, SDL_WINDOW_ALLOW_HIGHDPI);
 
         if (!g_window) {
-            delete g_window;
+            delete this;
             LOG(std::string("Could not create window: ") + SDL_GetError());
             return 0;
         }
@@ -22,21 +22,21 @@ namespace Init {
 
         if (!Renderer::g_renderer) {
             LOG(std::string("Error: RendererSDL"));
-            delete Renderer::g_renderer;
+            delete this;
             return 0;
         }
 
         Drawing::g_drawing = new Drawing::Graphics();
         if (!Drawing::g_drawing) {
             LOG(std::string("Error: Graphics"));
-            delete Renderer::g_renderer;
+            delete this;
             return 0;
         }
 
         Game::g_world = new Game::World();
         if (!Game::g_world) {
             LOG(std::string("Error: World"));
-            delete Renderer::g_renderer;
+            delete this;
             return 0;
         }
 
@@ -44,7 +44,7 @@ namespace Init {
         if (!Event::g_event)
         {
             LOG(std::string("Error: EventManager"));
-            delete Renderer::g_renderer;
+            delete this;
             return 0;
         }
 
@@ -52,7 +52,7 @@ namespace Init {
         if (!Sound::g_sound)
         {
             LOG(std::string("Error: SoundManager"));
-            delete Renderer::g_renderer;
+            delete this;
             return 0;
         }
 

@@ -53,7 +53,6 @@ int main(int argc, char* args[])
     if (!g->initGameObjs())
     {
         LOG(std::string("Init failed!"));
-        delete g;
         SDL_Quit();
         throw std::runtime_error("Init failed");
     }
