@@ -12,6 +12,25 @@ namespace Utils {
         Cabinet cabinet = Cabinet::Upright;
 
         int maxSpy = 1;
+
+        // Mehh ik
+        bool swa_0 = 0;
+        bool swa_1 = 0;
+        bool swa_2 = 0;
+        bool swa_3 = 1;
+        bool swa_4 = 1;
+        bool swa_5 = 0;
+        bool swa_6 = 1;
+        bool swa_7 = 0;
+
+        bool swb_0 = 0;
+        bool swb_1 = 0;
+        bool swb_2 = 0;
+        bool swb_3 = 1;
+        bool swb_4 = 0;
+        bool swb_5 = 0; // not used
+        bool swb_6 = 0; // not used
+        bool swb_7 = 0;
     }
 
     namespace Math {
@@ -26,7 +45,10 @@ namespace Utils {
 
         float normalizeAngle360(float angle)
         {
-            angle = fmod(angle, 360.0);
+            angle = fmod(angle, 360.0f);
+            if (angle < 0) {
+                angle += 360.0f;
+            }
             return angle;
         }
 
@@ -153,6 +175,7 @@ namespace Utils {
         bool menuActive = true;
         bool dipSwitchActive = false;
         bool need2ExitProc = false;
+        bool debugMode = false;
 
         bool lvlEditorActive = false;
 

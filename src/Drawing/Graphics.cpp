@@ -15,7 +15,7 @@ namespace Drawing {
 
     void Graphics::line(SDL_Color color, Utils::Vector2D from, Utils::Vector2D to) {
         SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
-        SDL_RenderDrawLine(g_renderer, from.x, from.y, to.x, to.y);
+        SDL_RenderDrawLineF(g_renderer, from.x, from.y, to.x, to.y);
     }
 
     void Graphics::rectangle(SDL_Color color, SDL_Rect rect)

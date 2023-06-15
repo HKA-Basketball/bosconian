@@ -87,6 +87,24 @@ namespace Utils {
         extern Cabinet cabinet;
 
         extern int maxSpy;
+
+        extern bool swa_0;
+        extern bool swa_1;
+        extern bool swa_2;
+        extern bool swa_3;
+        extern bool swa_4;
+        extern bool swa_5;
+        extern bool swa_6;
+        extern bool swa_7;
+
+        extern bool swb_0;
+        extern bool swb_1;
+        extern bool swb_2;
+        extern bool swb_3;
+        extern bool swb_4;
+        extern bool swb_5;
+        extern bool swb_6;
+        extern bool swb_7;
     }
 
     namespace Math {
@@ -127,6 +145,7 @@ namespace Utils {
         extern bool menuActive;
         extern bool dipSwitchActive;
         extern bool need2ExitProc;
+        extern bool debugMode;
 
         extern bool lvlEditorActive;
 

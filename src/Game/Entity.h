@@ -246,10 +246,14 @@ namespace Game {
         Uint64 timeSinceLastProjectile = 0;
         const Uint64 projectileInterval = 1500;
         std::string texture;
+        float viewDirection;
+
+        Utils::Vector2D canonPosition;
 
     public:
-        CanonBehavior(std::string afterShoot)
+        CanonBehavior(std::string afterShoot, float initialViewDirection)
             : texture(afterShoot)
+            , viewDirection(initialViewDirection)
         {}
 
         void update(EntityModel& model, float deltaTime = 0.f) override {
@@ -258,24 +262,34 @@ namespace Game {
             }
 
             Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
-            Utils::Vector2D canonPosition = model.getOrigin();
+            canonPosition = model.getOrigin();
 
             Utils::Vector2D direction = playerPosition - canonPosition;
             float distance = direction.length();
             direction.normalize();
 
             // Calculate the angle between the Canon and the player
-            float angle = std::atan2(direction.y, direction.x);
-            angle = angle * (180.0f / M_PI); // Convert radians to degrees
-            float targetAngle = Utils::Math::normalizeAngle180(angle + 90.f);
+            float angleToPlayer = std::atan2(direction.y, direction.x);
+            angleToPlayer = angleToPlayer * (180.0f / M_PI); // Convert radians to degrees
+            float targetAngle = Utils::Math::normalizeAngle180(angleToPlayer + 90.f);
 
             float maxShootingDistance = 400.0f;
-            float viewAngleRange = 45.0f;
+            float viewAngleRange = 45.f;
 
-            float angleDifference = std::abs(angle - model.getAngle());
+            float startAngle = viewDirection - (viewAngleRange / 2.0f);
+            float endAngle = viewDirection + (viewAngleRange / 2.0f);
+            angleToPlayer = Utils::Math::normalizeAngle360(angleToPlayer);
+            startAngle = Utils::Math::normalizeAngle360(startAngle);
+            endAngle = Utils::Math::normalizeAngle360(endAngle);
 
             // Check if the player is within the view area
-            bool playerInViewArea = angleDifference <= viewAngleRange || angleDifference >= (360.0f - viewAngleRange);
+            bool playerInViewArea = false;
+            if (startAngle <= endAngle) {
+                playerInViewArea = (angleToPlayer >= startAngle && angleToPlayer <= endAngle);
+            } else {
+                playerInViewArea = (angleToPlayer >= startAngle || angleToPlayer <= endAngle);
+            }
+
             bool playerWithinDistance = distance <= maxShootingDistance;
 
             if (playerInViewArea && playerWithinDistance && model.isActive()) {
@@ -296,12 +310,68 @@ namespace Game {
         }
 
         void update(EntityView& view, float deltaTime = 0.f) override {
+            if (Utils::GlobalVars::debugMode)
+                drawView();
+
             if (!animationStart)
                 return;
 
             view.setTexture(texture);
 
             animationEnd = true;
+        }
+    private:
+        void drawView() {
+            Utils::Vector2D tmp1;
+            Utils::Vector2D tmp2;
+
+            float viewLength = 400.0f;
+            float viewAngle = 45.f;
+
+            // Calculate the start and end angles of the view cone
+            float startAngle = viewDirection - (viewAngle / 2.0f);
+            float endAngle = viewDirection + (viewAngle / 2.0f);
+
+            float endX = canonPosition.x + viewLength * std::cos(startAngle * (M_PI / 180.0f));
+            float endY = canonPosition.y + viewLength * std::sin(startAngle * (M_PI / 180.0f));
+
+            Utils::render::WorldToScreen(canonPosition, tmp1);
+            Utils::render::WorldToScreen({endX, endY}, tmp2);
+
+            Drawing::g_drawing->line({255, 255, 255, 255}, tmp1, tmp2);
+
+            endX = canonPosition.x + viewLength * std::cos(endAngle * (M_PI / 180.0f));
+            endY = canonPosition.y + viewLength * std::sin(endAngle * (M_PI / 180.0f));
+            Utils::render::WorldToScreen(canonPosition, tmp1);
+            Utils::render::WorldToScreen({endX, endY}, tmp2);
+
+            Drawing::g_drawing->line({255, 255, 255, 255}, tmp1, tmp2);
+
+            Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
+
+            // Calculate the angle between the Canon and the player
+            float angleToPlayer = std::atan2(playerPosition.y - canonPosition.y, playerPosition.x - canonPosition.x);
+            angleToPlayer = angleToPlayer * (180.0f / M_PI); // Convert radians to degrees
+            angleToPlayer = Utils::Math::normalizeAngle360(angleToPlayer);
+            startAngle = Utils::Math::normalizeAngle360(startAngle);
+            endAngle = Utils::Math::normalizeAngle360(endAngle);
+
+            // Check if the player's angle is within the view cone
+            bool playerInCone = false;
+            if (startAngle <= endAngle) {
+                playerInCone = (angleToPlayer >= startAngle && angleToPlayer <= endAngle);
+            } else {
+                playerInCone = (angleToPlayer >= startAngle || angleToPlayer <= endAngle);
+            }
+
+            if (playerInCone) {
+                endX = canonPosition.x + viewLength * std::cos(angleToPlayer * (M_PI / 180.0f));
+                endY = canonPosition.y + viewLength * std::sin(angleToPlayer * (M_PI / 180.0f));
+                Utils::render::WorldToScreen(canonPosition, tmp1);
+                Utils::render::WorldToScreen({endX, endY}, tmp2);
+
+                Drawing::g_drawing->line({255, 0, 0, 255}, tmp1, tmp2);
+            }
         }
     };
 

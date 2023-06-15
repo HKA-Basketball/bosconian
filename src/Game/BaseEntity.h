@@ -23,6 +23,7 @@ namespace Game {
             // 0°
             std::vector<Utils::Vector2D> hitboxPosList{{0, 0}, {0, 0}, {14, -16}, {14, 16}, {0, 0}, {-14, -16}, {-14, 16}};
             std::vector<Utils::Vector2D> posOffsetList{{0, 0}, {-112, 0}, {-62, -80}, {-62, 80}, {112, 0}, {62, -80}, {62, 80}};
+            std::vector<float> viewOffset{0.f, 180.f, -90.f, 90.f, 0.f, -90.f, 90.f};
 
             if (deg > 1.f) {
                 baseExpoIMG = {"kern_90", "canon_L_90", "canon_L_Up_90", "canon_L_Down_90", "canon_R_90", "canon_R_Up_90", "canon_R_Down_90"};
@@ -30,6 +31,7 @@ namespace Game {
                 // 90°
                 hitboxPosList = {{0, 0}, {0, 0}, {14, 16}, {-14, 16}, {0, 0}, {14, -16}, {-14, -16}};
                 posOffsetList = {{0, 0}, {0, -112}, {80, -62}, {-80, -62}, {0, 112}, {80, 62}, {-80, 62}};
+                viewOffset = {0.f, -90.f, 0.f, 180.f, 90.f, 0.f, 180.f};
             }
 
             for (int i = 0; i < baseIMG.size(); i++) {
@@ -47,7 +49,7 @@ namespace Game {
                     baseShipEntitys[i]->setBehavior(new CoreBehavior());
                 }
                 else
-                    baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i]));
+                    baseShipEntitys[i]->setBehavior(new CanonBehavior(baseExpoIMG[i], viewOffset[i]));
             }
         }
 
