@@ -69,8 +69,9 @@ int main(int argc, char* args[])
                     , menuRect, {148, 148, 148, 255}
                     , {255, 255, 255, 255}, 45);
 
-    Menu::DipSwitch swa(Renderer::g_renderer->m_fonts[0], "SWA", 200, 200, 8);
-    Menu::DipSwitch swb(Renderer::g_renderer->m_fonts[0], "SWB", 600, 200, 8);
+    Menu::DipSwitch swa(Renderer::g_renderer->m_fonts[0], "SWA", 200, 200, {&Utils::PlayOptions::swa_0, &Utils::PlayOptions::swa_1, &Utils::PlayOptions::swa_2, &Utils::PlayOptions::swa_3, &Utils::PlayOptions::swa_4, &Utils::PlayOptions::swa_5, &Utils::PlayOptions::swa_6, &Utils::PlayOptions::swa_7});
+    Menu::DipSwitch swb(Renderer::g_renderer->m_fonts[0], "SWB", 600, 200, {&Utils::PlayOptions::swb_0, &Utils::PlayOptions::swb_1, &Utils::PlayOptions::swb_2, &Utils::PlayOptions::swb_3, &Utils::PlayOptions::swb_4, &Utils::PlayOptions::swb_5, &Utils::PlayOptions::swb_6, &Utils::PlayOptions::swb_7});
+    Menu::DipSwitch db(Renderer::g_renderer->m_fonts[0], "Debug Mode", 200, 400, {&Utils::GlobalVars::debugMode});
 
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
@@ -105,6 +106,11 @@ int main(int argc, char* args[])
             if (Utils::GlobalVars::dipSwitchActive) {
                 swa.handleEvent();
                 swb.handleEvent();
+                db.handleEvent();
+
+                if (Event::g_event->isKeyClicked(SDL_SCANCODE_ESCAPE, true)) {
+                    Utils::GlobalVars::dipSwitchActive = false;
+                }
             }
             else
                 menu.handleEvent();
@@ -124,6 +130,7 @@ int main(int argc, char* args[])
             if (Utils::GlobalVars::dipSwitchActive) {
                 swa.render();
                 swb.render();
+                db.render();
             }
         }
 

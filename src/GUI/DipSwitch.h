@@ -8,23 +8,23 @@ namespace Menu {
 
     class DipSwitchModel {
     public:
-        DipSwitchModel(std::string label, int x, int y, int numOptions)
+        DipSwitchModel(std::string label, int x, int y, std::vector<bool*> options)
             : m_label(label)
             , m_selectedOption(0)
             , m_x(x)
-            , m_y(y) {
-            m_selectedOptions.resize(numOptions, false);
-        }
+            , m_y(y)
+            , m_selectedOptions(options)
+        { }
 
         void toggleOption() {
             if (m_selectedOption >= 0 && m_selectedOption < m_selectedOptions.size()) {
-                m_selectedOptions[m_selectedOption] = !m_selectedOptions[m_selectedOption];
+                *(m_selectedOptions[m_selectedOption]) = !(*(m_selectedOptions[m_selectedOption]));
             }
         }
 
         bool isOptionSelected(int option) const {
             if (option >= 0 && option < m_selectedOptions.size()) {
-                return m_selectedOptions[option];
+                return *(m_selectedOptions[option]);
             }
             return false;
         }
@@ -77,8 +77,8 @@ namespace Menu {
 
     private:
         std::string m_label;
-        std::vector<bool> m_selectedOptions;
-        int m_selectedOption;
+        std::vector<bool*> m_selectedOptions;
+        unsigned int m_selectedOption;
         int m_x;
         int m_y;
     };
@@ -153,8 +153,8 @@ namespace Menu {
         Event::EventManager* g_event;
 
     public:
-        DipSwitch(TTF_Font* font, std::string label, int x, int y, int numOptions)
-            : m_model(label, x, y, numOptions)
+        DipSwitch(TTF_Font* font, std::string label, int x, int y, std::vector<bool*> options)
+            : m_model(label, x, y, options)
             , m_view(Drawing::g_drawing, font, m_model)
             , g_event(Event::g_event)
         {}
@@ -189,10 +189,10 @@ namespace Menu {
             if (g_event->isKeyClicked(SDL_SCANCODE_RIGHT, true)) {
                 m_model.selectNextOption();
             }*/
+        }
 
-            if (g_event->isKeyClicked(SDL_SCANCODE_ESCAPE, true)) {
-                Utils::GlobalVars::dipSwitchActive = false;
-            }
+        bool optionState(int i) {
+            return m_model.isOptionSelected(i);
         }
 
         void render() {
