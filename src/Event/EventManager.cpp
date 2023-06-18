@@ -73,7 +73,7 @@ namespace Event {
             movement = 10 * deltaTime;
 
 
-        if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false))
+        /*if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false))
             Utils::GlobalVars::cameraPos.x -= movement;
         if (isKeyClicked(SDL_SCANCODE_RIGHT, false) || isKeyClicked(SDL_SCANCODE_D, false))
             Utils::GlobalVars::cameraPos.x += movement;
@@ -81,8 +81,39 @@ namespace Event {
         if (isKeyClicked(SDL_SCANCODE_UP, false) || isKeyClicked(SDL_SCANCODE_W, false))
             Utils::GlobalVars::cameraPos.y -= movement;
         if (isKeyClicked(SDL_SCANCODE_DOWN, false) || isKeyClicked(SDL_SCANCODE_S, false))
-            Utils::GlobalVars::cameraPos.y += movement;
+            Utils::GlobalVars::cameraPos.y += movement;*/
 
+        static float moveX = 0.0f;  // Horizontal movement
+        static float moveY = -1.0f; // Vertical movement
+        static float oldMoveX = 0.0f;
+        static float oldMoveY = -1.0f;
+
+        if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false)) {
+            moveX = -1.0f;
+        }
+        else if (isKeyClicked(SDL_SCANCODE_RIGHT, false) || isKeyClicked(SDL_SCANCODE_D, false)) {
+            moveX = 1.0f;
+        }
+
+        if (isKeyClicked(SDL_SCANCODE_UP, false) || isKeyClicked(SDL_SCANCODE_W, false)) {
+            moveY = -1.0f;
+        }
+        else if (isKeyClicked(SDL_SCANCODE_DOWN, false) || isKeyClicked(SDL_SCANCODE_S, false)) {
+            moveY = 1.0f;
+        }
+
+        if (!Utils::GlobalVars::lvlEditorActive && moveX == 0 && moveY == 0)
+        {
+            moveX = oldMoveX;
+            moveY = oldMoveY;
+        }
+
+        Utils::GlobalVars::cameraPos.x += moveX * movement;
+        Utils::GlobalVars::cameraPos.y += moveY * movement;
+        oldMoveX = moveX;
+        oldMoveY = moveY;
+        moveX = 0.f;
+        moveY = 0.f;
 
         if (Utils::GlobalVars::cameraPos.x < oldPos.x) // Left
             Utils::GlobalVars::playerAngle = -90.f;
