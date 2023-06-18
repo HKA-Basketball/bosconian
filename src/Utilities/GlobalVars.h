@@ -36,39 +36,54 @@ namespace Utils {
         enum class BonusFighter
         {
             // if Lives not set to 5
-            None = 0,
-            Opt0_0,
+            //20K and 70K Only
+            Opt0_0  = 0,
+            //15K and 50K Only
             Opt0_1,
+            //30K, 100K, Every 100K
             Opt0_2,
-            Opt0_3,
+            //20K, 70K, Every 70K
+            Opt0_3, // Norm
+            //15K, 70K, Every 70K
             Opt0_4,
-            Opt0_5, // Norm
+            //15K, 50K, Every 50K
+            Opt0_5,
+            //10K, 50K, Every 50K
             Opt0_6,
+            None,
 
             // if Lives set to 5
+            //30K, 120K, Every 120K
             Opt1_0,
+            //30K, 100K, Every 100K
             Opt1_1,
+            //30K, 80K, Every 80K
             Opt1_2,
+            //30K and 120K Only
             Opt1_3, // Norm
+            //20K and 100K Only
             Opt1_4,
+            //20K and 70K Only
             Opt1_5,
-            Opt1_6
+            //15K and 70K Only
+            Opt1_6,
+            None_pl
         };
 
         enum class Lives
         {
-            One = 0,
-            Tow,
+            Five = 0,
             Three, // Norm
-            Five
+            Tow,
+            On
         };
 
         enum class Difficulty
         {
-            Auto = 0,
-            Easy,
+            Medium = 0, // Norm
             Hardest,
-            Medium  // Norm
+            Easy,
+            Auto
         };
 
         enum class Cabinet
@@ -105,6 +120,8 @@ namespace Utils {
         extern bool swb_5;
         extern bool swb_6;
         extern bool swb_7;
+
+        extern void updateSettings();
     }
 
     namespace Math {

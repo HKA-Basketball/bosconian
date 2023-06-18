@@ -108,6 +108,8 @@ int main(int argc, char* args[])
                 swb.handleEvent();
                 db.handleEvent();
 
+                Utils::PlayOptions::updateSettings();
+
                 if (Event::g_event->isKeyClicked(SDL_SCANCODE_ESCAPE, true)) {
                     Utils::GlobalVars::dipSwitchActive = false;
                 }

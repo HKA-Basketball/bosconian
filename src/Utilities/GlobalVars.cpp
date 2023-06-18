@@ -1,3 +1,4 @@
+#include <array>
 #include "GlobalVars.h"
 
 namespace Utils {
@@ -31,6 +32,31 @@ namespace Utils {
         bool swb_5 = 0; // not used
         bool swb_6 = 0; // not used
         bool swb_7 = 0;
+
+        void updateSettings() {
+            int swa = (swa_7 << 7) | (swa_6 << 6) | (swa_5 << 5) | (swa_4 << 4) | (swa_3 << 3) | (swa_2 << 2) | (swa_1 << 1) | swa_0;
+
+            // Update lives based on swa_6 and swa_7
+            lives = static_cast<Lives>((swa >> 6) & 0x03);
+
+            // Update conage based on swa_0, swa_1, and swa_2
+            conage = static_cast<Coinage>(swa % 8);
+
+            // Update bonusFighter based on swa_3 to swa_5 and lives
+            if (lives != Lives::Five) {
+                bonusFighter = static_cast<BonusFighter>((swa >> 3) & 0x07);
+            } else {
+                bonusFighter = static_cast<BonusFighter>(8 + ((swa >> 3) & 0x07));
+            }
+
+            int swb = (swb_1 << 1) | swb_0;
+            difficulty = static_cast<Difficulty>(swb);
+
+            allowContinue = swb_2;
+            demoSound = swb_3;
+            freeze = swb_4;
+            cabinet = static_cast<Cabinet>(swb_7);
+        }
     }
 
     namespace Math {
