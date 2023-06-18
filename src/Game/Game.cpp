@@ -26,6 +26,7 @@ namespace Game {
 
     void Game::init()
     {
+        Utils::GlobalVars::condition = 0;
         player1->clearProjectiels();
 
         std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
@@ -291,12 +292,14 @@ namespace Game {
                     }
                 }
                 if (ent[x]->isTriggerAnimation() && player1->checkProjectiels(worldPosRec)) {
-
                 }
 
-                if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec))
-                {
+                if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec)) {
                     ent[0]->setTriggerAnimation(true);
+                    dead = true;
+                }
+
+                if (ent[x]->checkProjectiels(player1->getHitbox()->getHitbox())) {
                     dead = true;
                 }
             }
@@ -305,6 +308,7 @@ namespace Game {
                 if (baseShipEntitys[i]->getSpy()->isActive() &&
                     player1->checkProjectiels(baseShipEntitys[i]->getSpy()->getHitbox()->getHitbox())) {
                     baseShipEntitys[i]->getSpy()->setTriggerAnimation(true);
+                    Utils::GlobalVars::condition = 0;
                     Utils::GlobalVars::currenPTS += baseShipEntitys[i]->getSpy()->getPTS();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
@@ -328,10 +332,17 @@ namespace Game {
                 player1->setLives(3);
                 lvlmgn.selectLevel(1);
                 Utils::GlobalVars::currenPTS = 0;
+                this->init();
+            }
+            else {
+                Utils::GlobalVars::condition = 0;
+                player1->clearProjectiels();
+
+                if (!Utils::GlobalVars::lvlEditorActive)
+                    Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
             }
 
             //player1->setActive(false);
-            this->init();
 
             Utils::Config sw_cfg(".\\cfg\\config.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
@@ -357,31 +368,6 @@ namespace Game {
 
         entities->render(deltaTime);
 
-        /*for (int i = 0; i < nonMovingEntitys.size(); i++) {
-            if (!nonMovingEntitys[i]->isActive())
-                continue;
-
-            nonMovingEntitys[i]->draw(deltaTime);*/
-
-            /*SDL_Rect worldPosRec = nonMovingEntitys[i]->getHitbox()->getHitbox();
-            Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
-            Utils::Vector2D screenPos;
-            bool isOnScreen = Utils::GlobalVars::WorldToScreen(worldPos, screenPos);
-
-            SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w, worldPosRec.h};
-
-            char pos[256];
-            snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
-            SDL_Rect destR = { 0, 0, 0, 0 };
-            TTF_SizeText(g->renderer()->m_fonts[1], pos, &destR.w, &destR.h);
-            g->drawing()->string(std::string(pos), g->renderer()->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
-
-            if (!nonMovingEntitys[i]->isActive())
-                g->drawing()->rectangle({255, 0, 0, 255}, screenPosRect);
-            else
-                g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);*/
-        //}
-
         std::vector<Utils::Vector2D> baseShipPos;
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
@@ -389,29 +375,6 @@ namespace Game {
 
             baseShipEntitys[i]->draw(deltaTime);
             baseShipPos.push_back(baseShipEntitys[i]->getEntitys()[0]->getOrigin());
-
-            /*std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
-            for (int x = 0; x < ent.size(); x++) {
-                SDL_Rect worldPosRec = ent[x]->getHitbox()->getHitbox();
-                Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
-                Utils::Vector2D screenPos;
-                bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
-
-                SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w,
-                                          worldPosRec.h};
-
-                char pos[256];
-                snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int) worldPosRec.x, (int) worldPosRec.y);
-                SDL_Rect destR = {0, 0, 0, 0};
-                TTF_SizeText(g->renderer()->m_fonts[1], pos, &destR.w, &destR.h);
-                g->drawing()->string(std::string(pos), g->renderer()->m_fonts[1], {255, 255, 255},
-                                     Utils::Vector2D(screenPos.x, screenPos.y));
-
-                if (!ent[x]->isActive())
-                    g->drawing()->rectangle({255, 0, 0, 255}, screenPosRect);
-                else
-                    g->drawing()->rectangle({0, 255, 0, 255}, screenPosRect);
-            }*/
         }
 
         player1->draw(deltaTime);

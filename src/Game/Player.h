@@ -13,6 +13,7 @@ namespace Game {
         int lives;
         int score;
         int currentLevel;
+        int currentCondition;
 
     public:
         Player(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, int lives = 3)

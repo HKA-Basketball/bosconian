@@ -8,11 +8,13 @@ namespace Game {
     class BaseEntity {
     private:
         std::vector<Entity*> baseShipEntitys;
+        bool spy;
         Entity* m_spy = nullptr;
 
     public:
         BaseEntity(Utils::Vector2D pos, float deg)
         {
+            spy = false;
             m_spy = nullptr;
             baseShipEntitys.resize(7);
 
@@ -43,6 +45,7 @@ namespace Game {
                         std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
                         m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, 600);
                         m_spy->setBehavior(new SpyBehavior());
+                        spy = true;
                         Utils::PlayOptions::maxSpy--;
                     }
 
@@ -98,6 +101,10 @@ namespace Game {
                 }
             }
 
+            if (!spy) {
+                creatSpy();
+            }
+
             for (auto& ent : baseShipEntitys) {
                 ent->update(deltaTime);
             }
@@ -119,6 +126,17 @@ namespace Game {
 
         Entity *getSpy() const {
             return m_spy;
+        }
+    private:
+        void creatSpy() {
+            // TODO: Creat Timer
+            if (Utils::PlayOptions::maxSpy > 0) {
+                std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
+                m_spy = new Entity(baseShipEntitys[0]->getOrigin(), 0.f, img, 600);
+                m_spy->setBehavior(new SpyBehavior());
+                spy = true;
+                Utils::PlayOptions::maxSpy--;
+            }
         }
     };
 

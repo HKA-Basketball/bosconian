@@ -8,6 +8,14 @@
 
 namespace Game {
 
+    enum class EntityType {
+        None = 0,
+        NonMoving,
+        Moving,
+        Base,
+        Player
+    };
+
     class EntityModel {
     private:
         Uint64 pts;
@@ -127,7 +135,7 @@ namespace Game {
             active = val;
         }
 
-        Game::Hitbox* getHitbox() {
+        Game::Hitbox* getHitbox() const {
             return hitbox;
         }
 
@@ -174,6 +182,7 @@ namespace Game {
                 return;
 
             obj->draw();
+            drawHitbox();
         }
 
         void setTexture(std::string name) {
@@ -187,6 +196,30 @@ namespace Game {
         void setSize(Utils::Vector2D size) {
             obj->setSize(size);
             update();
+        }
+
+    private:
+        void drawHitbox() {
+            if (!Utils::GlobalVars::debugMode)
+                return;
+
+            SDL_Rect worldPosRec = m_model.getHitbox()->getHitbox();
+            Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
+            Utils::Vector2D screenPos;
+            bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
+
+            SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w, worldPosRec.h};
+
+            //char pos[256];
+            //snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
+            //SDL_Rect destR = { 0, 0, 0, 0 };
+            //TTF_SizeText(Renderer::g_renderer->m_fonts[1], pos, &destR.w, &destR.h);
+            //Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
+
+            //if (!m_model.isActive())
+            //    Drawing::g_drawing->rectangle({255, 0, 0, 255}, screenPosRect);
+            //else
+                Drawing::g_drawing->rectangle({0, 255, 0, 255}, screenPosRect);
         }
     };
 
@@ -310,8 +343,7 @@ namespace Game {
         }
 
         void update(EntityView& view, float deltaTime = 0.f) override {
-            if (Utils::GlobalVars::debugMode)
-                drawView();
+            drawView();
 
             if (!animationStart)
                 return;
@@ -322,6 +354,9 @@ namespace Game {
         }
     private:
         void drawView() {
+            if (!Utils::GlobalVars::debugMode)
+                return;
+
             Utils::Vector2D tmp1;
             Utils::Vector2D tmp2;
 
@@ -542,9 +577,14 @@ namespace Game {
         }
 
         void moveAwayFromPlayer(EntityModel& model, float deltaTime = 0.f) {
+            if (!model.isTriggerAnimation())
+                Utils::GlobalVars::condition = 1;
+
             // Calculate the direction away from the player
             Utils::Vector2D direction2Player = model.getOrigin() - Utils::GlobalVars::cameraPos;
             Utils::Vector2D direction = startPos - model.getOrigin();
+
+            float distance2StartPos = direction.length();
 
             float detectionRange = 600.f; // Adjust the range as needed
             float distance = direction2Player.length();
@@ -553,8 +593,6 @@ namespace Game {
                 isPlayerSpotted = false;
                 isMovingTowardsPlayer = true;
             }
-
-            // TODO: Change the alert level when we get back.
 
             direction.normalize();
 
@@ -597,6 +635,12 @@ namespace Game {
             Utils::Math::wrapPos(&newPosition);
 
             model.setOrigin(newPosition);
+
+            if (distance2StartPos <= 50.f) {
+                // TODO: Start Attack
+                Utils::GlobalVars::condition = 2;
+                model.setActive(false);
+            }
         }
     };
 
