@@ -17,7 +17,7 @@ namespace Game {
 
     public:
         Player(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, int lives = 3)
-            : Entity(pos, deg, img, 0), lives(3), score(0), currentLevel(1)
+            : Entity(pos, deg, img, EntityType::Player, 0), lives(3), score(0), currentLevel(1)
         {}
 
         void setLives(int numLives) {

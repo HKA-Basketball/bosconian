@@ -28,9 +28,10 @@ namespace Game {
         bool triggerAnimation;
         bool active;
         std::vector<Projectile*> projectiles;
+        EntityType type;
 
     public:
-        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D size, Uint64 points = 0) {
+        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D size, EntityType type, Uint64 points = 0) {
             origin = pos;
             angle = deg;
             pts = points;
@@ -40,7 +41,7 @@ namespace Game {
             active = true;
         }
 
-        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Utils::Vector2D size, Uint64 points = 0) {
+        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Utils::Vector2D size, EntityType type, Uint64 points = 0) {
             origin = pos;
             angle = deg;
             pts = points;
@@ -139,20 +140,8 @@ namespace Game {
             return hitbox;
         }
 
-        bool move2Pos(Utils::Vector2D to, float speed) {
-            Utils::Vector2D direction = to - origin;
-            float distance = direction.length();
-
-            if (distance <= speed) {
-                origin = to;
-                return true;
-            }
-
-            direction.normalize();
-            Utils::Vector2D displacement = direction * speed;
-            origin += displacement;
-
-            return false;
+        EntityType getType() const {
+            return type;
         }
     };
 
@@ -229,6 +218,134 @@ namespace Game {
         virtual void update(EntityView& view, float deltaTime = 0.f) = 0;
     };
 
+    class MovingBehavior : public Behavior {
+    public:
+        void update(EntityModel& model, float deltaTime = 0.f) override {
+            Utils::Vector2D currentPosition = model.getOrigin();
+            Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
+            float distance = (currentPosition - playerPosition).length();
+            // TODO: may add viewAngle?
+            float attackThreshold = 250.0f;
+
+            if (distance <= attackThreshold) {
+                move2Pos(model, playerPosition, deltaTime);
+            }
+            else {
+                if (needNewPos) {
+                    float randomX = Utils::GlobalVars::lvlWidth * static_cast<float>(std::rand()) / RAND_MAX;
+                    float randomY = Utils::GlobalVars::lvlHeight * static_cast<float>(std::rand()) / RAND_MAX;
+                    targetPos = {randomX, randomY};
+                    needNewPos = false;
+                }
+
+                move2Pos(model, targetPos, deltaTime);
+            }
+
+            if (model.isTriggerAnimation() && !animationStart) {
+                animationStart = true;
+                animationTime = 0.f;
+            }
+
+            if (animationEnd)
+                model.setActive(false);
+        }
+
+        void update(EntityView& view, float deltaTime = 0.f) override {
+            if (!animationStart)
+                return;
+
+            animationTime += deltaTime * 1000.f;
+
+            float progress = animationTime / animationDuration;
+            progress = std::clamp(progress, 0.f, 1.f);
+            int imageIndex = static_cast<int>(progress * (explosionImages.size() - 1));
+
+            view.setTexture(explosionImages[imageIndex]);
+
+            if (animationTime >= animationDuration)
+                animationEnd = true;
+        }
+
+    private:
+        Utils::Vector2D targetPos;
+        bool needNewPos = true;
+
+        bool animationStart = false;
+        bool animationEnd = false;
+        float animationTime = 0.f;
+        const float animationDuration = 250.f;
+        std::vector<std::string> explosionImages = {
+                "astro-explo-01",
+                "astro-explo-02",
+                "astro-explo-03"
+        };
+
+
+        int roundToNearestMultiple(int angleInDegrees, int multiple) {
+            int remainder = angleInDegrees % multiple;
+            int result = angleInDegrees - remainder;
+            if (remainder >= multiple / 2) {
+                result += multiple;
+            }
+            return result;
+        }
+
+        void move2Pos(EntityModel& model, Utils::Vector2D pos2move, float deltaTime = 0.f) {
+
+            Utils::Vector2D direction = pos2move - model.getOrigin();
+
+            // Check if the player is spotted
+            float detectionRange = 150.f; // Adjust the range as needed
+            float distance = direction.length();
+
+            if (distance <= detectionRange) {
+                needNewPos = true;
+            }
+
+            direction.normalize();
+
+            float speed = 200 * deltaTime;
+            Utils::Vector2D newPosition;
+
+            // Calculate the closest 45-degree angle
+            float angle = std::atan2(direction.y, direction.x);
+            int angleInDegrees = static_cast<int>(std::round(angle * 180 / M_PI));
+            int closestAngleInDegrees = roundToNearestMultiple(angleInDegrees, 45);
+            float closestAngle = closestAngleInDegrees * M_PI / 180;
+
+            // Calculate the target direction based on the closest angle
+            Utils::Vector2D targetDirection(std::cos(closestAngle), std::sin(closestAngle));
+
+            // Calculate the dot product between the current direction and the target direction
+            float dotProduct = direction.dot(targetDirection);
+
+            // Calculate the turning angle based on the dot product and the turning speed
+            float turningAngle = std::acos(dotProduct) * speed;
+
+            // Rotate the direction towards the target direction by the turning angle
+            Utils::Vector2D newDirection = direction.rotate(turningAngle);
+
+            // Calculate the new position using the new direction and speed
+            newPosition = model.getOrigin() + newDirection * speed;
+
+            float angleF = std::atan2(newDirection.y, newDirection.x);
+            float angleInDegreesF = angleF * 180 / M_PI;
+            float targetAngle = Utils::Math::normalizeAngle180(angleInDegreesF + 90.f);
+
+            // Apply a smoothing factor
+            const float smoothingFactor = 0.1f;
+
+            float currentAngle = model.getAngle();
+            float smoothedAngle = currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
+
+            model.setAngle(smoothedAngle);
+
+            Utils::Math::wrapPos(&newPosition);
+
+            model.setOrigin(newPosition);
+        }
+    };
+
     class CoreBehavior : public Behavior {
     private:
         bool animationStart = false;
@@ -280,6 +397,8 @@ namespace Game {
         const Uint64 projectileInterval = 1500;
         std::string texture;
         float viewDirection;
+        float viewAngle = 90.f;
+        float viewLength = 400.0f;
 
         Utils::Vector2D canonPosition;
 
@@ -306,11 +425,8 @@ namespace Game {
             angleToPlayer = angleToPlayer * (180.0f / M_PI); // Convert radians to degrees
             float targetAngle = Utils::Math::normalizeAngle180(angleToPlayer + 90.f);
 
-            float maxShootingDistance = 400.0f;
-            float viewAngleRange = 45.f;
-
-            float startAngle = viewDirection - (viewAngleRange / 2.0f);
-            float endAngle = viewDirection + (viewAngleRange / 2.0f);
+            float startAngle = viewDirection - (viewAngle / 2.0f);
+            float endAngle = viewDirection + (viewAngle / 2.0f);
             angleToPlayer = Utils::Math::normalizeAngle360(angleToPlayer);
             startAngle = Utils::Math::normalizeAngle360(startAngle);
             endAngle = Utils::Math::normalizeAngle360(endAngle);
@@ -323,7 +439,7 @@ namespace Game {
                 playerInViewArea = (angleToPlayer >= startAngle || angleToPlayer <= endAngle);
             }
 
-            bool playerWithinDistance = distance <= maxShootingDistance;
+            bool playerWithinDistance = distance <= viewLength;
 
             if (playerInViewArea && playerWithinDistance && model.isActive()) {
                 Uint64 currentTime = SDL_GetTicks64();
@@ -359,9 +475,6 @@ namespace Game {
 
             Utils::Vector2D tmp1;
             Utils::Vector2D tmp2;
-
-            float viewLength = 400.0f;
-            float viewAngle = 45.f;
 
             // Calculate the start and end angles of the view cone
             float startAngle = viewDirection - (viewAngle / 2.0f);
@@ -651,14 +764,14 @@ namespace Game {
         Behavior* m_behavior;
 
     public:
-        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Uint64 pts = 0)
-                : m_model(pos, deg, img->getSize(), pts)
+        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts = 0)
+                : m_model(pos, deg, img->getSize(), type, pts)
                 , m_view(img, m_model)
                 , m_behavior(nullptr)
         {}
 
-        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Uint64 pts = 0)
-                : m_model(pos, deg, hitboxPos, hitboxSize, img->getSize(), pts)
+        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, EntityType type, Uint64 pts = 0)
+                : m_model(pos, deg, hitboxPos, hitboxSize, img->getSize(), type, pts)
                 , m_view(img, m_model)
                 , m_behavior(nullptr)
         {}
@@ -700,7 +813,7 @@ namespace Game {
 
             m_view.drawEntity();
 
-            // Render the player's projectiles
+            // Render the entity projectiles
             for (auto& projectile : m_model.getProjectiles()) {
                 projectile->render();
             }
@@ -743,6 +856,10 @@ namespace Game {
             m_model.setOrigin(newOrigin);
         }
 
+        EntityType getType() {
+            return m_model.getType();
+        }
+
         Uint64 getPTS() {
             return m_model.getPts();
         }
@@ -765,10 +882,6 @@ namespace Game {
 
         Game::Hitbox* getHitbox() {
             return m_model.getHitbox();
-        }
-
-        bool move2Pos(Utils::Vector2D to, float speed) {
-            return m_model.move2Pos(to, speed);
         }
     };
 } // Game

@@ -136,7 +136,7 @@ namespace Game {
                 maxAttempts--;
             }
 
-            nonMovingEntitys[i] = new Entity(pos, ang, img, listPTS[ranImg]);
+            nonMovingEntitys[i] = new Entity(pos, ang, img, EntityType::NonMoving, listPTS[ranImg]);
             nonMovingEntitys[i]->setAngle(ang);
             nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
             entities->addEntity(nonMovingEntitys[i]);
@@ -147,6 +147,27 @@ namespace Game {
             grid[col][row].push_back(nonMovingEntitys[i]);
         }
         // -------------------------------------------------------------------------------------
+
+
+        std::vector<std::string> listIMGMoving{"E-Type", "I-Type-norm", "P-Type-norm"};
+        std::vector<int> listPTSMoving{70, 50, 60};
+
+        for (int i = 0; i < 10; ++i) {
+            int ranImg = rand() % listIMGMoving.size();
+            float ang = static_cast<float>(rand() % 361);
+
+            // Create the shared pointer for the Texture
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(listIMGMoving[ranImg], ang, true, "spritesheet.png");
+
+            int posX = rand() % (Utils::GlobalVars::lvlWidth - (int)img->getSize().x + 1);
+            int posY = rand() % (Utils::GlobalVars::lvlHeight - (int)img->getSize().y + 1);
+            Utils::Vector2D pos(posX, posY);
+
+            Entity* movingEntity = new Entity(pos, ang, img, EntityType::Moving, listPTSMoving[ranImg]);
+            movingEntity->setBehavior(new MovingBehavior());
+            entities->addEntity(movingEntity);
+        }
+
     }
 
     int getFPS()

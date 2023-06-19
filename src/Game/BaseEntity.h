@@ -39,11 +39,11 @@ namespace Game {
             for (int i = 0; i < baseIMG.size(); i++) {
                 std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(baseIMG[i], 0.f, true, "spritesheet.png");
 
-                baseShipEntitys[i] = new Entity(pos + posOffsetList[i], 0.f, img, hitboxPosList[i], hitboxSizeList[i], (baseIMG[i].find("kern") != std::string::npos) ? 200 : 1500);
+                baseShipEntitys[i] = new Entity(pos + posOffsetList[i], 0.f, img, hitboxPosList[i], hitboxSizeList[i], EntityType::Base, (baseIMG[i].find("kern") != std::string::npos) ? 200 : 1500);
                 if (baseIMG[i].compare("kern") != std::string::npos) {
                     if (Utils::PlayOptions::maxSpy > 0) {
                         std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
-                        m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, 600);
+                        m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, EntityType::Moving, 600);
                         m_spy->setBehavior(new SpyBehavior());
                         spy = true;
                         Utils::PlayOptions::maxSpy--;
@@ -132,7 +132,7 @@ namespace Game {
             // TODO: Creat Timer
             if (Utils::PlayOptions::maxSpy > 0) {
                 std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
-                m_spy = new Entity(baseShipEntitys[0]->getOrigin(), 0.f, img, 600);
+                m_spy = new Entity(baseShipEntitys[0]->getOrigin(), 0.f, img, EntityType::Moving, 600);
                 m_spy->setBehavior(new SpyBehavior());
                 spy = true;
                 Utils::PlayOptions::maxSpy--;
