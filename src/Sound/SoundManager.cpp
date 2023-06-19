@@ -10,12 +10,12 @@ namespace Sound {
         m_sound.resize(SOUND_MAX);
 
         // credits: Music by Marllon Silva (xDeviruchi)
-        addSound("./loop.wav", SOUND_BG);
+        addSound("./sounds/loop.wav", SOUND_BG);
         // credits: Sound by Muncheybobo @ opengameart.org
-        addSound("./shoot.wav", SOUND_SHOOT);
+        addSound("./sounds/shoot.wav", SOUND_SHOOT);
         // credits: mixkit.co/free-sound-effects/arcade/
-        addSound("./game_over.wav", SOUND_GAME_OVER);
-        addSound("./explode.wav", SOUND_EXPLODE);
+        addSound("./sounds/game_over.wav", SOUND_GAME_OVER);
+        addSound("./sounds/explode.wav", SOUND_EXPLODE);
 
 
         LOG(std::string("SoundManager Successfully Loaded"));
