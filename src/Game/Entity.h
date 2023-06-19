@@ -5,6 +5,7 @@
 #include "../Drawing/Texture.h"
 #include "Hitbox.h"
 #include "Projectile.h"
+#include "../Sound/SoundManager.h"
 
 namespace Game {
 
@@ -244,6 +245,7 @@ namespace Game {
             if (model.isTriggerAnimation() && !animationStart) {
                 animationStart = true;
                 animationTime = 0.f;
+                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
             }
 
             if (animationEnd)
@@ -304,7 +306,7 @@ namespace Game {
 
             direction.normalize();
 
-            float speed = 200 * deltaTime;
+            float speed = 190 * deltaTime;
             Utils::Vector2D newPosition;
 
             // Calculate the closest 45-degree angle
@@ -363,6 +365,7 @@ namespace Game {
             if (model.isTriggerAnimation() && !animationStart) {
                 animationStart = true;
                 animationTime = 0.f;
+                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
             }
 
             if (animationEnd)
@@ -397,7 +400,7 @@ namespace Game {
         const Uint64 projectileInterval = 1500;
         std::string texture;
         float viewDirection;
-        float viewAngle = 90.f;
+        float viewAngle = 45.f;
         float viewLength = 400.0f;
 
         Utils::Vector2D canonPosition;
@@ -540,6 +543,7 @@ namespace Game {
             if (model.isTriggerAnimation() && !animationStart) {
                 animationStart = true;
                 animationTime = 0.f;
+                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
             }
 
             if (animationEnd)
@@ -601,6 +605,7 @@ namespace Game {
             if (model.isTriggerAnimation() && !animationStart) {
                 animationStart = true;
                 animationTime = 0.f;
+                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
             }
 
             if (animationEnd)

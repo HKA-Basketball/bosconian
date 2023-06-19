@@ -9,6 +9,8 @@ namespace Sound {
     {
         SOUND_BG = 0,
         SOUND_SHOOT,
+        SOUND_GAME_OVER,
+        SOUND_EXPLODE,
         //Space for more
         SOUND_MAX
     };

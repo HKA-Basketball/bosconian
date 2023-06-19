@@ -317,6 +317,10 @@ namespace Game {
 
                 if (Utils::Math::rectIntersect(player1->getHitbox()->getHitbox(), worldPosRec)) {
                     ent[0]->setTriggerAnimation(true);
+                    Utils::GlobalVars::currenPTS += ent[0]->getPTS();
+                    if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+                        Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
+                    }
                     dead = true;
                 }
 
@@ -346,7 +350,7 @@ namespace Game {
 
         if (dead)
         {
-            // TODO: trigger Dead screen if ...
+            Sound::g_sound->playSound(Sound::SOUND_GAME_OVER, 2, 0);
             player1->setLives(player1->getLives()-1);
 
             if (player1->getLives() <= 0) {
@@ -354,6 +358,7 @@ namespace Game {
                 lvlmgn.selectLevel(1);
                 Utils::GlobalVars::currenPTS = 0;
                 this->init();
+                Utils::GlobalVars::menuActive = true;
             }
             else {
                 Utils::GlobalVars::condition = 0;
@@ -362,8 +367,6 @@ namespace Game {
                 if (!Utils::GlobalVars::lvlEditorActive)
                     Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
             }
-
-            //player1->setActive(false);
 
             Utils::Config sw_cfg(".\\cfg\\config.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
