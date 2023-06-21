@@ -99,7 +99,7 @@ namespace Game {
                 if (pos.x >= 0 && pos.x < Utils::GlobalVars::lvlWidth - img->getSize().x && pos.y >= 0 && pos.y < Utils::GlobalVars::lvlHeight - img->getSize().y) {
 
                     float distToPlayer = (pos - Utils::GlobalVars::cameraPos).length();
-                    if (distToPlayer >= minDistance) {
+                    if (distToPlayer >= 400.f) {
                         // Check distance from entities in the same and adjacent cells
                         positionValid = true;
                         int startCol = std::max(0, col - 1);
@@ -155,13 +155,24 @@ namespace Game {
         for (int i = 0; i < 10; ++i) {
             int ranImg = rand() % listIMGMoving.size();
             float ang = static_cast<float>(rand() % 361);
+            int maxAttempts = 100;
+            int attempt = 0;
 
             // Create the shared pointer for the Texture
             std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(listIMGMoving[ranImg], ang, true, "spritesheet.png");
 
-            int posX = rand() % (Utils::GlobalVars::lvlWidth - (int)img->getSize().x + 1);
-            int posY = rand() % (Utils::GlobalVars::lvlHeight - (int)img->getSize().y + 1);
-            Utils::Vector2D pos(posX, posY);
+            int posX, posY;
+            Utils::Vector2D pos;
+
+            do {
+                posX = rand() % (Utils::GlobalVars::lvlWidth - (int)img->getSize().x + 1);
+                posY = rand() % (Utils::GlobalVars::lvlHeight - (int)img->getSize().y + 1);
+                pos = Utils::Vector2D(posX, posY);
+                attempt++;
+            } while ((pos - Utils::GlobalVars::cameraPos).length() < 700.f && attempt < maxAttempts);
+
+            if (attempt == maxAttempts)
+                continue;
 
             Entity* movingEntity = new Entity(pos, ang, img, EntityType::Moving, listPTSMoving[ranImg]);
             movingEntity->setBehavior(new MovingBehavior());

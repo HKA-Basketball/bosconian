@@ -206,9 +206,9 @@ namespace Game {
             //TTF_SizeText(Renderer::g_renderer->m_fonts[1], pos, &destR.w, &destR.h);
             //Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
 
-            //if (!m_model.isActive())
-            //    Drawing::g_drawing->rectangle({255, 0, 0, 255}, screenPosRect);
-            //else
+            if (!m_model.isActive())
+                Drawing::g_drawing->rectangle({255, 0, 0, 255}, screenPosRect);
+            else
                 Drawing::g_drawing->rectangle({0, 255, 0, 255}, screenPosRect);
         }
     };
@@ -448,6 +448,7 @@ namespace Game {
                 Uint64 currentTime = SDL_GetTicks64();
                 if (currentTime - timeSinceLastProjectile >= projectileInterval) {
                     canShoot = true;
+                    Sound::g_sound->playSound(Sound::SOUND_SHOOT, 4, 0);
 
                     Projectile* newProjectile = new Projectile(model.getOrigin().x, model.getOrigin().y
                             , 180, targetAngle);

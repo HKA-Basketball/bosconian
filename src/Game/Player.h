@@ -20,50 +20,19 @@ namespace Game {
             : Entity(pos, deg, img, EntityType::Player, 0), lives(3), score(0), currentLevel(1)
         {}
 
-        void setLives(int numLives) {
-            lives = numLives;
-        }
+        void setLives(int numLives);
 
-        int getLives() const {
-            return lives;
-        }
+        int getLives() const;
 
-        void setScore(int playerScore) {
-            score = playerScore;
-        }
+        void setScore(int playerScore);
 
-        int getScore() const {
-            return score;
-        }
+        int getScore() const;
 
-        void setCurrentLevel(int level) {
-            currentLevel = level;
-        }
+        void setCurrentLevel(int level);
 
-        int getCurrentLevel() const {
-            return currentLevel;
-        }
+        int getCurrentLevel() const;
 
-        void updateProjectiels(float deltaTime) {
-            static Uint64 timeSinceLastProjectile = 0;
-            const Uint64 projectileInterval = 250;
-
-            if (Event::g_event->isKeyClicked(SDL_SCANCODE_LCTRL, false))
-            {
-                Uint64 currentTime = SDL_GetTicks64();
-                if (currentTime - timeSinceLastProjectile >= projectileInterval) {
-                    Sound::g_sound->playSound(Sound::SOUND_SHOOT, 3, 0);
-                    // Add a new Projectile object to the vector
-                    Projectile* newProjectile1 = new Projectile(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
-                            , 1000, Utils::GlobalVars::playerAngle);
-                    Projectile* newProjectile2 = new Projectile(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y
-                            , 1000, Utils::GlobalVars::playerAngle + 180);
-                    addProjectile(newProjectile1);
-                    addProjectile(newProjectile2);
-                    timeSinceLastProjectile = currentTime;
-                }
-            }
-        }
+        void updateProjectiels(float deltaTime);
     };
 
 } // Game
