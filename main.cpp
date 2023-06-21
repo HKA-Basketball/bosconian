@@ -12,19 +12,19 @@ int main(int argc, char* args[])
 
     Utils::Config lvl_cfg(".\\cfg\\level.ini");
 
-    lvl_cfg.add_item("Level", "baseShipPos", Utils::GlobalVars::lvlsInfos);
+    lvl_cfg.add_item("Levels", "levels", Utils::GlobalVars::lvlsInfos);
 
     //lvl_cfg.write();
     lvl_cfg.read();
 
-    /*printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
+    printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).x
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).y
            , Utils::GlobalVars::lvlsInfos.at(0).playerPos.x
-           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);*/
+           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);
 
     Utils::Config frames_cfg(".\\cfg\\frame.ini");
-    frames_cfg.add_item("Frames", "frame", Utils::GlobalVars::frames);
+    frames_cfg.add_item("Frames", "frames", Utils::GlobalVars::frames);
     //frames_cfg.write();
     frames_cfg.read();
 
@@ -35,17 +35,13 @@ int main(int argc, char* args[])
                 , in.frame.w
                 , in.frame.h);
     }*/
-    /*printf("LOG: filename: %s, frame: %d, %d, %d, %d \n", Utils::GlobalVars::frames.at(1).filename.c_str()
-            , Utils::GlobalVars::frames.at(1).frame.x
-            , Utils::GlobalVars::frames.at(1).frame.y
-            , Utils::GlobalVars::frames.at(1).frame.w
-            , Utils::GlobalVars::frames.at(1).frame.h);*/
 
     Utils::Config sw_cfg(".\\cfg\\config.ini");
 
-    sw_cfg.add_item("player", "cameraPos", Utils::GlobalVars::cameraPos);
-    sw_cfg.add_item("player", "points", Utils::GlobalVars::currenPTS);
+    int frameCap = 0;
+
     sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+    sw_cfg.add_item("Settings", "max-fps", frameCap);
     //sw_cfg.write();
     sw_cfg.read();
 
@@ -138,10 +134,12 @@ int main(int argc, char* args[])
 
         Renderer::g_renderer->endScene();
 
-        /*Uint32 frameTime = SDL_GetTicks64() - currentTime;
-        if (frameTime < 1000 / 120) {
-            SDL_Delay((1000 / 120) - frameTime);
-        }*/
+        if (frameCap > 0) {
+            Uint32 frameTime = SDL_GetTicks64() - currentTime;
+            if (frameTime < 1000 / frameCap) {
+                SDL_Delay((1000 / frameCap) - frameTime);
+            }
+        }
     }
 
     delete g;
