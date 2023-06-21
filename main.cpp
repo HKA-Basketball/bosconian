@@ -11,9 +11,7 @@ int main(int argc, char* args[])
     CreateDirectoryA(".\\cfg", NULL);
 
     Utils::Config lvl_cfg(".\\cfg\\level.ini");
-
     lvl_cfg.add_item("Levels", "levels", Utils::GlobalVars::lvlsInfos);
-
     //lvl_cfg.write();
     lvl_cfg.read();
 
@@ -45,8 +43,8 @@ int main(int argc, char* args[])
     //sw_cfg.write();
     sw_cfg.read();
 
-    Init::Initializer* g = Init::Initializer::getInstance();
-    if (!g->initGameObjs())
+    Init::Initializer* init = Init::Initializer::getInstance();
+    if (!init->initGameObjs())
     {
         LOG(std::string("Init failed!"));
         SDL_Quit();
@@ -76,7 +74,7 @@ int main(int argc, char* args[])
         Utils::GlobalVars::lvlEditorActive = !Utils::GlobalVars::lvlEditorActive;
     });
     menu.addOption("Options", []() {
-        Utils::GlobalVars::dipSwitchActive = true;
+        Utils::GlobalVars::dipSwitchActive = !Utils::GlobalVars::dipSwitchActive;
     });
     menu.addOption("Exit", []() {
         Utils::GlobalVars::need2ExitProc = true;
@@ -108,6 +106,10 @@ int main(int argc, char* args[])
 
                 if (Event::g_event->isKeyClicked(SDL_SCANCODE_ESCAPE, true)) {
                     Utils::GlobalVars::dipSwitchActive = false;
+                    /*printf("LOG: lives: %d, conage: %d, bonusFighter: %d, difficulty: %d \n", Utils::PlayOptions::lives
+                            , Utils::PlayOptions::conage
+                            , Utils::PlayOptions::bonusFighter
+                            , Utils::PlayOptions::difficulty);*/
                 }
             }
             else
@@ -142,7 +144,7 @@ int main(int argc, char* args[])
         }
     }
 
-    delete g;
+    delete init;
     SDL_Quit();
 
     return 0;
