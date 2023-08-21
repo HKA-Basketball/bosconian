@@ -247,8 +247,7 @@ namespace Game {
 
         g_world->update(deltaTime);
 
-        player1->setOrigin(Utils::GlobalVars::cameraPos);
-        player1->setAngle(Utils::GlobalVars::playerAngle);
+        player1->updateMovement(deltaTime);
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive()) {
@@ -266,8 +265,7 @@ namespace Game {
         entities->update(deltaTime);
 
         player1->update(deltaTime);
-        player1->updateProjectiels(deltaTime);
-
+        player1->updateProjectiles(deltaTime);
     }
 
     void Game::postUpdate(float deltaTime) {
@@ -433,8 +431,9 @@ namespace Game {
     }
 
     void Game::HUD(std::vector<Utils::Vector2D> baseShipPos) {
-        Drawing::g_drawing->fillRectangle2({ 0, 0, 0, 255 }
-                , { Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth, Utils::GlobalVars::windowHeight });
+        Drawing::g_drawing->fillRectangle({0, 0, 0, 255},
+                                          {Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth,
+                                           Utils::GlobalVars::windowHeight});
 
         SDL_Rect destScor = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
         destScor.x = Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10;
@@ -456,8 +455,8 @@ namespace Game {
         Drawing::g_drawing->string(std::string("CONDITION"), Renderer::g_renderer->m_fonts[0], { 255, 255, 255 }
                                     , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
-        Drawing::g_drawing->fillRectangle2(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition]
-                                     , { Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64 });
+        Drawing::g_drawing->fillRectangle(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition],
+                                          {Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64});
 
         std::string condition = Utils::GlobalVars::condition == 0 ? "GREEN" : Utils::GlobalVars::condition == 1 ? "YELLOW" : "RED!!!";
 
@@ -481,7 +480,7 @@ namespace Game {
             textHeight += 2;
             int y_Offset = 50;
 
-            Drawing::g_drawing->fillRectangle2({48, 48, 48, 150}, {5, y_Offset-5, textWidth+10, textHeight*9+10});
+            Drawing::g_drawing->fillRectangle({48, 48, 48, 150}, {5, y_Offset - 5, textWidth + 10, textHeight * 9 + 10});
 
             Drawing::g_drawing->string(std::string("Editor Mode!"), Renderer::g_renderer->m_fonts[1], { 255, 0, 0 }
                     , Utils::Vector2D(10, y_Offset), 0);

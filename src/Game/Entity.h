@@ -164,7 +164,7 @@ namespace Game {
             Utils::Vector2D newPosScreen;
             Utils::render::WorldToScreen(m_model.getOrigin(), newPosScreen);
             obj->setPos(newPosScreen - (obj->getSize()*0.5f));
-            obj->setAngel(m_model.getAngle());
+            obj->setAngle(m_model.getAngle());
         }
 
         void drawEntity() {

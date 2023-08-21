@@ -5,13 +5,24 @@
 
 namespace Game {
 
+    /**
+     * The BaseEntity class represents a collection of entities that function as a single unit.
+     */
     class BaseEntity {
     private:
+        /** The collection of entities that make up the base ship. */
         std::vector<Entity*> baseShipEntitys;
+        /** Flag indicating if a spy entity is present. */
         bool spy;
+        /** The spy entity associated with the base ship. */
         Entity* m_spy = nullptr;
 
     public:
+        /**
+         * Constructs a BaseEntity instance with the specified position and rotation.
+         * \param pos The initial position of the base ship as a Vector2D.
+         * \param deg The initial rotation angle of the base ship in degrees.
+         */
         BaseEntity(Utils::Vector2D pos, float deg)
         {
             spy = false;
@@ -56,6 +67,9 @@ namespace Game {
             }
         }
 
+        /**
+         * Destructor to clean up the BaseEntity instance and its associated entities.
+         */
         ~BaseEntity() {
             if (m_spy) {
                 Utils::PlayOptions::maxSpy++;
@@ -71,10 +85,18 @@ namespace Game {
             baseShipEntitys.clear();
         }
 
+        /**
+         * Gets the collection of entities within the base ship.
+         * \return A vector of Entity pointers representing the entities.
+         */
         std::vector<Entity*> getEntitys() {
             return baseShipEntitys;
         }
 
+        /**
+         * Checks if the base ship is active.
+         * \return `true` if the base ship is active, otherwise `false`.
+         */
         bool isActive() {
             bool isActive = false;
             for (int i = 1; i < baseShipEntitys.size(); i++) {
@@ -90,6 +112,10 @@ namespace Game {
             return baseShipEntitys[0]->isActive();
         }
 
+        /**
+         * Updates the base ship and its entities based on the specified delta time.
+         * \param deltaTime The time elapsed since the last update in seconds.
+         */
         void update(float deltaTime) {
             if (m_spy) {
                 if (m_spy->isActive())
@@ -110,6 +136,10 @@ namespace Game {
             }
         }
 
+        /**
+         * Draws the base ship and its entities based on the specified delta time.
+         * \param deltaTime The time elapsed since the last draw in seconds.
+         */
         void draw(float deltaTime) {
             if (m_spy && m_spy->isActive())
                 m_spy->draw(deltaTime);
@@ -124,10 +154,17 @@ namespace Game {
             }
         }
 
+        /**
+         * Gets the spy entity associated with the base ship.
+         * \return A pointer to the spy entity.
+         */
         Entity *getSpy() const {
             return m_spy;
         }
     private:
+        /**
+         * Creates the spy entity for the base ship.
+         */
         void creatSpy() {
             // TODO: Creat Timer
             if (Utils::PlayOptions::maxSpy > 0) {

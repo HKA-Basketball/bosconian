@@ -7,15 +7,28 @@ namespace fs = std::filesystem;
 
 namespace Utils {
 
+    /**
+     * A structure to hold a value along with its type information.
+     */
     struct item {
-        void* value;
-        std::string type;
+        void* value;       // Pointer to the value
+        std::string type;  // Type information of the value
     };
 
+    /**
+     * \class Config
+     * \brief A class for reading and writing configuration data from/to a file.
+     */
     class Config {
     public:
+        /**
+         * Constructor that initializes the Config object with a filename.
+         * If the file doesn't exist, it's created.
+         * \param filename The name of the configuration file.
+         */
         Config(const std::string& filename)
                 : filename(filename) {
+            // If the file doesn't exist, create it
             if (!fs::exists(filename)) {
                 std::ofstream outfile(filename);
                 if (!outfile.is_open()) {
@@ -26,11 +39,21 @@ namespace Utils {
             }
         }
 
+        /**
+         * Template function to add a configuration item to a section.
+         * \param section The section in the configuration file.
+         * \param name The name of the item.
+         * \param value The value of the item.
+         */
         template<typename T>
         void add_item(const std::string& section, const std::string& name, T& value) {
             items[section][name] = {&value, typeid(T).name()};
         }
 
+        /**
+         * Read configuration data from the file.
+         * \return True if reading was successful, false otherwise.
+         */
         bool read() {
             std::ifstream infile(filename);
             if (!infile.is_open()) {
@@ -160,6 +183,10 @@ namespace Utils {
             return true;
         }
 
+        /**
+         * Write configuration data to the file.
+         * \return True if writing was successful, false otherwise.
+         */
         bool write() {
             std::ofstream outfile(filename);
             if (!outfile.is_open()) {

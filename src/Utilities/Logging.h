@@ -9,8 +9,16 @@
 #define LOG(x) Utils::log(x)
 
 namespace Utils {
+    /**
+     * Logs a floating-point message to the console.
+     * \param message The floating-point value to log.
+     */
     void log(float message);
 
+    /**
+     * Logs a string message to the console.
+     * \param message The string to log.
+     */
     void log(std::string message);
 
 } // Utils

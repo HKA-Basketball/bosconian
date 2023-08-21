@@ -15,6 +15,10 @@
 
 namespace Init {
 
+    /**
+     * \class Initializer
+     * \brief A singleton class responsible for initializing and managing game objects.
+     */
     class Initializer {
     private:
         Renderer::Window* g_window;
@@ -23,6 +27,10 @@ namespace Init {
         Initializer() {}
         bool isInit = false;
     public:
+        /**
+         * Get the singleton instance of the Initializer class.
+         * \return A pointer to the Initializer instance.
+         */
         static Initializer* getInstance() {
             if (instance == nullptr) {
                 instance = new Initializer();
@@ -30,6 +38,10 @@ namespace Init {
             return instance;
         }
 
+        /**
+         * Destructor that cleans up the allocated resources.
+         * Deletes and sets pointers to nullptr for various game objects.
+         */
         ~Initializer() {
             // Clean up the pointers
             delete g_window;
@@ -48,13 +60,46 @@ namespace Init {
             Sound::g_sound = nullptr;
         }
 
+        /**
+         * Initialize the game objects.
+         * \return True if initialization was successful, false otherwise.
+         */
         bool initGameObjs();
 
+        /**
+         * Get a pointer to the game window.
+         * \return A pointer to the game window.
+         */
         Renderer::Window *window() const;
+
+        /**
+         * Get a pointer to the renderer.
+         * \return A pointer to the renderer.
+         */
         Renderer::RendererSDL *renderer() const;
+
+        /**
+         * Get a pointer to the graphics drawing object.
+         * \return A pointer to the graphics drawing object.
+         */
         Drawing::Graphics *drawing() const;
+
+        /**
+         * Get a pointer to the game world object.
+         * \return A pointer to the game world object.
+         */
         Game::World *world() const;
+
+        /**
+         * Get a pointer to the event manager object.
+         * \return A pointer to the event manager object.
+         */
         Event::EventManager *event() const;
+
+        /**
+         * Get a pointer to the sound manager object.
+         * \return A pointer to the sound manager object.
+         */
         Sound::SoundManager *sound() const;
 
     };
