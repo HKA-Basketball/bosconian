@@ -24,13 +24,13 @@ namespace Drawing {
         SDL_RenderDrawRect(g_renderer, &rect);
     }
 
-    void Graphics::fillRectangle2(SDL_Color color, SDL_Rect rect)
+    void Graphics::fillRectangle(SDL_Color color, SDL_Rect rect)
     {
         SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(g_renderer, &rect);
     }
 
-    void Graphics::fillRectangle(SDL_Color color, SDL_FRect rect)
+    void Graphics::fillRectanglef(SDL_Color color, SDL_FRect rect)
     {
         SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRectF(g_renderer, &rect);
@@ -114,7 +114,7 @@ namespace Drawing {
 
         auto cacheIter = textCache.find(key);
         if (cacheIter == textCache.end()) {
-            textCache[key] = { creatTextTexture(text, font, color), 1 };
+            textCache[key] = { createTextTexture(text, font, color), 1 };
 
             if (textCache.size() > MAX_CACHE_SIZE) {
                 // Remove the last used item from the cache
@@ -134,7 +134,7 @@ namespace Drawing {
         return textCache[key].texture;
     }
 
-    std::shared_ptr<SDL_Texture> Graphics::creatTextTexture(std::string text, TTF_Font* font, SDL_Color color)
+    std::shared_ptr<SDL_Texture> Graphics::createTextTexture(std::string text, TTF_Font* font, SDL_Color color)
     {
         SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
         if(!surface) {

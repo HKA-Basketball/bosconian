@@ -5,25 +5,42 @@
 
 namespace Game {
 
+    /**
+     * The LevelEditor class handles editing and managing levels within the game.
+     */
     class LevelEditor {
     private:
-        Utils::Config lvl_cfg = Utils::Config(".\\cfg\\level.ini");
+        Utils::Config lvl_cfg;
 
     public:
-        LevelEditor(std::string cfg) {
-            //lvl_cfg = Utils::Config(".\\cfg\\level.ini");
+        /**
+         * Constructs a LevelEditor instance with the specified configuration.
+         * \param cfg The configuration file for managing levels.
+         */
+        LevelEditor(std::string cfg = ".\\cfg\\level.ini") : lvl_cfg(cfg) {
             lvl_cfg.add_item("Levels", "levels", Utils::GlobalVars::lvlsInfos);
         }
 
+        /**
+         * Saves the edited levels configuration to the configuration file.
+         */
         void saveLvls() {
             lvl_cfg.write();
             lvl_cfg.read();
         }
 
+        /**
+         * Reads the levels configuration from the configuration file.
+         */
         void readLvls() {
             lvl_cfg.read();
         }
 
+        /**
+         * Places a base ship at the specified position within the specified level.
+         * \param lvl The level number.
+         * \param pos The position of the base ship.
+         */
         void placeBase(int lvl, Utils::Vector2D pos) {
             for (auto& l : Utils::GlobalVars::lvlsInfos) {
                 if (l.lvlNum == lvl) {
@@ -34,6 +51,11 @@ namespace Game {
             LOG("Error: Level not found");
         }
 
+        /**
+         * Sets the player's spawn position within the specified level.
+         * \param lvl The level number.
+         * \param pos The player's spawn position.
+         */
         void setPlayerSpawnPos(int lvl, Utils::Vector2D pos) {
             for (auto& l : Utils::GlobalVars::lvlsInfos) {
                 if (l.lvlNum == lvl) {
@@ -44,6 +66,10 @@ namespace Game {
             LOG("Error: Level not found");
         }
 
+        /**
+         * Undoes the placement of the last base ship within the specified level.
+         * \param lvl The level number.
+         */
         void undoBase(int lvl) {
             for (auto& l : Utils::GlobalVars::lvlsInfos) {
                 if (l.lvlNum == lvl) {

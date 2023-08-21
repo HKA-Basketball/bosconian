@@ -1,5 +1,6 @@
 #ifndef BOSCONIAN_INCLUDES_H
 #define BOSCONIAN_INCLUDES_H
+#pragma once
 
 #include <windows.h>
 #include <cstdint>
@@ -19,8 +20,7 @@
 #include <typeinfo>
 #include <filesystem>
 
-
-//SDL stuff
+// SDL libraries
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
@@ -28,6 +28,7 @@
 #include <SDL_keyboard.h>
 #include <SDL_keycode.h>
 
+// Custom header files
 #include "./src/Utilities/Logging.h"
 #include "./src/Utilities/Vector2D.h"
 #include "./src/Utilities/Config.h"

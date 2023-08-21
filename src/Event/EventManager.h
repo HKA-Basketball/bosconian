@@ -46,13 +46,29 @@ namespace Event {
         bool mClicked[6] = { false };
 
     public:
+        /**
+         * Constructor for the EventManager class.
+         */
         EventManager();
 
+        /**
+         * Check whether event logging is enabled.
+         * \return True if event logging is enabled, otherwise false.
+         */
         bool logging();
 
-        // TODO: manage all things where they belong
+        /**
+         * Manage game variables based on the time passed.
+         * \param deltaTime Time passed since the last update.
+         */
         void manageGameVars(float deltaTime);
-        // TODO: add an KeyManager and move it there
+
+        /**
+         * Check if a mouse button is clicked.
+         * \param button The mouse button to check.
+         * \param clicked Flag indicating whether to check for click or down state.
+         * \return True if the specified mouse button is clicked or down, otherwise false.
+         */
         bool isMouseClicked(int button, bool clicked = true)
         {
             bool& is_down = mDown[button];
@@ -84,6 +100,12 @@ namespace Event {
             }
         }
 
+        /**
+         * Check if a keyboard key is clicked.
+         * \param iKey The keyboard key to check.
+         * \param clicked Flag indicating whether to check for click or down state.
+         * \return True if the specified keyboard key is clicked or down, otherwise false.
+         */
         bool isKeyClicked(int iKey, bool clicked = true)
         {
             bool& is_down = kDown[iKey];

@@ -91,11 +91,11 @@ namespace Drawing {
         return {static_cast<float>(renderRect.x), static_cast<float>(renderRect.y)};
     }
 
-    void Texture::setAngel(float newAngel) {
-        angle = Utils::Math::normalizeAngle180(newAngel);
+    void Texture::setAngle(float newAngle) {
+        angle = Utils::Math::normalizeAngle180(newAngle);
     }
 
-    float Texture::getAngel() {
+    float Texture::getAngle() {
         return angle;
     }
 

@@ -65,23 +65,12 @@ namespace Event {
 
         // TODO: Move that to the player class and handle anything related there.
         // TODO: Only change the angle ... we have a constant movement speed
-        Utils::Vector2D oldPos(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y);
+        /*Utils::Vector2D oldPos(Utils::GlobalVars::cameraPos.x, Utils::GlobalVars::cameraPos.y);
 
         float movement = 200 * deltaTime;
 
         if (Utils::GlobalVars::lvlEditorActive && isKeyClicked(SDL_SCANCODE_LSHIFT, false))
             movement = 10 * deltaTime;
-
-
-        /*if (isKeyClicked(SDL_SCANCODE_LEFT, false) || isKeyClicked(SDL_SCANCODE_A, false))
-            Utils::GlobalVars::cameraPos.x -= movement;
-        if (isKeyClicked(SDL_SCANCODE_RIGHT, false) || isKeyClicked(SDL_SCANCODE_D, false))
-            Utils::GlobalVars::cameraPos.x += movement;
-
-        if (isKeyClicked(SDL_SCANCODE_UP, false) || isKeyClicked(SDL_SCANCODE_W, false))
-            Utils::GlobalVars::cameraPos.y -= movement;
-        if (isKeyClicked(SDL_SCANCODE_DOWN, false) || isKeyClicked(SDL_SCANCODE_S, false))
-            Utils::GlobalVars::cameraPos.y += movement;*/
 
         static float moveX = 0.0f;  // Horizontal movement
         static float moveY = -1.0f; // Vertical movement
@@ -133,7 +122,6 @@ namespace Event {
         else if (Utils::GlobalVars::cameraPos.x > oldPos.x && Utils::GlobalVars::cameraPos.y > oldPos.y) // Right Down
             Utils::GlobalVars::playerAngle = 135.f;
 
-
         if ((Utils::GlobalVars::cameraPos.x < 0))
             Utils::GlobalVars::cameraPos.x += Utils::GlobalVars::lvlWidth;
 
@@ -144,6 +132,6 @@ namespace Event {
             Utils::GlobalVars::cameraPos.y += Utils::GlobalVars::lvlHeight;
 
         if ((Utils::GlobalVars::cameraPos.y > Utils::GlobalVars::lvlHeight))
-            Utils::GlobalVars::cameraPos.y -= Utils::GlobalVars::lvlHeight;
+            Utils::GlobalVars::cameraPos.y -= Utils::GlobalVars::lvlHeight;*/
     }
 } // Event
