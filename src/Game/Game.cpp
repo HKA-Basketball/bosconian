@@ -27,6 +27,7 @@ namespace Game {
     void Game::init()
     {
         Utils::GlobalVars::condition = 0;
+        player1->setLives(static_cast<int>(Utils::PlayOptions::lives));
         player1->clearProjectiels();
 
         std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
@@ -300,12 +301,12 @@ namespace Game {
             }
         }
 
-        int count = 0;
+        int countBaseShips = 0;
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
                 continue;
-            count++;
+            countBaseShips++;
 
             std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
             for (int x = 0; x < ent.size(); x++) {
@@ -363,7 +364,7 @@ namespace Game {
             player1->setLives(player1->getLives()-1);
 
             if (player1->getLives() <= 0) {
-                player1->setLives(3);
+                player1->setLives(static_cast<int>(Utils::PlayOptions::lives));
                 lvlmgn.selectLevel(1);
                 Utils::GlobalVars::currenPTS = 0;
                 this->init();
@@ -377,17 +378,17 @@ namespace Game {
                     Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
             }
 
-            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
         }
 
-        if (count == 0) {
+        if (countBaseShips == 0) {
             lvlmgn.increaseRound();
             this->init();
 
-            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
@@ -432,7 +433,7 @@ namespace Game {
 
     void Game::HUD(std::vector<Utils::Vector2D> baseShipPos) {
         Drawing::g_drawing->fillRectangle({0, 0, 0, 255},
-                                          {Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth,
+                                          (SDL_Rect){Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth,
                                            Utils::GlobalVars::windowHeight});
 
         SDL_Rect destScor = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
@@ -456,7 +457,7 @@ namespace Game {
                                     , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
         Drawing::g_drawing->fillRectangle(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition],
-                                          {Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64});
+                                          (SDL_Rect){Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64});
 
         std::string condition = Utils::GlobalVars::condition == 0 ? "GREEN" : Utils::GlobalVars::condition == 1 ? "YELLOW" : "RED!!!";
 
@@ -480,7 +481,7 @@ namespace Game {
             textHeight += 2;
             int y_Offset = 50;
 
-            Drawing::g_drawing->fillRectangle({48, 48, 48, 150}, {5, y_Offset - 5, textWidth + 10, textHeight * 9 + 10});
+            Drawing::g_drawing->fillRectangle({48, 48, 48, 150}, (SDL_Rect){5, y_Offset - 5, textWidth + 10, textHeight * 9 + 10});
 
             Drawing::g_drawing->string(std::string("Editor Mode!"), Renderer::g_renderer->m_fonts[1], { 255, 0, 0 }
                     , Utils::Vector2D(10, y_Offset), 0);

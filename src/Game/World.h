@@ -154,7 +154,7 @@ namespace Game {
                 if (y < 0) y += Utils::GlobalVars::lvlHeight * 0.6f;
 
                 SDL_FRect rec = { x, y, point.first.w, point.first.h };
-                g_drawing->fillRectanglef(point.second, rec);
+                g_drawing->fillRectangle(point.second, rec);
             }
             return 1;
         }

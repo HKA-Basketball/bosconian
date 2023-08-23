@@ -15,11 +15,11 @@ int main(int argc, char* args[])
     //lvl_cfg.write();
     lvl_cfg.read();
 
-    printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
+    /*printf("LOG: lvlNum: %d, baseShipsPos: %f, %f, playerPos: %f, %f \n", Utils::GlobalVars::lvlsInfos.at(0).lvlNum
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).x
            , Utils::GlobalVars::lvlsInfos.at(0).baseShipsPos.at(0).y
            , Utils::GlobalVars::lvlsInfos.at(0).playerPos.x
-           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);
+           , Utils::GlobalVars::lvlsInfos.at(0).playerPos.y);*/
 
     Utils::Config frames_cfg(".\\cfg\\frame.ini");
     frames_cfg.add_item("Frames", "frames", Utils::GlobalVars::frames);
@@ -37,11 +37,13 @@ int main(int argc, char* args[])
     Utils::Config sw_cfg(".\\cfg\\config.ini");
 
     int frameCap = 0;
-
-    sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
     sw_cfg.add_item("Settings", "max-fps", frameCap);
     //sw_cfg.write();
     sw_cfg.read();
+
+    Utils::Config score_cfg(".\\cfg\\score.ini");
+    score_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+    score_cfg.read();
 
     Init::Initializer* init = Init::Initializer::getInstance();
     if (!init->initGameObjs())
@@ -69,6 +71,10 @@ int main(int argc, char* args[])
 
     menu.addOption("Start", []() {
         Utils::GlobalVars::menuActive = false;
+    });
+    menu.addOption("Restart", [&g_game]() {
+        g_game.init();
+        g_game.update(0.f);
     });
     menu.addOption("Level Editor", []() {
         Utils::GlobalVars::lvlEditorActive = !Utils::GlobalVars::lvlEditorActive;
