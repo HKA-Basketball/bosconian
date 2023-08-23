@@ -41,6 +41,10 @@ int main(int argc, char* args[])
     //sw_cfg.write();
     sw_cfg.read();
 
+    Utils::Config score_cfg(".\\cfg\\score.ini");
+    score_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
+    score_cfg.read();
+
     Init::Initializer* init = Init::Initializer::getInstance();
     if (!init->initGameObjs())
     {
