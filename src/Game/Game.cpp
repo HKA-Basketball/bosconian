@@ -27,6 +27,7 @@ namespace Game {
     void Game::init()
     {
         Utils::GlobalVars::condition = 0;
+        player1->setLives(static_cast<int>(Utils::PlayOptions::lives));
         player1->clearProjectiels();
 
         std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
@@ -300,12 +301,12 @@ namespace Game {
             }
         }
 
-        int count = 0;
+        int countBaseShips = 0;
 
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
                 continue;
-            count++;
+            countBaseShips++;
 
             std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
             for (int x = 0; x < ent.size(); x++) {
@@ -363,7 +364,7 @@ namespace Game {
             player1->setLives(player1->getLives()-1);
 
             if (player1->getLives() <= 0) {
-                player1->setLives(3);
+                player1->setLives(static_cast<int>(Utils::PlayOptions::lives));
                 lvlmgn.selectLevel(1);
                 Utils::GlobalVars::currenPTS = 0;
                 this->init();
@@ -377,17 +378,17 @@ namespace Game {
                     Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
             }
 
-            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
         }
 
-        if (count == 0) {
+        if (countBaseShips == 0) {
             lvlmgn.increaseRound();
             this->init();
 
-            Utils::Config sw_cfg(".\\cfg\\config.ini");
+            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();

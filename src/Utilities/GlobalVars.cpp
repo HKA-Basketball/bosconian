@@ -1,10 +1,11 @@
 #include <array>
+#include <iostream>
 #include "GlobalVars.h"
 
 namespace Utils {
     namespace PlayOptions {
         Coinage conage = Coinage::One_One;
-        BonusFighter bonusFighter = BonusFighter::Opt0_5;
+        BonusFighter bonusFighter = BonusFighter::Opt0_3;
         Lives lives = Lives::Three;
         Difficulty difficulty = Difficulty::Medium;
         bool allowContinue = true;
@@ -33,14 +34,24 @@ namespace Utils {
         bool swb_6 = 0; // not used
         bool swb_7 = 0;
 
+        Lives GetLivesFromBits(int bits) {
+            switch (bits) {
+                case 0b00: return Lives::Five;
+                case 0b11: return Lives::On;
+                case 0b10: return Lives::Tow;
+                case 0b01: return Lives::Three;
+                default: return Lives::Three; // Default to Three
+            }
+        }
+
         void updateSettings() {
             int swa = (swa_7 << 7) | (swa_6 << 6) | (swa_5 << 5) | (swa_4 << 4) | (swa_3 << 3) | (swa_2 << 2) | (swa_1 << 1) | swa_0;
 
             // Update lives based on swa_6 and swa_7
-            lives = static_cast<Lives>((swa >> 6) & 0x03);
+            lives = GetLivesFromBits((swa >> 6) & 0x03);
 
             // Update conage based on swa_0, swa_1, and swa_2
-            conage = static_cast<Coinage>(swa % 8);
+            conage = static_cast<Coinage>((swa >> 0) & 0x07);
 
             // Update bonusFighter based on swa_3 to swa_5 and lives
             if (lives != Lives::Five) {
