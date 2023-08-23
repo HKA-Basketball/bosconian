@@ -3,7 +3,7 @@
 
 #include "../../includes.h"
 
-namespace Game {
+namespace Physics {
 
     /**
      * The Hitbox class represents a rectangular collision hitbox used for collision detection.

@@ -3,7 +3,7 @@
 
 #include "../../includes.h"
 #include "../Drawing/Texture.h"
-#include "Hitbox.h"
+#include "../Physics/Hitbox.h"
 #include "Projectile.h"
 #include "../Sound/SoundManager.h"
 
@@ -25,7 +25,7 @@ namespace Game {
         Utils::Vector2D size;
         float angle;
         Utils::Vector2D hitboxPos;
-        Game::Hitbox* hitbox;
+        Physics::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
         std::vector<Projectile*> projectiles;
@@ -37,7 +37,7 @@ namespace Game {
             angle = deg;
             pts = points;
             this->size = size;
-            hitbox = new Game::Hitbox(origin, size);
+            hitbox = new Physics::Hitbox(origin, size);
             triggerAnimation = false;
             active = true;
         }
@@ -49,7 +49,7 @@ namespace Game {
             this->size = size;
             this->hitboxPos = hitboxPos;
             //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
-            hitbox = new Game::Hitbox(origin + this->hitboxPos, hitboxSize);
+            hitbox = new Physics::Hitbox(origin + this->hitboxPos, hitboxSize);
             triggerAnimation = false;
             active = true;
         }
@@ -137,7 +137,7 @@ namespace Game {
             active = val;
         }
 
-        Game::Hitbox* getHitbox() const {
+        Physics::Hitbox* getHitbox() const {
             return hitbox;
         }
 
@@ -886,7 +886,7 @@ namespace Game {
             return m_model.getAngle();
         }
 
-        Game::Hitbox* getHitbox() {
+        Physics::Hitbox* getHitbox() {
             return m_model.getHitbox();
         }
     };

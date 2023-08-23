@@ -1,7 +1,7 @@
 #include <stack>
 #include "Hitbox.h"
 
-namespace Game {
+namespace Physics {
     Hitbox::Hitbox(Utils::Vector2D pos, Utils::Vector2D size) {
         pos -= (size*0.5f);
 
