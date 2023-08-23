@@ -432,7 +432,7 @@ namespace Game {
 
     void Game::HUD(std::vector<Utils::Vector2D> baseShipPos) {
         Drawing::g_drawing->fillRectangle({0, 0, 0, 255},
-                                          {Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth,
+                                          (SDL_Rect){Utils::GlobalVars::windowWidth, 0, Utils::GlobalVars::infoWidth,
                                            Utils::GlobalVars::windowHeight});
 
         SDL_Rect destScor = { 0, 0, Utils::GlobalVars::infoWidth, 0 };
@@ -456,7 +456,7 @@ namespace Game {
                                     , Utils::Vector2D(Utils::GlobalVars::windowWidth + Utils::GlobalVars::infoWidth - 10, 192), 1);
 
         Drawing::g_drawing->fillRectangle(Utils::GlobalVars::conditionColors[Utils::GlobalVars::condition],
-                                          {Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64});
+                                          (SDL_Rect){Utils::GlobalVars::windowWidth, 240, Utils::GlobalVars::infoWidth, 64});
 
         std::string condition = Utils::GlobalVars::condition == 0 ? "GREEN" : Utils::GlobalVars::condition == 1 ? "YELLOW" : "RED!!!";
 
@@ -480,7 +480,7 @@ namespace Game {
             textHeight += 2;
             int y_Offset = 50;
 
-            Drawing::g_drawing->fillRectangle({48, 48, 48, 150}, {5, y_Offset - 5, textWidth + 10, textHeight * 9 + 10});
+            Drawing::g_drawing->fillRectangle({48, 48, 48, 150}, (SDL_Rect){5, y_Offset - 5, textWidth + 10, textHeight * 9 + 10});
 
             Drawing::g_drawing->string(std::string("Editor Mode!"), Renderer::g_renderer->m_fonts[1], { 255, 0, 0 }
                     , Utils::Vector2D(10, y_Offset), 0);

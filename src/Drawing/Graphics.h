@@ -97,7 +97,7 @@ namespace Drawing {
          * \param color The color to fill the rectangle with.
          * \param rect The rectangle's dimensions.
          */
-        void fillRectanglef(SDL_Color color, SDL_FRect rect);
+        void fillRectangle(SDL_Color color, SDL_FRect rect);
 
         /**
          * Fill a rectangle outline on the screen.
@@ -107,7 +107,7 @@ namespace Drawing {
         void fillRectangleOutline(SDL_Color color, SDL_Rect rect);
 
         /**
-         * Fill the outline of a rectangle with a specified color.
+         * Fill a rectangle outline on the screen with floating-point coordinates.
          * \param color The color for the rectangle outline.
          * \param rect The rectangle's dimensions.
          */

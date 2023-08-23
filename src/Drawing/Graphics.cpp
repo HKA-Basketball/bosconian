@@ -30,7 +30,7 @@ namespace Drawing {
         SDL_RenderFillRect(g_renderer, &rect);
     }
 
-    void Graphics::fillRectanglef(SDL_Color color, SDL_FRect rect)
+    void Graphics::fillRectangle(SDL_Color color, SDL_FRect rect)
     {
         SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRectF(g_renderer, &rect);
