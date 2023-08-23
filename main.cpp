@@ -1,4 +1,5 @@
 #include <fileapi.h>
+#include <functional>
 
 #include "./src/Utilities/Initializer.h"
 #include "./src/Game/Game.h"
