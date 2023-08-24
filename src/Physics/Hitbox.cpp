@@ -16,6 +16,10 @@ namespace Physics {
         position = newPosition;
     }
 
+    void Hitbox::updateSize(Utils::Vector2D newSize) {
+        size = newSize;
+    }
+
     Hitbox::operator SDL_Rect() {
         return SDL_Rect{
                 static_cast<int>(position.x),

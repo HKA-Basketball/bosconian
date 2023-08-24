@@ -21,6 +21,10 @@ namespace Physics {
          */
         Hitbox(Utils::Vector2D position, Utils::Vector2D size) : position(position - (size*0.5f)), size(size) {};
 
+        const Utils::Vector2D getPosition() const;
+
+        const Utils::Vector2D getSize() const;
+
         /**
          * Update the position of the hitbox by changing its origin.
          * \param newOrigin The new top-left corner position of the hitbox.
@@ -28,14 +32,15 @@ namespace Physics {
         void updatePosition(Utils::Vector2D newPosition);
 
         /**
+         * Update the size of the hitbox
+         * \param newSize The new size of the hitbox.
+         */
+        void updateSize(Utils::Vector2D newSize);
+
+        /**
          * Get a constant reference to the SDL_Rect representing the hitbox's position and size.
          * \return A constant reference to the SDL_Rect hitbox.
          */
-        //const SDL_Rect &getHitbox() const;
-
-        const Utils::Vector2D getPosition() const;
-
-        const Utils::Vector2D getSize() const;
 
         operator SDL_Rect();
     };
