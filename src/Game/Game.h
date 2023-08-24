@@ -103,6 +103,10 @@ namespace Game {
          * Perform actions related to the level editor.
          */
         void doLvlEditorStuff();
+
+        void updateScore(Entity *entity);
+
+        bool checkEntityCollisions(Entity *entity);
     };
 
 } // Game

@@ -243,6 +243,29 @@ namespace Game {
         }
     }
 
+    void Game::updateScore(Entity* entity) {
+        entity->setTriggerAnimation(true);
+        Utils::GlobalVars::currenPTS += entity->getPTS();
+        if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
+            Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
+        }
+    }
+
+    bool Game::checkEntityCollisions(Entity* entity) {
+        SDL_Rect worldPosRec = *entity->getHitbox();
+
+        if (player1->checkProjectiels(worldPosRec)) {
+            updateScore(entity);
+        }
+
+        if (Utils::Math::rectIntersect(*player1->getHitbox(), worldPosRec)) {
+            entity->setTriggerAnimation(true);
+            return true;
+        }
+
+        return false;
+    }
+
     void Game::update(float deltaTime) {
         doLvlEditorStuff();
 
@@ -275,29 +298,21 @@ namespace Game {
 
         bool dead = false;
 
-        for (int i = 0; i < entities->getEntities().size(); i++) {
-            if (!entities->getEntities()[i]->isActive())
+        for (Entity* entity : entities->getEntities()) {
+            if (!entity->isActive()) {
                 continue;
+            }
 
-            SDL_Rect worldPosRec = (SDL_Rect) *entities->getEntities()[i]->getHitbox();
+            SDL_Rect worldPosRec = *entity->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
-            if (!isOnScreen)
+            if (!isOnScreen) {
                 continue;
-
-            if (player1->checkProjectiels(worldPosRec)) {
-                entities->getEntities()[i]->setTriggerAnimation(true);
-                Utils::GlobalVars::currenPTS += entities->getEntities()[i]->getPTS();
-                if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
-                    Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
-                }
             }
 
-            if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec))
-            {
-                entities->getEntities()[i]->setTriggerAnimation(true);
-                dead = true;
+            if(!dead) {
+                dead = checkEntityCollisions(entity);
             }
         }
 
