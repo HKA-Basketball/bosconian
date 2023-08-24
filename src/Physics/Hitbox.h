@@ -10,28 +10,34 @@ namespace Physics {
      */
     class Hitbox {
     private:
-        /** The SDL_Rect representing the position and size of the hitbox. */
-        SDL_Rect hitbox;
+        Utils::Vector2D position;
+        Utils::Vector2D size;
 
     public:
         /**
          * Constructs a Hitbox instance with the specified position and size.
-         * \param pos The position of the hitbox's top-left corner.
+         * \param position The position of the hitbox's top-left corner.
          * \param size The size (width and height) of the hitbox.
          */
-        Hitbox(Utils::Vector2D pos, Utils::Vector2D size);
+        Hitbox(Utils::Vector2D position, Utils::Vector2D size) : position(position - (size*0.5f)), size(size) {};
 
         /**
          * Update the position of the hitbox by changing its origin.
          * \param newOrigin The new top-left corner position of the hitbox.
          */
-        void updateHitboxPos(Utils::Vector2D newOrigin);
+        void updatePosition(Utils::Vector2D newOrigin);
 
         /**
          * Get a constant reference to the SDL_Rect representing the hitbox's position and size.
          * \return A constant reference to the SDL_Rect hitbox.
          */
-        const SDL_Rect &getHitbox() const;
+        //const SDL_Rect &getHitbox() const;
+
+        const Utils::Vector2D getPosition() const;
+
+        const Utils::Vector2D getSize() const;
+
+        operator SDL_Rect();
     };
 
 } // Game

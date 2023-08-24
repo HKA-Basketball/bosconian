@@ -67,7 +67,7 @@ namespace Game {
 
         void update() {
             // Update the hitbox position and angle based on the entity's properties
-            hitbox->updateHitboxPos(origin + hitboxPos);
+            hitbox->updatePosition(origin + hitboxPos);
             //hitbox->updateHitboxAngle(angle);
         }
 
@@ -193,7 +193,7 @@ namespace Game {
             if (!Utils::GlobalVars::debugMode)
                 return;
 
-            SDL_Rect worldPosRec = m_model.getHitbox()->getHitbox();
+            SDL_Rect worldPosRec = (SDL_Rect) *m_model.getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
