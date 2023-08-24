@@ -25,7 +25,7 @@ namespace Physics {
          * Update the position of the hitbox by changing its origin.
          * \param newOrigin The new top-left corner position of the hitbox.
          */
-        void updatePosition(Utils::Vector2D newOrigin);
+        void updatePosition(Utils::Vector2D newPosition);
 
         /**
          * Get a constant reference to the SDL_Rect representing the hitbox's position and size.

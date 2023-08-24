@@ -11,9 +11,9 @@ namespace Physics {
         return size;
     }
 
-    void Hitbox::updatePosition(Utils::Vector2D newOrigin) {
-        newOrigin -= (size*0.5f);
-        position = newOrigin;
+    void Hitbox::updatePosition(Utils::Vector2D newPosition) {
+        newPosition -= (size*0.5f);
+        position = newPosition;
     }
 
     Hitbox::operator SDL_Rect() {
