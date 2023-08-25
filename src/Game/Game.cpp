@@ -252,13 +252,13 @@ namespace Game {
     }
 
     bool Game::checkEntityCollisions(Entity* entity) {
-        SDL_Rect worldPosRec = *entity->getHitbox();
+        auto worldPosRec = (SDL_Rect) *entity->getHitbox();
 
         if (player1->checkProjectiels(worldPosRec)) {
             updateScore(entity);
         }
 
-        if (Utils::Math::rectIntersect(*player1->getHitbox(), worldPosRec)) {
+        if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
             entity->setTriggerAnimation(true);
             return true;
         }
@@ -303,7 +303,7 @@ namespace Game {
                 continue;
             }
 
-            SDL_Rect worldPosRec = *entity->getHitbox();
+            auto worldPosRec = (SDL_Rect) *entity->getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
