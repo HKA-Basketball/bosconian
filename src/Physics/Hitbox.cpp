@@ -3,11 +3,11 @@
 
 namespace Physics {
 
-    const Utils::Vector2D Hitbox::getPosition() const {
+    Utils::Vector2D Hitbox::getPosition() const {
         return position;
     }
 
-    const Utils::Vector2D Hitbox::getSize() const {
+    Utils::Vector2D Hitbox::getSize() const {
         return size;
     }
 
@@ -16,11 +16,11 @@ namespace Physics {
         position = newPosition;
     }
 
-    void Hitbox::updateSize(Utils::Vector2D newSize) {
+    void Hitbox::updateSize(const Utils::Vector2D& newSize) {
         size = newSize;
     }
 
-    Hitbox::operator SDL_Rect() {
+    Hitbox::operator SDL_Rect() const {
         return SDL_Rect{
                 static_cast<int>(position.x),
                 static_cast<int>(position.y),
