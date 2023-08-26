@@ -296,7 +296,7 @@ namespace Game {
         if (Utils::GlobalVars::lvlEditorActive)
             return;
 
-        bool dead = false;
+        player1->setDead(false);
 
         for (Entity* entity : entities->getEntities()) {
             if (!entity->isActive()) {
@@ -311,8 +311,8 @@ namespace Game {
                 continue;
             }
 
-            if(!dead) {
-                dead = checkEntityCollisions(entity);
+            if(!player1->isDead()) {
+                player1->setDead(checkEntityCollisions(entity));
             }
         }
 
@@ -346,11 +346,11 @@ namespace Game {
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
-                    dead = true;
+                    player1->setDead(true);
                 }
 
                 if (ent[x]->checkProjectiels((SDL_Rect) *player1->getHitbox())) {
-                    dead = true;
+                    player1->setDead(true);
                 }
             }
 
@@ -368,12 +368,12 @@ namespace Game {
                 if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(),
                                                (SDL_Rect) *baseShipEntitys[i]->getSpy()->getHitbox())) {
                     ent[0]->setTriggerAnimation(true);
-                    dead = true;
+                    player1->setDead(true);
                 }
             }
         }
 
-        if (dead)
+        if (player1->isDead())
         {
             Sound::g_sound->playSound(Sound::SOUND_GAME_OVER, 2, 0);
             player1->setLives(player1->getLives()-1);

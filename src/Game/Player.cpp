@@ -26,6 +26,14 @@ namespace Game {
         return currentLevel;
     }
 
+    void Player::setDead(const bool playerDead) {
+        this->dead = playerDead;
+    }
+
+    bool Player::isDead() const {
+        return this->dead;
+    }
+
     void Player::updateProjectiles(float deltaTime) {
         static Uint64 timeSinceLastProjectile = 0;
         const Uint64 projectileInterval = 250;
