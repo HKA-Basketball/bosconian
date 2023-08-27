@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "../../Resources/imgs.h"
-#include "../Utilities/GlobalVars.h"
 
 namespace Game {
     Game::Game()
@@ -258,7 +256,8 @@ namespace Game {
             updateScore(entity);
         }
 
-        if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
+
+        if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
             entity->setTriggerAnimation(true);
             return true;
         }
@@ -338,7 +337,7 @@ namespace Game {
                     }
                 }
 
-                if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
+                if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
                     ent[0]->setTriggerAnimation(true);
                     Utils::GlobalVars::currenPTS += ent[0]->getPTS();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
@@ -362,9 +361,8 @@ namespace Game {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
                 }
-
-                if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(),
-                                               (SDL_Rect) *baseShipEntitys[i]->getSpy()->getHitbox())) {
+                if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(),
+                       (SDL_Rect) *baseShipEntitys[i]->getSpy()->getHitbox())) {
                     ent[0]->setTriggerAnimation(true);
                     player1->setDead(true);
                 }

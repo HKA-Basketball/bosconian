@@ -4,6 +4,7 @@
 #include "../../includes.h"
 #include "../Drawing/Texture.h"
 #include "../Physics/Hitbox.h"
+#include "../Physics/Collision.h"
 #include "Projectile.h"
 #include "../Sound/SoundManager.h"
 
@@ -834,7 +835,7 @@ namespace Game {
                 if (!m_model.getProjectiles()[y]->getActive())
                     continue;
 
-                if (m_model.getProjectiles()[y]->ProjectileHitsEntity(entityHitbox)) {
+                if (Physics::CollisionManager::checkIntersect((SDL_Rect) m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
                     m_model.getProjectiles()[y]->setActive(false);
                     return true;
                 }
