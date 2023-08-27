@@ -389,17 +389,17 @@ namespace Game {
                     Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
             }
 
-            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
+
+            Utils::GlobalVars::menuActive = true;
         }
 
         if (countBaseShips == 0) {
             lvlmgn.increaseRound();
             this->init();
 
-            Utils::Config sw_cfg(".\\cfg\\score.ini");
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
