@@ -17,6 +17,8 @@ namespace Game {
         int currentLevel;
         int currentCondition;
 
+        bool dead;
+
     public:
         /**
          * Constructs a Player instance with the specified position, rotation, texture, and initial lives.
@@ -64,6 +66,10 @@ namespace Game {
          * \return The current level.
          */
         int getCurrentLevel() const;
+
+        void setDead(bool playerDead);
+
+        bool isDead() const;
 
         /**
          * Updates the player's projectiles based on the specified delta time.

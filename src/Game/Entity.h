@@ -3,7 +3,8 @@
 
 #include "../../includes.h"
 #include "../Drawing/Texture.h"
-#include "Hitbox.h"
+#include "../Physics/Hitbox.h"
+#include "../Physics/Collision.h"
 #include "Projectile.h"
 #include "../Sound/SoundManager.h"
 
@@ -25,7 +26,7 @@ namespace Game {
         Utils::Vector2D size;
         float angle;
         Utils::Vector2D hitboxPos;
-        Game::Hitbox* hitbox;
+        Physics::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
         std::vector<Projectile*> projectiles;
@@ -37,7 +38,7 @@ namespace Game {
             angle = deg;
             pts = points;
             this->size = size;
-            hitbox = new Game::Hitbox(origin, size);
+            hitbox = new Physics::Hitbox(origin, size);
             triggerAnimation = false;
             active = true;
         }
@@ -49,7 +50,7 @@ namespace Game {
             this->size = size;
             this->hitboxPos = hitboxPos;
             //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
-            hitbox = new Game::Hitbox(origin + this->hitboxPos, hitboxSize);
+            hitbox = new Physics::Hitbox(origin + this->hitboxPos, hitboxSize);
             triggerAnimation = false;
             active = true;
         }
@@ -67,7 +68,7 @@ namespace Game {
 
         void update() {
             // Update the hitbox position and angle based on the entity's properties
-            hitbox->updateHitboxPos(origin + hitboxPos);
+            hitbox->updatePosition(origin + hitboxPos);
             //hitbox->updateHitboxAngle(angle);
         }
 
@@ -137,7 +138,7 @@ namespace Game {
             active = val;
         }
 
-        Game::Hitbox* getHitbox() const {
+        Physics::Hitbox* getHitbox() const {
             return hitbox;
         }
 
@@ -193,7 +194,7 @@ namespace Game {
             if (!Utils::GlobalVars::debugMode)
                 return;
 
-            SDL_Rect worldPosRec = m_model.getHitbox()->getHitbox();
+            SDL_Rect worldPosRec = (SDL_Rect) *m_model.getHitbox();
             Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
@@ -834,7 +835,7 @@ namespace Game {
                 if (!m_model.getProjectiles()[y]->getActive())
                     continue;
 
-                if (m_model.getProjectiles()[y]->ProjectileHitsEntity(entityHitbox)) {
+                if (Physics::CollisionManager::checkIntersect((SDL_Rect) m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
                     m_model.getProjectiles()[y]->setActive(false);
                     return true;
                 }
@@ -886,7 +887,7 @@ namespace Game {
             return m_model.getAngle();
         }
 
-        Game::Hitbox* getHitbox() {
+        Physics::Hitbox* getHitbox() {
             return m_model.getHitbox();
         }
     };

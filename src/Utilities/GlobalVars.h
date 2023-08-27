@@ -162,14 +162,6 @@ namespace Utils {
         extern float RandomFloat(float min, float max);
 
         /**
-         * Checks if two SDL_Rectangles intersect.
-         * \param rect1 The first rectangle.
-         * \param rect2 The second rectangle.
-         * \return True if the rectangles intersect, false otherwise.
-         */
-        extern bool rectIntersect(SDL_Rect rect1, SDL_Rect rect2);
-
-        /**
          * Wraps the position of a Vector2D object, ensuring it stays within certain bounds.
          * \param newPosition Pointer to the new position vector to be wrapped.
          */

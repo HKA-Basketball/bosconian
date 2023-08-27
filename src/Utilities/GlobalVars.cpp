@@ -97,15 +97,6 @@ namespace Utils {
             return (random * range) + min;
         }
 
-        bool rectIntersect(SDL_Rect rect1, SDL_Rect rect2)
-        {
-            // Check if the bounding boxes of the two intersect
-            return (rect1.x < rect2.x + rect2.w &&
-                    rect1.x + rect1.w > rect2.x &&
-                    rect1.y < rect2.y + rect2.h &&
-                    rect1.y + rect1.h > rect2.y);
-        }
-
         void wrapPos(Vector2D* newPosition) {
             // Wrap the position around the map edges
             while (newPosition->x < Utils::GlobalVars::cameraPos.x - Utils::GlobalVars::lvlWidth / 2) {
