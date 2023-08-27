@@ -106,7 +106,7 @@ namespace Game {
          */
         void doLvlEditorStuff();
 
-        void updateScore(Entity *entity);
+        static void updateScore(Entity *entity);
 
         bool checkEntityCollisions(Entity *entity);
     };
