@@ -337,8 +337,6 @@ namespace Game {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
                 }
-                if (ent[x]->isTriggerAnimation() && player1->checkProjectiels(worldPosRec)) {
-                }
 
                 if (Utils::Math::rectIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
                     ent[0]->setTriggerAnimation(true);
