@@ -194,12 +194,16 @@ namespace Game {
             if (!Utils::GlobalVars::debugMode)
                 return;
 
-            SDL_Rect worldPosRec = (SDL_Rect) *m_model.getHitbox();
-            Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
+            Utils::Vector2D worldPos = m_model.getHitbox()->getPosition();
             Utils::Vector2D screenPos;
             bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
 
-            SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w, worldPosRec.h};
+            SDL_Rect screenPosRect{
+                    static_cast<int>(screenPos.x),
+                    static_cast<int>(screenPos.y),
+                    static_cast<int>(m_model.getHitbox()->getSize().x),
+                    static_cast<int>(m_model.getHitbox()->getSize().y)
+            };
 
             //char pos[256];
             //snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
@@ -207,10 +211,15 @@ namespace Game {
             //TTF_SizeText(Renderer::g_renderer->m_fonts[1], pos, &destR.w, &destR.h);
             //Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
 
-            if (!m_model.isActive())
-                Drawing::g_drawing->rectangle({255, 0, 0, 255}, screenPosRect);
-            else
-                Drawing::g_drawing->rectangle({0, 255, 0, 255}, screenPosRect);
+            bool isActive = m_model.isActive();
+            SDL_Color color{
+                    static_cast<Uint8>(isActive ? 0 : 255),
+                    static_cast<Uint8>(isActive ? 255 : 0),
+                    0,
+                    255
+            };
+
+            Drawing::g_drawing->rectangle(color, screenPosRect);
         }
     };
 
