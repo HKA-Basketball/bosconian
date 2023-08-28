@@ -830,12 +830,12 @@ namespace Game {
             m_model.addProjectile(pro);
         }
 
-        bool checkProjectiels(SDL_Rect entityHitbox) {
+        bool checkProjectiels(const Physics::Hitbox& entityHitbox) {
             for (int y = 0; y < m_model.getProjectiles().size(); y++){
                 if (!m_model.getProjectiles()[y]->getActive())
                     continue;
 
-                if (Physics::CollisionManager::checkIntersect((SDL_Rect) m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
+                if (Physics::CollisionManager::checkIntersect(m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
                     m_model.getProjectiles()[y]->setActive(false);
                     return true;
                 }

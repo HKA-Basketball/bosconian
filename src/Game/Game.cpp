@@ -250,14 +250,11 @@ namespace Game {
     }
 
     bool Game::checkEntityCollisions(Entity* entity) {
-        auto worldPosRec = (SDL_Rect) *entity->getHitbox();
-
-        if (player1->checkProjectiels(worldPosRec)) {
+        if (player1->checkProjectiels(*entity->getHitbox())) {
             updateScore(entity);
         }
 
-
-        if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
+        if (Physics::CollisionManager::checkIntersect(*player1->getHitbox(), *entity->getHitbox())) {
             entity->setTriggerAnimation(true);
             return true;
         }
@@ -329,7 +326,7 @@ namespace Game {
                 Utils::Vector2D screenPos;
                 bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
 
-                if (ent[x]->isActive() && player1->checkProjectiels(worldPosRec)) {
+                if (ent[x]->isActive() && player1->checkProjectiels(*ent[x]->getHitbox())) {
                     ent[x]->setTriggerAnimation(true);
                     Utils::GlobalVars::currenPTS += ent[x]->getPTS();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
@@ -337,7 +334,7 @@ namespace Game {
                     }
                 }
 
-                if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(), worldPosRec)) {
+                if (Physics::CollisionManager::checkIntersect(*player1->getHitbox(), *ent[x]->getHitbox())) {
                     ent[0]->setTriggerAnimation(true);
                     Utils::GlobalVars::currenPTS += ent[0]->getPTS();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
@@ -346,14 +343,14 @@ namespace Game {
                     player1->setDead(true);
                 }
 
-                if (ent[x]->checkProjectiels((SDL_Rect) *player1->getHitbox())) {
+                if (ent[x]->checkProjectiels(*player1->getHitbox())) {
                     player1->setDead(true);
                 }
             }
 
             if (baseShipEntitys[i]->getSpy()) {
                 if (baseShipEntitys[i]->getSpy()->isActive() &&
-                    player1->checkProjectiels((SDL_Rect) *baseShipEntitys[i]->getSpy()->getHitbox())) {
+                    player1->checkProjectiels(*baseShipEntitys[i]->getSpy()->getHitbox())) {
                     baseShipEntitys[i]->getSpy()->setTriggerAnimation(true);
                     Utils::GlobalVars::condition = 0;
                     Utils::GlobalVars::currenPTS += baseShipEntitys[i]->getSpy()->getPTS();
@@ -361,8 +358,8 @@ namespace Game {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
                 }
-                if (Physics::CollisionManager::checkIntersect((SDL_Rect) *player1->getHitbox(),
-                       (SDL_Rect) *baseShipEntitys[i]->getSpy()->getHitbox())) {
+                if (Physics::CollisionManager::checkIntersect(*player1->getHitbox(),
+                       *baseShipEntitys[i]->getSpy()->getHitbox())) {
                     ent[0]->setTriggerAnimation(true);
                     player1->setDead(true);
                 }
