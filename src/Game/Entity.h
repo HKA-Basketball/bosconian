@@ -22,10 +22,8 @@ namespace Game {
     private:
         Uint64 pts;
         Utils::Vector2D origin;
-        Utils::Vector2D center;
         Utils::Vector2D size;
         float angle;
-        Utils::Vector2D hitboxPos;
         Physics::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
@@ -48,9 +46,8 @@ namespace Game {
             angle = deg;
             pts = points;
             this->size = size;
-            this->hitboxPos = hitboxPos;
             //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
-            hitbox = new Physics::Hitbox(origin + this->hitboxPos, hitboxSize);
+            hitbox = new Physics::Hitbox(origin + hitboxPos, hitboxSize);
             triggerAnimation = false;
             active = true;
         }
@@ -68,7 +65,7 @@ namespace Game {
 
         void update() {
             // Update the hitbox position and angle based on the entity's properties
-            hitbox->updatePosition(origin + hitboxPos);
+            hitbox->updatePosition(origin);
             //hitbox->updateHitboxAngle(angle);
         }
 
