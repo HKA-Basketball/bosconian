@@ -24,6 +24,11 @@ namespace Drawing {
         SDL_RenderDrawRect(g_renderer, &rect);
     }
 
+    void Graphics::rotatedRectangle(const SDL_Color color, const SDL_Rotated_Rect rotatedRect) {
+        SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
+        sdl_rotated_rect(g_renderer, rotatedRect);
+    }
+
     void Graphics::fillRectangle(SDL_Color color, SDL_Rect rect)
     {
         SDL_SetRenderDrawColor(g_renderer, color.r, color.g, color.b, color.a);
@@ -152,4 +157,34 @@ namespace Drawing {
 
         return texture;
     }
+
+    void Graphics::sdl_rotated_rect(SDL_Renderer* r, const SDL_Rotated_Rect rotatedRect) {
+        // Convert the angle from degrees to radians
+        double angleRadians = rotatedRect.angle * (M_PI / 180.0);
+
+        // Calculate the half-width and half-height for rotation
+        double halfWidth = rotatedRect.w / 2.0;
+        double halfHeight = rotatedRect.h / 2.0;
+
+        // Adjust position to center the rectangle
+        const int x0 = rotatedRect.x + halfWidth;
+        const int y0 = rotatedRect.y + halfHeight;
+
+        // Calculate the four corner points of the rotated rectangle
+        double x1 = x0 + halfWidth * cos(angleRadians) - halfHeight * sin(angleRadians);
+        double y1 = y0 + halfWidth * sin(angleRadians) + halfHeight * cos(angleRadians);
+        double x2 = x0 - halfWidth * cos(angleRadians) - halfHeight * sin(angleRadians);
+        double y2 = y0 - halfWidth * sin(angleRadians) + halfHeight * cos(angleRadians);
+        double x3 = 2 * x0 - x1;
+        double y3 = 2 * y0 - y1;
+        double x4 = 2 * x0 - x2;
+        double y4 = 2 * y0 - y2;
+
+        // Draw lines between the corner points to form the rotated rectangle
+        SDL_RenderDrawLine(r, static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2));
+        SDL_RenderDrawLine(r, static_cast<int>(x2), static_cast<int>(y2), static_cast<int>(x3), static_cast<int>(y3));
+        SDL_RenderDrawLine(r, static_cast<int>(x3), static_cast<int>(y3), static_cast<int>(x4), static_cast<int>(y4));
+        SDL_RenderDrawLine(r, static_cast<int>(x4), static_cast<int>(y4), static_cast<int>(x1), static_cast<int>(y1));
+    }
+
 } // Drawing
