@@ -66,7 +66,7 @@ namespace Game {
         void update() {
             // Update the hitbox position and angle based on the entity's properties
             hitbox->updatePosition(origin);
-            //hitbox->updateHitboxAngle(angle);
+            hitbox->updateAngle(angle);
         }
 
         const std::vector<Projectile*> &getProjectiles() const {
