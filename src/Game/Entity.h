@@ -193,11 +193,7 @@ namespace Game {
 
             Utils::Vector2D worldPos = m_model.getHitbox()->getPosition();
             Utils::Vector2D screenPos;
-            bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
-
-            auto rotatedRect = (Drawing::SDL_Rotated_Rect) *m_model.getHitbox();
-            rotatedRect.x = static_cast<int>(screenPos.x);
-            rotatedRect.y = static_cast<int>(screenPos.y);
+            Utils::render::WorldToScreen(worldPos, screenPos);
 
             //char pos[256];
             //snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
@@ -213,7 +209,20 @@ namespace Game {
                     255
             };
 
-            Drawing::g_drawing->rotatedRectangle(color, rotatedRect);
+            if(!Utils::GlobalVars::collisionMode) {
+                auto rect = (SDL_Rect) *m_model.getHitbox();
+                rect.x = static_cast<int>(screenPos.x);
+                rect.y = static_cast<int>(screenPos.y);
+
+                Drawing::g_drawing->rectangle(color, rect);
+
+            } else {
+                auto rotatedRect = (Drawing::SDL_Rotated_Rect) *m_model.getHitbox();
+                rotatedRect.x = static_cast<int>(screenPos.x);
+                rotatedRect.y = static_cast<int>(screenPos.y);
+
+                Drawing::g_drawing->rotatedRectangle(color, rotatedRect);
+            }
         }
     };
 

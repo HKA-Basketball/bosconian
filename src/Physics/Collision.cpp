@@ -23,6 +23,26 @@ namespace Physics {
 
     bool CollisionManager::checkIntersect(Hitbox hitbox1, Hitbox hitbox2) {
 
+        // aabb collision detection
+        if(!Utils::GlobalVars::collisionMode) {
+            auto position1 = hitbox1.getPosition();
+            auto size1 = hitbox1.getSize();
+            auto position2 = hitbox2.getPosition();
+            auto size2 = hitbox2.getSize();
+
+            if (position1.x + size1.x < position2.x ||
+                position2.x + size2.x < position1.x) {
+                return false; // No horizontal overlap
+            }
+
+            if (position1.y + size1.y < position2.y ||
+                position2.y + size2.y < position1.y) {
+                return false; // No vertical overlap
+            }
+
+            return true; // Intersection
+        }
+
         // Calculate the unit vectors of hitbox1's local axes.
         float angle1 = hitbox1.getAngle();
         Utils::Vector2D x1(std::cos(angle1), std::sin(angle1));
