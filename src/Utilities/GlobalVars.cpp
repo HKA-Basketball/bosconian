@@ -204,6 +204,7 @@ namespace Utils {
         bool dipSwitchActive = false;
         bool need2ExitProc = false;
         bool debugMode = false;
+        bool collisionMode = false;
 
         bool lvlEditorActive = false;
 

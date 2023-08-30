@@ -234,6 +234,7 @@ namespace Utils {
         extern bool dipSwitchActive;    // Is the dip switch active?
         extern bool need2ExitProc;      // Is there a need to exit the process?
         extern bool debugMode;          // Is the debug mode enabled?
+        extern bool collisionMode;          // Is the complex collision mode enabled?
 
         // Level editor mode and debugging flags
         extern bool lvlEditorActive;    // Is the level editor active?

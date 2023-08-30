@@ -6,6 +6,7 @@
 #include "../../includes.h"
 #include "../Drawing/Graphics.h"
 #include "../Utilities/GlobalVars.h"
+#include "../Physics/Hitbox.h"
 
 namespace Game {
 
@@ -17,9 +18,11 @@ namespace Game {
                 m_speed(speed),
                 m_angle(angle),
                 m_width(8),
-                m_height(8) {
-            m_active = true;
-        }
+                m_height(8),
+                m_active(true),
+                m_hitbox(Physics::Hitbox(Utils::Vector2D(m_x, m_y),
+                Utils::Vector2D(m_width, m_height)
+                )) {}
 
         void update(float deltaTime) {
             // Calculate the new position of the projectile based on the angle.
@@ -52,6 +55,8 @@ namespace Game {
 
             if ((m_y > Utils::GlobalVars::lvlHeight))
                 m_y -= Utils::GlobalVars::lvlHeight;
+
+            m_hitbox.updatePosition(Utils::Vector2D(m_x, m_y));
         }
 
         float getX() const {
@@ -70,6 +75,10 @@ namespace Game {
             return m_height;
         }
 
+        Physics::Hitbox getHitbox() const {
+            return m_hitbox;
+        }
+
         bool getActive() const {
             return m_active;
         }
@@ -86,6 +95,8 @@ namespace Game {
         int m_height;
         float m_angle;
         bool m_active;
+
+        Physics::Hitbox m_hitbox;
     };
 
     class ProjectileView {
@@ -120,8 +131,7 @@ namespace Game {
     public:
         Projectile(int x, int y, int speed, float angle) :
                 m_model(x, y, speed, angle),
-                m_view(Drawing::g_drawing, m_model) {
-        }
+                m_view(Drawing::g_drawing, m_model) {}
 
         bool isOffscreen() const {
             Utils::Vector2D worldPos = Utils::Vector2D(m_model.getX(), m_model.getY());
@@ -133,7 +143,7 @@ namespace Game {
         bool ProjectileHitsEntity(SDL_Rect entityHitbox)
         {
             // Create a SDL_Rect for the projectile hitbox
-            SDL_Rect projectileHitbox = getHitbox();
+            SDL_Rect projectileHitbox = (SDL_Rect) getHitbox();
 
             // Check if the bounding boxes of the projectile and entity intersect
             return (projectileHitbox.x < entityHitbox.x + entityHitbox.w &&
@@ -142,16 +152,8 @@ namespace Game {
                     projectileHitbox.y + projectileHitbox.h > entityHitbox.y);
         }
 
-        SDL_Rect getHitbox()
-        {
-            SDL_Rect projectileHitbox = {
-                    static_cast<int>(m_model.getX()),
-                    static_cast<int>(m_model.getY()),
-                    static_cast<int>(m_model.getWidth()),
-                    static_cast<int>(m_model.getHeight())
-            };
-
-            return projectileHitbox;
+        Physics::Hitbox getHitbox() {
+            return m_model.getHitbox();
         }
 
         void setActive(bool val) {

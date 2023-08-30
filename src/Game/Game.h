@@ -29,6 +29,8 @@ namespace Game {
         /** Collection of textures representing player lives. */
         std::vector<Drawing::Texture*> lives;
 
+        Utils::Config sw_cfg = Utils::Config(".\\cfg\\score.ini");
+
     public:
         /**
          * Default constructor for the Game class.
@@ -104,7 +106,7 @@ namespace Game {
          */
         void doLvlEditorStuff();
 
-        void updateScore(Entity *entity);
+        static void updateScore(Entity *entity);
 
         bool checkEntityCollisions(Entity *entity);
     };

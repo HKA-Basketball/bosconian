@@ -11,6 +11,12 @@
 
 namespace Drawing {
 
+    struct SDL_Rotated_Rect {
+        int x, y;
+        int w, h;
+        double angle;
+    };
+
     /**
      * \enum Alignment
      * \brief Enumeration representing text alignment.
@@ -84,6 +90,8 @@ namespace Drawing {
          * \param rect The rectangle's dimensions.
          */
         void rectangle(SDL_Color color, SDL_Rect rect);
+
+        void rotatedRectangle(SDL_Color color, SDL_Rotated_Rect rotatedRect);
 
         /**
          * Fill a rectangle on the screen.
@@ -164,6 +172,8 @@ namespace Drawing {
          * \return A shared pointer to the cached SDL_Texture.
          */
         std::shared_ptr<SDL_Texture> createTextTexture(std::string text, TTF_Font* font, SDL_Color color);
+
+        void sdl_rotated_rect(SDL_Renderer *r, SDL_Rotated_Rect rotatedRect);
 
     }; extern Graphics* g_drawing;
 

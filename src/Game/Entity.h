@@ -22,10 +22,8 @@ namespace Game {
     private:
         Uint64 pts;
         Utils::Vector2D origin;
-        Utils::Vector2D center;
         Utils::Vector2D size;
         float angle;
-        Utils::Vector2D hitboxPos;
         Physics::Hitbox* hitbox;
         bool triggerAnimation;
         bool active;
@@ -48,9 +46,8 @@ namespace Game {
             angle = deg;
             pts = points;
             this->size = size;
-            this->hitboxPos = hitboxPos;
             //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
-            hitbox = new Physics::Hitbox(origin + this->hitboxPos, hitboxSize);
+            hitbox = new Physics::Hitbox(origin + hitboxPos, hitboxSize);
             triggerAnimation = false;
             active = true;
         }
@@ -68,8 +65,8 @@ namespace Game {
 
         void update() {
             // Update the hitbox position and angle based on the entity's properties
-            hitbox->updatePosition(origin + hitboxPos);
-            //hitbox->updateHitboxAngle(angle);
+            hitbox->updatePosition(origin);
+            hitbox->updateAngle(angle);
         }
 
         const std::vector<Projectile*> &getProjectiles() const {
@@ -194,12 +191,9 @@ namespace Game {
             if (!Utils::GlobalVars::debugMode)
                 return;
 
-            SDL_Rect worldPosRec = (SDL_Rect) *m_model.getHitbox();
-            Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
+            Utils::Vector2D worldPos = m_model.getHitbox()->getPosition();
             Utils::Vector2D screenPos;
-            bool isOnScreen = Utils::render::WorldToScreen(worldPos, screenPos);
-
-            SDL_Rect screenPosRect = {static_cast<int>(screenPos.x), static_cast<int>(screenPos.y), worldPosRec.w, worldPosRec.h};
+            Utils::render::WorldToScreen(worldPos, screenPos);
 
             //char pos[256];
             //snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
@@ -207,10 +201,28 @@ namespace Game {
             //TTF_SizeText(Renderer::g_renderer->m_fonts[1], pos, &destR.w, &destR.h);
             //Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
 
-            if (!m_model.isActive())
-                Drawing::g_drawing->rectangle({255, 0, 0, 255}, screenPosRect);
-            else
-                Drawing::g_drawing->rectangle({0, 255, 0, 255}, screenPosRect);
+            bool isActive = m_model.isActive();
+            SDL_Color color{
+                    static_cast<Uint8>(isActive ? 0 : 255),
+                    static_cast<Uint8>(isActive ? 255 : 0),
+                    0,
+                    255
+            };
+
+            if(!Utils::GlobalVars::collisionMode) {
+                auto rect = (SDL_Rect) *m_model.getHitbox();
+                rect.x = static_cast<int>(screenPos.x);
+                rect.y = static_cast<int>(screenPos.y);
+
+                Drawing::g_drawing->rectangle(color, rect);
+
+            } else {
+                auto rotatedRect = (Drawing::SDL_Rotated_Rect) *m_model.getHitbox();
+                rotatedRect.x = static_cast<int>(screenPos.x);
+                rotatedRect.y = static_cast<int>(screenPos.y);
+
+                Drawing::g_drawing->rotatedRectangle(color, rotatedRect);
+            }
         }
     };
 
@@ -830,12 +842,12 @@ namespace Game {
             m_model.addProjectile(pro);
         }
 
-        bool checkProjectiels(SDL_Rect entityHitbox) {
+        bool checkProjectiels(const Physics::Hitbox& entityHitbox) {
             for (int y = 0; y < m_model.getProjectiles().size(); y++){
                 if (!m_model.getProjectiles()[y]->getActive())
                     continue;
 
-                if (Physics::CollisionManager::checkIntersect((SDL_Rect) m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
+                if (Physics::CollisionManager::checkIntersect(m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
                     m_model.getProjectiles()[y]->setActive(false);
                     return true;
                 }
