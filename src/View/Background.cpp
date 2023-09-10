@@ -23,7 +23,7 @@ void Background::update(int playerVelocityX, int playerVelocityY) {
 
 void Background::render(RenderEngine& renderEngine, const Camera& camera) {
     // Calculate positions considering wrapping
-    int xRender = x - camera.getX();
+    /*int xRender = x - camera.getX();
     int yRender = y - camera.getY();
 
     renderEngine.drawTexture(texture, xRender, yRender);
@@ -34,7 +34,7 @@ void Background::render(RenderEngine& renderEngine, const Camera& camera) {
     }
     if (yRender + height < camera.getHeight()) {
         renderEngine.drawTexture(texture, xRender, yRender + mapHeight);
-    }
+    }*/
 }
 
 int Background::getX() const {

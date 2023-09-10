@@ -1,50 +1,50 @@
-#ifndef BOSCONIAN_VECTOR2D_H
-#define BOSCONIAN_VECTOR2D_H
+#ifndef BOSCONIAN_VEC2_H
+#define BOSCONIAN_VEC2_H
 
 #include <cmath>
 
 /**
  * Represents a 2D vector.
  */
-class Vector2D {
+class Vec2 {
 public:
     float x, y;
 
     /**
      * Default constructor. Initializes the vector to (0, 0).
      */
-    Vector2D(void) { x = y = 0.0f; }
+    Vec2(void) { x = y = 0.0f; }
     /**
      * Parametrized constructor. Initializes the vector to the given coordinates.
      * \param X The x-coordinate of the vector.
      * \param Y The y-coordinate of the vector.
      */
-    Vector2D(float X, float Y) { x = X; y = Y; }
+    Vec2(float X, float Y) { x = X; y = Y; }
     /**
      * Copy constructor. Creates a new vector with the same values as the given vector.
      * \param v The vector to copy from.
      */
-    Vector2D(const Vector2D& v) { x = v.x; y = v.y; }
+    Vec2(const Vec2& v) { x = v.x; y = v.y; }
 
-    Vector2D& operator+=(const Vector2D& v) { x += v.x; y += v.y; return *this; }
-    Vector2D& operator-=(const Vector2D& v) { x -= v.x; y -= v.y; return *this; }
-    Vector2D& operator*=(const Vector2D& v) { x *= v.x; y *= v.y; return *this; }
-    Vector2D& operator/=(const Vector2D& v) { x /= v.x; y /= v.y; return *this; }
-    Vector2D& operator+=(float v) { x += v; y += v; return *this; }
-    Vector2D& operator-=(float v) { x -= v; y -= v; return *this; }
-    Vector2D& operator*=(float v) { x *= v; y *= v;; return *this; }
-    Vector2D& operator/=(float v) { x /= v; y /= v; return *this; }
-    Vector2D operator+(const Vector2D& v) const { return Vector2D(x + v.x, y + v.y); }
-    Vector2D operator-(const Vector2D& v) const { return Vector2D(x - v.x, y - v.y); }
-    Vector2D operator*(float scale) const { return Vector2D(x * scale , y * scale ); }
-    Vector2D operator/(float scale) const { return Vector2D(x / scale, y / scale); }
+    Vec2& operator+=(const Vec2& v) { x += v.x; y += v.y; return *this; }
+    Vec2& operator-=(const Vec2& v) { x -= v.x; y -= v.y; return *this; }
+    Vec2& operator*=(const Vec2& v) { x *= v.x; y *= v.y; return *this; }
+    Vec2& operator/=(const Vec2& v) { x /= v.x; y /= v.y; return *this; }
+    Vec2& operator+=(float v) { x += v; y += v; return *this; }
+    Vec2& operator-=(float v) { x -= v; y -= v; return *this; }
+    Vec2& operator*=(float v) { x *= v; y *= v;; return *this; }
+    Vec2& operator/=(float v) { x /= v; y /= v; return *this; }
+    Vec2 operator+(const Vec2& v) const { return Vec2(x + v.x, y + v.y); }
+    Vec2 operator-(const Vec2& v) const { return Vec2(x - v.x, y - v.y); }
+    Vec2 operator*(float scale) const { return Vec2(x * scale , y * scale ); }
+    Vec2 operator/(float scale) const { return Vec2(x / scale, y / scale); }
 
-    inline bool operator!=(const Vector2D& src) const
+    inline bool operator!=(const Vec2& src) const
     {
         return (src.x != x) || (src.y != y);
     }
 
-    inline bool operator==(const Vector2D& src) const
+    inline bool operator==(const Vec2& src) const
     {
         return (src.x == x) && (src.y == y);
     }
@@ -80,7 +80,7 @@ public:
      * \param other The other vector.
      * \return The dot product.
      */
-    float dot(const Vector2D& other) const {
+    float dot(const Vec2& other) const {
         return x * other.x + y * other.y;
     }
 
@@ -89,23 +89,23 @@ public:
      * \param angle The angle to rotate by.
      * \return The rotated vector.
      */
-    Vector2D rotate(float angle) const {
+    Vec2 rotate(float angle) const {
         float cosAngle = std::cos(angle);
         float sinAngle = std::sin(angle);
 
         float rotatedX = x * cosAngle - y * sinAngle;
         float rotatedY = x * sinAngle + y * cosAngle;
 
-        return Vector2D(rotatedX, rotatedY);
+        return Vec2(rotatedX, rotatedY);
     }
 
     /**
      * Returns a normalized copy of the vector.
      * \return The normalized vector.
      */
-    Vector2D normalized() const
+    Vec2 normalized() const
     {
-        Vector2D res = *this;
+        Vec2 res = *this;
         float l = res.length();
         if (l != 0.0f) {
             res /= l;
@@ -128,4 +128,4 @@ public:
     }
 };
 
-#endif //BOSCONIAN_VECTOR2D_H
+#endif //BOSCONIAN_VEC2_H

@@ -1,8 +1,6 @@
 #ifndef BOSCONIAN_HUD_H
 #define BOSCONIAN_HUD_H
 
-#pragma once
-
 #include "../Model/GameSession.h"
 #include "../Model/Entity/Player.h"
 

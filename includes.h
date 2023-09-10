@@ -30,7 +30,7 @@
 
 // Custom header files
 #include "./src/Utilities/Logging.h"
-#include "./src/Utilities/Vector2D.h"
+#include "./src/Utilities/Vec2.h"
 #include "./src/Utilities/Config.h"
 
 #endif //BOSCONIAN_INCLUDES_H

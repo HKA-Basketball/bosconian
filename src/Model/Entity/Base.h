@@ -3,6 +3,7 @@
 
 // ... other includes
 #include <vector>
+#include <array>
 
 #include "Entity.h"
 #include "Cannon.h"
@@ -10,14 +11,13 @@
 
 class Base : public Entity {
 public:
-    Base(float x, float y);
+    Base(SDL_Texture* texture, float x, float y);
     ~Base() override = default;
 
     bool IsDestroyed() const;
     void TakeDamage(int cannonIndex);  // You target a specific cannon by index
 
-    void Update();
-    std::vector<Projectile> FireProjectiles();
+    static std::vector<Projectile> FireProjectiles();
 
 private:
     static constexpr int totalCannons = 6;

@@ -3,7 +3,7 @@
 
 bool PhysicsEngine::checkOBBCollision(const Entity& a, const Entity& b) {
     // Get the vectors representing the OBB's axes
-    std::vector<SDL_Point> axes{
+    /*std::vector<SDL_Point> axes{
             {a.getAxisX().x, a.getAxisX().y},
             {a.getAxisY().x, a.getAxisY().y},
             {b.getAxisX().x, b.getAxisX().y},
@@ -35,7 +35,7 @@ bool PhysicsEngine::checkOBBCollision(const Entity& a, const Entity& b) {
         if (!(t1Max >= t2Min && t1Min <= t2Max)) {
             return false; // No overlap found, so OBBs aren't colliding
         }
-    }
+    }*/
 
     return true; // All projections overlap, so OBBs are colliding
 }

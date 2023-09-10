@@ -1,13 +1,15 @@
 #include "GameController.h"
 
-GameController::GameController(GameSession& session) : gameSession(session) {}
+GameController::GameController() : gameSession(nullptr) {
+    this->running = true;
+}
 
 void GameController::HandleInput() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_QUIT:
-                gameSession.Quit();
+                this->Quit();
                 break;
                 // ... Add more SDL event handling, sending necessary commands to gameSession...
         }
@@ -37,7 +39,12 @@ void GameController::HandleInput() {
     }
 
     // Now, based on the direction, set the player's facing direction and movement velocity.
-    gameSession.SetPlayerDirection(currentDirection);
+    if (currentDirection != Direction::NONE)
+        gameSession->getPlayer()->setAngle(static_cast<float>(currentDirection));
 
     // ... Add checks for other keys, sending commands to gameSession...
+}
+
+void GameController::Quit() {
+    this->running = false;
 }

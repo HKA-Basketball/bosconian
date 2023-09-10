@@ -1,5 +1,6 @@
 #include "HUD.h"
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 HUD::HUD(const Player& p, const GameSession& session)
         : player(p), gameSession(session) {}
@@ -11,9 +12,10 @@ void HUD::Render(SDL_Renderer* renderer) {
     char buffer[100];
 
     // Display player's lives
-    sprintf(buffer, "Lives: %d", player.GetLives());
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid( /* Font details */, buffer, /* Color */ );
-    SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    //sprintf(buffer, "Lives: %d", player.GetLives());
+
+    //SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, buffer, color);
+    //SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
     SDL_Rect Message_rect;
     Message_rect.x = 10;
@@ -21,15 +23,15 @@ void HUD::Render(SDL_Renderer* renderer) {
     Message_rect.w = 100;
     Message_rect.h = 40;
 
-    SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+    //SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
 
     // Display score
-    sprintf(buffer, "Score: %d", gameSession.GetScore());
+    //sprintf(buffer, "Score: %d", gameSession.GetScore());
     // Similar rendering logic as above...
 
     // Clean up surfaces and textures
-    SDL_FreeSurface(surfaceMessage);
-    SDL_DestroyTexture(Message);
+    //SDL_FreeSurface(surfaceMessage);
+    //SDL_DestroyTexture(Message);
 
     // ... repeat for other HUD elements
 }
