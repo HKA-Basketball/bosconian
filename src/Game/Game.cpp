@@ -389,8 +389,6 @@ namespace Game {
             sw_cfg.add_item("HallOfFame", "hi-score", Utils::GlobalVars::currenHiScore);
             sw_cfg.write();
             sw_cfg.read();
-
-            Utils::GlobalVars::menuActive = true;
         }
 
         if (countBaseShips == 0) {
