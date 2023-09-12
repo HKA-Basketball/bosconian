@@ -2,8 +2,7 @@
 
 namespace Physics {
 
-    // Helper function to project a polygon onto an axis.
-    static void projectPolygon(const Hitbox& hitbox, const Utils::Vector2D& axis, float& min, float& max) {
+    void CollisionManager::projectPolygon(const Hitbox& hitbox, const Utils::Vector2D& axis, float& min, float& max) {
         Utils::Vector2D screenPosition;
         Utils::render::WorldToScreen(hitbox.getPosition(), screenPosition);
 
@@ -16,8 +15,7 @@ namespace Physics {
         max = centerProjection + extentProjection;
     }
 
-    // Helper function to check if two intervals overlap.
-    bool intervalsOverlap(float minA, float maxA, float minB, float maxB) {
+    bool CollisionManager::intervalsOverlap(float minA, float maxA, float minB, float maxB) {
         return (maxA >= minB) && (maxB >= minA);
     }
 

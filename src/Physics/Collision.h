@@ -19,6 +19,14 @@ namespace Physics {
          */
         static bool checkIntersect(Hitbox hitbox1, Hitbox hitbox2);
         static bool entityHit(Game::Projectile *projectile, Hitbox entityHitbox);
+
+    private:
+
+        // Helper function to project a polygon onto an axis.
+        static void projectPolygon(const Hitbox& hitbox, const Utils::Vector2D& axis, float& min, float& max);
+
+        // Helper function to check if two intervals overlap.
+        static bool intervalsOverlap(float minA, float maxA, float minB, float maxB);
     };
 
 } // Physics
