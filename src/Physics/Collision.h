@@ -12,10 +12,10 @@ namespace Physics {
     public:
 
         /**
-         * Check if the two oriented bounding boxes intersect
-         * \param rect1 The first obb.
-         * \param rect2 The second obb.
-         * \return True if the obb's intersect, false otherwise.
+         * Check if the two hit boxes intersect
+         * \param hitbox1 The first hitbox.
+         * \param hitbox2 The second hitbox.
+         * \return True if the hitboxes intersect, false otherwise.
          */
         static bool checkIntersect(Hitbox hitbox1, Hitbox hitbox2);
         static bool entityHit(Game::Projectile *projectile, Hitbox entityHitbox);
