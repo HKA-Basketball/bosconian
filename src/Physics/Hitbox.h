@@ -57,6 +57,6 @@ namespace Physics {
         explicit operator Drawing::SDL_Rotated_Rect() const;
     };
 
-} // Game
+} // namespace Physics
 
 #endif //BOSCONIAN_HITBOX_H
