@@ -4,10 +4,10 @@
 #include "../../includes.h"
 #include "World.h"
 #include "Projectile.h"
-#include "EntityManager.h"
-#include "Player.h"
+#include "Entitiy/EntityManager.h"
+#include "Entitiy/Player.h"
 #include "LevelManager.h"
-#include "BaseEntity.h"
+#include "Entitiy/BaseEntity.h"
 #include "LevelEditor.h"
 
 namespace Game {

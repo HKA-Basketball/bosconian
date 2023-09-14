@@ -8,7 +8,7 @@
 #include "../Renderer/Renderer.h"
 #include "../Drawing/Graphics.h"
 #include "../Event/EventManager.h"
-#include "../Game/Entity.h"
+#include "../Game/Entitiy/Entity.h"
 #include "../Physics/Hitbox.h"
 #include "../Game/World.h"
 #include "../Sound/SoundManager.h"

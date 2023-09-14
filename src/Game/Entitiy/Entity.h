@@ -1,12 +1,12 @@
 #ifndef BOSCONIAN_ENTITY_H
 #define BOSCONIAN_ENTITY_H
 
-#include "../../includes.h"
-#include "../Drawing/Texture.h"
-#include "../Physics/Hitbox.h"
-#include "../Physics/Collision.h"
-#include "Projectile.h"
-#include "../Sound/SoundManager.h"
+#include "../../../includes.h"
+#include "../../Drawing/Texture.h"
+#include "../../Physics/Hitbox.h"
+#include "../../Physics/Collision.h"
+#include "../Projectile.h"
+#include "../../Sound/SoundManager.h"
 
 namespace Game {
 

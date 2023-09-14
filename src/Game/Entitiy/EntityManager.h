@@ -1,8 +1,8 @@
 #ifndef BOSCONIAN_ENTITYMANAGER_H
 #define BOSCONIAN_ENTITYMANAGER_H
 
-#include "../../includes.h"
-#include "../Game/Entity.h"
+#include "../../../includes.h"
+#include "Entity.h"
 
 namespace Game {
 

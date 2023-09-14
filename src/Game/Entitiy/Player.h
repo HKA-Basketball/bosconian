@@ -2,8 +2,8 @@
 #define BOSCONIAN_PLAYER_H
 
 #include "Entity.h"
-#include "../Event/EventManager.h"
-#include "../Sound/SoundManager.h"
+#include "../../Event/EventManager.h"
+#include "../../Sound/SoundManager.h"
 
 namespace Game {
 
