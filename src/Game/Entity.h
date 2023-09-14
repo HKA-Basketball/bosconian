@@ -31,31 +31,20 @@ namespace Game {
         EntityType type;
 
     public:
-        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D size, EntityType type, Uint64 points = 0) {
-            origin = pos;
-            angle = deg;
-            pts = points;
-            this->size = size;
+        EntityModel(const Utils::Vector2D& origin, float angle, const Utils::Vector2D& size, EntityType type, Uint64 pts = 0) :
+            origin(origin), angle(angle), size(size), type(type), pts(pts), active(true), triggerAnimation(false) {
             hitbox = new Physics::Hitbox(origin, size);
-            triggerAnimation = false;
-            active = true;
         }
 
-        EntityModel(Utils::Vector2D pos, float deg, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, Utils::Vector2D size, EntityType type, Uint64 points = 0) {
-            origin = pos;
-            angle = deg;
-            pts = points;
-            this->size = size;
-            //LOG("Hitbox: " + std::to_string((origin + hitboxPos).x) + ":" + std::to_string((origin + hitboxPos).y) + " - " + std::to_string(hitboxSize.x) + ":" + std::to_string(hitboxSize.y));
+        EntityModel(const Utils::Vector2D& origin, float angle, const Utils::Vector2D& hitboxPos, const Utils::Vector2D& hitboxSize,
+                    const Utils::Vector2D& size, EntityType type, Uint64 pts = 0) :
+            origin(origin), angle(angle), size(size), type(type), pts(pts), active(true), triggerAnimation(false) {
             hitbox = new Physics::Hitbox(origin + hitboxPos, hitboxSize);
-            triggerAnimation = false;
-            active = true;
         }
 
         ~EntityModel() {
             for (Projectile* projectile : projectiles) {
                 delete projectile;
-                projectile = nullptr;
             }
             projectiles.clear();
 
@@ -194,12 +183,6 @@ namespace Game {
             Utils::Vector2D worldPos = m_model.getHitbox()->getPosition();
             Utils::Vector2D screenPos;
             Utils::render::WorldToScreen(worldPos, screenPos);
-
-            //char pos[256];
-            //snprintf(pos, sizeof(pos), "Pos: ( %i - %i )", (int)worldPosRec.x, (int)worldPosRec.y);
-            //SDL_Rect destR = { 0, 0, 0, 0 };
-            //TTF_SizeText(Renderer::g_renderer->m_fonts[1], pos, &destR.w, &destR.h);
-            //Drawing::g_drawing->string(std::string(pos), Renderer::g_renderer->m_fonts[1], { 255, 255, 255 }, Utils::Vector2D(screenPos.x, screenPos.y));
 
             bool isActive = m_model.isActive();
             SDL_Color color{
