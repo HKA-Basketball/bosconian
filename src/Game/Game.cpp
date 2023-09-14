@@ -1,4 +1,8 @@
 #include "Game.h"
+#include "Entitiy/Behaviour/Behaviour.h"
+#include "Entitiy/Behaviour/MovingBehaviour.h"
+#include "Entitiy/Behaviour/NonMovingBehaviour.h"
+#include "Entitiy/EntityType.h"
 
 namespace Game {
     Game::Game()

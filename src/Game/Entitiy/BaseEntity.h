@@ -2,6 +2,11 @@
 #define BOSCONIAN_BASEENTITY_H
 
 #include "Entity.h"
+#include "Behaviour/Behaviour.h"
+#include "Behaviour/CoreBehaviour.h"
+#include "Behaviour/CanonBehaviour.h"
+#include "Behaviour/SpyBehaviour.h"
+#include "EntityType.h"
 
 namespace Game {
 

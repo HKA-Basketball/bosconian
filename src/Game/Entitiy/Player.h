@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "../../Event/EventManager.h"
 #include "../../Sound/SoundManager.h"
+#include "EntityType.h"
 
 namespace Game {
 
