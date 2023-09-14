@@ -30,8 +30,9 @@ namespace Physics {
          * @param position A vector representing the initial center position of the hitbox.
          * @param size A vector representing the initial dimensions (width and height) of the hitbox.
          */
-        Hitbox(const Utils::Vector2D& position, const Utils::Vector2D& size) :
-            position(position - (size*0.5f)), size(size), angle(0) {};
+        Hitbox(const Utils::Vector2D& position, const Utils::Vector2D& size) : size(size), angle(0) {
+            this->updatePosition(position);
+        };
 
         /**
          * @brief Constructs a Hitbox instance with the specified position, size, and rotation angle.
@@ -43,8 +44,9 @@ namespace Physics {
          * @param size A vector representing the initial dimensions (width and height) of the hitbox.
          * @param angle The initial rotation angle of the hitbox in degrees.
          */
-        Hitbox(const Utils::Vector2D& position, const Utils::Vector2D& size, float angle) :
-            position(position - (size*0.5f)), size(size), angle(angle) {};
+        Hitbox(const Utils::Vector2D& position, const Utils::Vector2D& size, float angle) : size(size), angle(angle) {
+            this->updatePosition(position);
+        };
 
         /**
          * @brief Gets the current center position of the hitbox.
@@ -71,7 +73,7 @@ namespace Physics {
          *
          * @param newPosition A vector representing the new center position for the hitbox.
          */
-        void updatePosition(Utils::Vector2D newPosition);
+        void updatePosition(const Utils::Vector2D& newPosition);
 
         /**
          * @brief Updates the dimensions (width and height) of the hitbox.

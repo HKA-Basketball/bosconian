@@ -15,9 +15,8 @@ namespace Physics {
         return angle;
     }
 
-    void Hitbox::updatePosition(Utils::Vector2D newPosition) {
-        newPosition -= (size*0.5f);
-        position = newPosition;
+    void Hitbox::updatePosition(const Utils::Vector2D& newPosition) {
+        position = newPosition - (size*0.5f);
     }
 
     void Hitbox::updateSize(const Utils::Vector2D& newSize) {

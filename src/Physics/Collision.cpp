@@ -3,9 +3,6 @@
 namespace Physics {
 
     void CollisionManager::projectPolygon(const Hitbox& hitbox, const Utils::Vector2D& axis, float& min, float& max) {
-        Utils::Vector2D screenPosition;
-        Utils::render::WorldToScreen(hitbox.getPosition(), screenPosition);
-
         Utils::Vector2D size = hitbox.getSize()/2;
 
         float centerProjection = hitbox.getPosition().dot(axis);
