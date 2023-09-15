@@ -1,10 +1,12 @@
 #ifndef BOSCONIAN_PLAYER_H
 #define BOSCONIAN_PLAYER_H
 
+#include <utility>
+
 #include "Entity.h"
+#include "EntityType.h"
 #include "../../Event/EventManager.h"
 #include "../../Sound/SoundManager.h"
-#include "EntityType.h"
 
 namespace Game {
 
@@ -13,12 +15,10 @@ namespace Game {
      */
     class Player : public Entity {
     private:
-        int lives;
-        int score;
-        int currentLevel;
-        int currentCondition;
-
-        bool dead;
+        int lives{3};
+        int score{0};
+        int currentLevel{1};
+        bool dead{false};
 
     public:
         /**
@@ -28,49 +28,49 @@ namespace Game {
          * \param img The texture of the player as a shared_ptr to Texture.
          * \param lives The initial number of lives for the player (default is 3).
          */
-        Player(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, int lives = 3)
-            : Entity(pos, deg, img, EntityType::Player, 0), lives(3), score(0), currentLevel(1)
+        Player(const Utils::Vector2D& position, float angle, std::shared_ptr<Drawing::Texture> img, int lives = 3)
+                : Entity(position, angle, std::move(img), EntityType::Player, 0), lives(lives)
         {}
 
         /**
          * Sets the number of lives for the player.
          * \param numLives The new number of lives.
          */
-        void setLives(int numLives);
+        void setLives(int numLives) { lives = numLives; }
 
         /**
          * Gets the current number of lives for the player.
          * \return The current number of lives.
          */
-        int getLives() const;
+        int getLives() const { return lives; }
 
         /**
          * Sets the player's score.
          * \param playerScore The new score for the player.
          */
-        void setScore(int playerScore);
+        void setScore(int playerScore) { score = playerScore; }
 
         /**
          * Gets the player's current score.
          * \return The current score.
          */
-        int getScore() const;
+        int getScore() const { return score; }
 
         /**
          * Sets the player's current level.
          * \param level The new level for the player.
          */
-        void setCurrentLevel(int level);
+        void setCurrentLevel(int level) { currentLevel = level; }
 
         /**
          * Gets the player's current level.
          * \return The current level.
          */
-        int getCurrentLevel() const;
+        int getCurrentLevel() const { return currentLevel; }
 
-        void setDead(bool playerDead);
+        void setDead(bool playerDead) { dead = playerDead; }
 
-        bool isDead() const;
+        bool isDead() const { return dead; }
 
         /**
          * Updates the player's projectiles based on the specified delta time.
@@ -85,6 +85,6 @@ namespace Game {
         void updateMovement(float deltaTime);
     };
 
-} // Game
+} // namespace Game
 
 #endif //BOSCONIAN_PLAYER_H
