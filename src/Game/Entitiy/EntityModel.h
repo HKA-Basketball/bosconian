@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_ENTITYMODEL_H
 #define BOSCONIAN_ENTITYMODEL_H
 
+#include <memory>
+
 #include "EntityType.h"
 #include "../Projectile.h"
 #include "../../Physics/Collision.h"
@@ -11,79 +13,69 @@ namespace Game {
 
     class EntityModel {
     private:
-        Uint64 pts;
         Utils::Vector2D origin;
         Utils::Vector2D size;
-        float angle;
-        Physics::Hitbox* hitbox;
-        bool triggerAnimation;
-        bool active;
-        std::vector<Projectile*> projectiles;
+        float angle{0.0f};
+
+        std::unique_ptr<Physics::Hitbox> hitbox;
         EntityType type;
+        Uint64 points{0};
+
+        bool triggerAnimation{false};
+        bool active{true};
+
+        std::vector<Projectile*> projectiles;
 
     public:
-        EntityModel(const Utils::Vector2D& origin, float angle, const Utils::Vector2D& size, EntityType type, Uint64 pts = 0) :
-            origin(origin), angle(angle), size(size), type(type), pts(pts), active(true), triggerAnimation(false) {
-            hitbox = new Physics::Hitbox(origin, size);
-        }
+        EntityModel(const Utils::Vector2D& origin, float angle, const Utils::Vector2D& size, EntityType type, Uint64 points = 0)
+                : origin(origin), angle(angle), size(size), type(type), points(points),
+                  hitbox(std::make_unique<Physics::Hitbox>(origin, size)) {}
 
         EntityModel(const Utils::Vector2D& origin, float angle, const Utils::Vector2D& hitboxPos, const Utils::Vector2D& hitboxSize,
-                    const Utils::Vector2D& size, EntityType type, Uint64 pts = 0) :
-            origin(origin), angle(angle), size(size), type(type), pts(pts), active(true), triggerAnimation(false) {
-            hitbox = new Physics::Hitbox(origin + hitboxPos, hitboxSize);
-        }
+                    const Utils::Vector2D& size, EntityType type, Uint64 points = 0)
+                : origin(origin), angle(angle), size(size), type(type), points(points),
+                  hitbox(std::make_unique<Physics::Hitbox>(origin + hitboxPos, hitboxSize)) {}
+
 
         ~EntityModel() {
             for (Projectile* projectile : projectiles) {
                 delete projectile;
             }
             projectiles.clear();
-
-            delete hitbox;
-            hitbox = nullptr;
         }
 
         void update() {
-            // Update the hitbox position and angle based on the entity's properties
             hitbox->updatePosition(origin);
             hitbox->updateAngle(angle);
         }
 
-        const std::vector<Projectile*> &getProjectiles() const {
+        const auto& getProjectiles() const {
             return projectiles;
         }
 
-        void removeProjectile(int index) {
-            if (!projectiles[index])
-                return;
-
-            delete projectiles[index];
-            projectiles[index] = nullptr;
-            std::swap(projectiles[index], projectiles.back());
-            projectiles.pop_back();
+        void removeProjectile(size_t index) {
+            if (index < projectiles.size()) {
+                projectiles.erase(projectiles.begin() + index);
+            }
         }
 
         void clearProjectiles() {
-            for (Projectile* entity : projectiles) {
-                delete entity;
-                entity = nullptr;
-            }
             projectiles.clear();
         }
 
-        void addProjectile(Projectile* pro) {
-            projectiles.push_back(pro);
+        void addProjectile(Projectile* projectile) {
+            projectiles.push_back(projectile);
         }
 
         bool isTriggerAnimation() const {
             return triggerAnimation;
         }
 
-        void setTriggerAnimation(bool triggerAnimation) {
-            this->triggerAnimation = triggerAnimation;
+        void setTriggerAnimation(const bool setTriggerAnimation) {
+            this->triggerAnimation = setTriggerAnimation;
         }
 
-        void setOrigin(Utils::Vector2D newOrigin) {
+        void setOrigin(const Utils::Vector2D& newOrigin) {
             origin = newOrigin;
         }
 
@@ -91,7 +83,7 @@ namespace Game {
             return origin;
         }
 
-        void setAngle(float newAngle) {
+        void setAngle(const float newAngle) {
             angle = newAngle;
         }
 
@@ -104,19 +96,19 @@ namespace Game {
         }
 
         Uint64 getPts() const {
-            return pts;
+            return points;
         }
 
         bool isActive() const {
             return active;
         }
 
-        void setActive(bool val) {
-            active = val;
+        void setActive(bool isActive) {
+            active = isActive;
         }
 
         Physics::Hitbox* getHitbox() const {
-            return hitbox;
+            return hitbox.get();
         }
 
         EntityType getType() const {
