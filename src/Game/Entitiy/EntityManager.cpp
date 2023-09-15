@@ -1,22 +1,12 @@
 #include "EntityManager.h"
 
 namespace Game {
-    EntityManager::EntityManager() {}
-
-    EntityManager::~EntityManager() {
-        clearEntities();
-    }
-
-    void EntityManager::addEntity(Entity* entity) {
-        entities.push_back(entity);
-    }
 
     void EntityManager::removeEntity(Entity* entity) {
         auto it = std::find(entities.begin(), entities.end(), entity);
         if (it != entities.end()) {
             entities.erase(it);
             delete entity;
-            entity = nullptr;
         }
     }
 
@@ -28,18 +18,19 @@ namespace Game {
     }
 
     void EntityManager::update(float deltaTime) {
+        std::vector<Entity*> toRemove;
+
         for (Entity* entity : entities) {
             if (!entity->isActive()) {
-                removeEntity(entity);
+                toRemove.push_back(entity);
                 continue;
             }
-
             entity->update(deltaTime);
         }
-    }
 
-    const std::vector<Entity*> &EntityManager::getEntities() const {
-        return entities;
+        for (Entity* entity : toRemove) {
+            (entity);
+        }
     }
 
     void EntityManager::render(float deltaTime) {

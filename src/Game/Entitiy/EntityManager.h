@@ -1,8 +1,8 @@
 #ifndef BOSCONIAN_ENTITYMANAGER_H
 #define BOSCONIAN_ENTITYMANAGER_H
 
-#include "../../../includes.h"
 #include "Entity.h"
+#include "../../../includes.h"
 
 namespace Game {
 
@@ -17,19 +17,23 @@ namespace Game {
         /**
          * Default constructor for the EntityManager class.
          */
-        EntityManager();
+        EntityManager() = default;
 
         /**
          * Destructor for the EntityManager class.
          * Cleans up memory used by managed entities.
          */
-        ~EntityManager();
+        ~EntityManager() {
+            clearEntities();
+        }
 
         /**
          * Add an entity to the list of managed entities.
          * \param entity Pointer to the entity to be added.
          */
-        void addEntity(Entity* entity);
+        void addEntity(Entity* entity) {
+            entities.push_back(entity);
+        }
 
         /**
          * Remove an entity from the list of managed entities.
@@ -58,7 +62,9 @@ namespace Game {
          * Get a constant reference to the vector of managed entities.
          * \return Constant reference to the vector of managed entities.
          */
-        const std::vector<Entity*>& getEntities() const;
+        const std::vector<Entity*> &getEntities() const {
+            return entities;
+        }
 
     };
 
