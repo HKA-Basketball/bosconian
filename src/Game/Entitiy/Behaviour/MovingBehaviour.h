@@ -13,19 +13,12 @@ namespace Game {
             Utils::Vector2D currentPosition = model.getOrigin();
             Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
             float distance = (currentPosition - playerPosition).length();
-            // TODO: may add viewAngle?
-            float attackThreshold = 250.0f;
 
+            // Moving the attackThreshold as a class member constant
             if (distance <= attackThreshold) {
                 move2Pos(model, playerPosition, deltaTime);
             } else {
-                if (needNewPos) {
-                    float randomX = Utils::GlobalVars::lvlWidth * static_cast<float>(rand()) / RAND_MAX;
-                    float randomY = Utils::GlobalVars::lvlHeight * static_cast<float>(rand()) / RAND_MAX;
-                    targetPos = {randomX, randomY};
-                    needNewPos = false;
-                }
-
+                setRandomTargetPos();
                 move2Pos(model, targetPos, deltaTime);
             }
 
@@ -56,6 +49,9 @@ namespace Game {
         }
 
     private:
+        const float attackThreshold = 250.0f;
+        const float detectionRange = 150.f;
+
         Utils::Vector2D targetPos;
         bool needNewPos = true;
 
@@ -79,12 +75,20 @@ namespace Game {
             return result;
         }
 
+        void setRandomTargetPos() {
+            if (needNewPos) {
+                float randomX = Utils::GlobalVars::lvlWidth * static_cast<float>(rand()) / RAND_MAX;
+                float randomY = Utils::GlobalVars::lvlHeight * static_cast<float>(rand()) / RAND_MAX;
+                targetPos = {randomX, randomY};
+                needNewPos = false;
+            }
+        }
+
         void move2Pos(EntityModel &model, Utils::Vector2D pos2move, float deltaTime = 0.f) {
 
             Utils::Vector2D direction = pos2move - model.getOrigin();
 
             // Check if the player is spotted
-            float detectionRange = 150.f; // Adjust the range as needed
             float distance = direction.length();
 
             if (distance <= detectionRange) {
