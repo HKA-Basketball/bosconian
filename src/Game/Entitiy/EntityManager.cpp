@@ -29,7 +29,7 @@ namespace Game {
         }
 
         for (Entity* entity : toRemove) {
-            (entity);
+            removeEntity(entity);
         }
     }
 
