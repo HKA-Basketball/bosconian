@@ -56,8 +56,8 @@ namespace Game {
             baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), ang);
 
             // Mark the grid cells around the base ship as occupied
-            int col = baseShipEntitys[i]->getEntitys()[0]->getOrigin().x / cellSize;
-            int row = baseShipEntitys[i]->getEntitys()[0]->getOrigin().y / cellSize;
+            int col = baseShipEntitys[i]->getEntities()[0]->getOrigin().x / cellSize;
+            int row = baseShipEntitys[i]->getEntities()[0]->getOrigin().y / cellSize;
 
             int startCol = std::max(0, col - 1);
             int endCol = std::min(numCols - 1, col + 1);
@@ -66,7 +66,7 @@ namespace Game {
 
             for (int c = startCol; c <= endCol; c++) {
                 for (int r = startRow; r <= endRow; r++) {
-                    grid[c][r].push_back(baseShipEntitys[i]->getEntitys()[0]);
+                    grid[c][r].push_back(baseShipEntitys[i]->getEntities()[0]);
                 }
             }
         }
@@ -323,7 +323,7 @@ namespace Game {
                 continue;
             countBaseShips++;
 
-            std::vector<Entity*> ent = baseShipEntitys[i]->getEntitys();
+            std::vector<Entity*> ent = baseShipEntitys[i]->getEntities();
             for (int x = 0; x < ent.size(); x++) {
                 SDL_Rect worldPosRec = (SDL_Rect) *ent[x]->getHitbox();
                 Utils::Vector2D worldPos = {static_cast<float>(worldPosRec.x), static_cast<float>(worldPosRec.y)};
@@ -418,7 +418,7 @@ namespace Game {
                 continue;
 
             baseShipEntitys[i]->draw(deltaTime);
-            baseShipPos.push_back(baseShipEntitys[i]->getEntitys()[0]->getOrigin());
+            baseShipPos.push_back(baseShipEntitys[i]->getEntities()[0]->getOrigin());
         }
 
         player1->draw(deltaTime);
