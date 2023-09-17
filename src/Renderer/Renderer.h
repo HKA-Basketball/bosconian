@@ -83,25 +83,6 @@ namespace Renderer {
 
     }; extern RendererSDL* g_renderer;
 
-
-    /*class RendererD3D {
-    private:
-        LPDIRECT3D9 d3;
-        LPDIRECT3DDEVICE9 d3dev;
-
-    public:
-        std::vector<LPD3DXFONT> m_fonts;
-        ID3DXLine* d3Line;
-
-        RendererD3D(Window* window);
-
-        void beginScene();
-        void endScene();
-        void clearScene();
-
-        void clearAll();
-    };*/
-
 } // Renderer
 
 #endif //BOSCONIAN_RENDERER_H

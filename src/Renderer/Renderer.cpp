@@ -66,11 +66,5 @@ namespace Renderer {
         SDL_RenderPresent(renderer);
     }
 
-    //--------- Renderer D3D -------------
-
-    /*RendererD3D::RendererD3D(Window *window) {
-
-    }*/
-
 
 } // Renderer
