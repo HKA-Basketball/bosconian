@@ -1,8 +1,9 @@
 #include "Game.h"
-#include "Entitiy/Behaviour/Behaviour.h"
-#include "Entitiy/Behaviour/MovingBehaviour.h"
-#include "Entitiy/Behaviour/NonMovingBehaviour.h"
 #include "Entitiy/EntityType.h"
+#include "Entitiy/Enemy.h"
+#include "Entitiy/Obstacle.h"
+
+#include "../Renderer/Renderer.h"
 
 namespace Game {
     Game::Game()
@@ -139,9 +140,10 @@ namespace Game {
                 maxAttempts--;
             }
 
-            nonMovingEntitys[i] = new Entity(pos, ang, img, EntityType::NonMoving, listPTS[ranImg]);
+            nonMovingEntitys[i] = new Obstacle(Utils::Vector2D(), 0, std::shared_ptr<Drawing::Texture>(),
+                                               EntityType::NonMoving, 0);
             nonMovingEntitys[i]->setAngle(ang);
-            nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
+            //nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
             entities->addEntity(nonMovingEntitys[i]);
 
             // add entity to the grid
@@ -177,8 +179,8 @@ namespace Game {
             if (attempt == maxAttempts)
                 continue;
 
-            Entity* movingEntity = new Entity(pos, ang, img, EntityType::Moving, listPTSMoving[ranImg]);
-            movingEntity->setBehavior(new MovingBehavior());
+            Entity* movingEntity = new Enemy(pos, ang, img, EntityType::Moving, listPTSMoving[ranImg]);
+            //movingEntity->setBehavior(new MovingBehavior());
             entities->addEntity(movingEntity);
         }
 
@@ -247,7 +249,7 @@ namespace Game {
 
     void Game::updateScore(Entity* entity) {
         entity->setTriggerAnimation(true);
-        Utils::GlobalVars::currenPTS += entity->getPTS();
+        Utils::GlobalVars::currenPTS += entity->getPts();
         if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
             Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
         }
@@ -332,7 +334,7 @@ namespace Game {
 
                 if (ent[x]->isActive() && player1->checkProjectiels(*ent[x]->getHitbox())) {
                     ent[x]->setTriggerAnimation(true);
-                    Utils::GlobalVars::currenPTS += ent[x]->getPTS();
+                    Utils::GlobalVars::currenPTS += ent[x]->getPts();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
@@ -340,7 +342,7 @@ namespace Game {
 
                 if (Physics::CollisionManager::checkIntersect(*player1->getHitbox(), *ent[x]->getHitbox())) {
                     ent[0]->setTriggerAnimation(true);
-                    Utils::GlobalVars::currenPTS += ent[0]->getPTS();
+                    Utils::GlobalVars::currenPTS += ent[0]->getPts();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
@@ -357,7 +359,7 @@ namespace Game {
                     player1->checkProjectiels(*baseShipEntitys[i]->getSpy()->getHitbox())) {
                     baseShipEntitys[i]->getSpy()->setTriggerAnimation(true);
                     Utils::GlobalVars::condition = 0;
-                    Utils::GlobalVars::currenPTS += baseShipEntitys[i]->getSpy()->getPTS();
+                    Utils::GlobalVars::currenPTS += baseShipEntitys[i]->getSpy()->getPts();
                     if (Utils::GlobalVars::currenHiScore < Utils::GlobalVars::currenPTS) {
                         Utils::GlobalVars::currenHiScore = Utils::GlobalVars::currenPTS;
                     }
@@ -410,19 +412,21 @@ namespace Game {
         g_world->renderBackground();
 
 
-        entities->render(deltaTime);
+        //entities->render(deltaTime);
 
         std::vector<Utils::Vector2D> baseShipPos;
         for (int i = 0; i < baseShipEntitys.size(); i++) {
             if (!baseShipEntitys[i]->isActive())
                 continue;
 
-            baseShipEntitys[i]->draw(deltaTime);
+            //baseShipEntitys[i]->draw(deltaTime);
             baseShipPos.push_back(baseShipEntitys[i]->getEntities()[0]->getOrigin());
         }
 
-        player1->draw(deltaTime);
+        //if (m_behavior)
+        //                m_behavior->update(m_view, deltaTime);
 
+        //player1->draw(deltaTime);
 
         // -------------------------------------------------------------------------------------
         char text[32];
@@ -529,5 +533,17 @@ namespace Game {
                     , Utils::Vector2D(10, y_Offset), 0);
             //y_Offset += textHeight;
         }
+    }
+
+    EntityManager *Game::getEntities() const {
+        return entities;
+    }
+
+    const std::vector<BaseEntity *> &Game::getBaseShipEntities() const {
+        return baseShipEntitys;
+    }
+
+    Player *Game::getPlayer1() const {
+        return player1;
     }
 } // Game

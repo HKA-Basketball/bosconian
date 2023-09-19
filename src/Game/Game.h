@@ -109,6 +109,12 @@ namespace Game {
         static void updateScore(Entity *entity);
 
         bool checkEntityCollisions(Entity *entity);
+
+        EntityManager *getEntities() const;
+
+        const std::vector<BaseEntity *> &getBaseShipEntities() const;
+
+        Player *getPlayer1() const;
     };
 
 } // Game

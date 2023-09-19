@@ -1,5 +1,5 @@
-#include "../../Resources/fonts.h"
 #include "Renderer.h"
+#include "../../Resources/fonts.h"
 
 namespace Renderer {
     RendererSDL* g_renderer;
@@ -64,6 +64,76 @@ namespace Renderer {
 
     void RendererSDL::endScene() {
         SDL_RenderPresent(renderer);
+    }
+
+    void RendererSDL::renderEntity(Game::Entity* entity, float deltaTime) {
+        if (entity->isTriggerAnimation() && !entity->getAnimation().hasStarted()) {
+            Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
+        }
+
+        entity->getTexture()->draw();
+        renderHitbox(entity->getHitbox(), entity->isActive());
+
+        for (auto& projectile : entity->getProjectiles()) {
+            renderProjectile(projectile);
+        }
+    }
+
+    void RendererSDL::renderHitbox(Physics::Hitbox* hitbox, bool active) {
+        if (!Utils::GlobalVars::debugMode)
+            return;
+
+        Utils::Vector2D worldPos = hitbox->getPosition();
+        Utils::Vector2D screenPos;
+        Utils::render::WorldToScreen(worldPos, screenPos);
+
+        SDL_Color color{
+                static_cast<Uint8>(active ? 0 : 255),
+                static_cast<Uint8>(active ? 255 : 0),
+                0,
+                255
+        };
+
+        if(!Utils::GlobalVars::collisionMode) {
+            auto rect = (SDL_Rect) *hitbox;
+            rect.x = static_cast<int>(screenPos.x);
+            rect.y = static_cast<int>(screenPos.y);
+
+            Drawing::g_drawing->rectangle(color, rect);
+
+        } else {
+            auto rotatedRect = (Drawing::SDL_Rotated_Rect) *hitbox;
+            rotatedRect.x = static_cast<int>(screenPos.x);
+            rotatedRect.y = static_cast<int>(screenPos.y);
+
+            Drawing::g_drawing->rotatedRectangle(color, rotatedRect);
+        }
+    }
+
+    void RendererSDL::renderProjectile(Game::Projectile* projectile) {
+        // Render the projectile.
+
+        Utils::Vector2D worldPos = Utils::Vector2D(projectile->getX(), projectile->getY());
+        Utils::Vector2D screenPos;
+
+        Utils::render::WorldToScreen(worldPos, screenPos);
+
+        SDL_FRect rect = { screenPos.x, screenPos.y, (float)projectile->getWidth(), (float)projectile->getHeight() };
+        Drawing::g_drawing->fillRectangleOutline({ 255, 255, 255, 255 }, rect);
+    }
+
+    void RendererSDL::renderBase(Game::BaseEntity* base, float deltaTime) {
+        if (base->getSpy() && base->getSpy()->isActive())
+            renderEntity(base->getSpy(), deltaTime);
+
+        if (base->getEntities()[0]->isTriggerAnimation() && base->getEntities()[0]->isActive()) {
+            renderEntity(base->getEntities()[0], deltaTime);
+            return;
+        }
+
+        for (auto& entity : base->getEntities()) {
+            renderEntity(entity, deltaTime);
+        }
     }
 
 

@@ -3,8 +3,11 @@
 
 #include "../../includes.h"
 #include "Window.h"
-//#include <d3d9.h>
-//#include <d3dx9.h>
+#include "../Game/Entitiy/Entity.h"
+#include "../Game/Entitiy/BaseEntity.h"
+#include "../Game/Projectile.h"
+#include "../Drawing/SDL_Rotated_Rect.h"
+#include "../Physics/Hitbox.h"
 
 namespace Renderer {
 
@@ -80,6 +83,14 @@ namespace Renderer {
          * End rendering a scene.
          */
         void endScene();
+
+        void renderEntity(Game::Entity* entity, float deltaTime);
+
+        void renderHitbox(Physics::Hitbox* hitbox, bool active);
+
+        void renderProjectile(Game::Projectile *projectile);
+
+        void renderBase(Game::BaseEntity *base, float deltaTime);
 
     }; extern RendererSDL* g_renderer;
 

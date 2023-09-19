@@ -53,12 +53,6 @@ namespace Game {
         void update(float deltaTime);
 
         /**
-         * Render all managed entities with respect to the elapsed time.
-         * \param deltaTime The time elapsed since the last render in seconds.
-         */
-        void render(float deltaTime);
-
-        /**
          * Get a constant reference to the vector of managed entities.
          * \return Constant reference to the vector of managed entities.
          */

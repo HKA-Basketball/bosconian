@@ -1,8 +1,8 @@
 #ifndef BOSCONIAN_TEXTURE_H
 #define BOSCONIAN_TEXTURE_H
 
-#include "../../includes.h"
 #include "Graphics.h"
+#include "../../includes.h"
 #include "../Utilities/GlobalVars.h"
 
 namespace Drawing {

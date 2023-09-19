@@ -2,7 +2,7 @@
 #define BOSCONIAN_HITBOX_H
 
 #include "../../includes.h"
-#include "../Drawing/Graphics.h"
+#include "../Drawing/SDL_Rotated_Rect.h"
 
 namespace Physics {
 

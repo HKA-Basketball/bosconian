@@ -1,4 +1,3 @@
-#include "../Utilities/Logging.h"
 #include "Texture.h"
 
 namespace Drawing {
@@ -100,9 +99,6 @@ namespace Drawing {
     }
 
     void Texture::draw() {
-        //renderRect.x = (int)(renderRect.x - renderRect.w*0.5f);
-        //renderRect.y = (int)(renderRect.y - renderRect.h*0.5f);
-
         g_drawing->texture(imgTex, (clipped) ? &clipRect : NULL, &renderRect, angle);
     }
 

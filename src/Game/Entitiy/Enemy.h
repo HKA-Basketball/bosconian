@@ -1,53 +1,11 @@
-#ifndef BOSCONIAN_MOVINGBEHAVIOUR_H
-#define BOSCONIAN_MOVINGBEHAVIOUR_H
+#ifndef BOSCONIAN_ENEMY_H
+#define BOSCONIAN_ENEMY_H
 
-#include "Behaviour.h"
-#include "../EntityView.h"
-#include "../EntityModel.h"
+#include "Entity.h"
 
 namespace Game {
 
-    class MovingBehavior : public Behavior {
-    public:
-        void update(EntityModel &model, float deltaTime = 0.f) override {
-            Utils::Vector2D currentPosition = model.getOrigin();
-            Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
-            float distance = (currentPosition - playerPosition).length();
-
-            // Moving the attackThreshold as a class member constant
-            if (distance <= attackThreshold) {
-                move2Pos(model, playerPosition, deltaTime);
-            } else {
-                setRandomTargetPos();
-                move2Pos(model, targetPos, deltaTime);
-            }
-
-            if (model.isTriggerAnimation() && !animationStart) {
-                animationStart = true;
-                animationTime = 0.f;
-                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
-            }
-
-            if (animationEnd)
-                model.setActive(false);
-        }
-
-        void update(EntityView &view, float deltaTime = 0.f) override {
-            if (!animationStart)
-                return;
-
-            animationTime += deltaTime * 1000.f;
-
-            float progress = animationTime / animationDuration;
-            progress = std::clamp(progress, 0.f, 1.f);
-            int imageIndex = static_cast<int>(progress * (explosionImages.size() - 1));
-
-            view.setTexture(explosionImages[imageIndex]);
-
-            if (animationTime >= animationDuration)
-                animationEnd = true;
-        }
-
+    class Enemy : public Entity {
     private:
         const float attackThreshold = 250.0f;
         const float detectionRange = 150.f;
@@ -55,17 +13,29 @@ namespace Game {
         Utils::Vector2D targetPos;
         bool needNewPos = true;
 
-        bool animationStart = false;
-        bool animationEnd = false;
-        float animationTime = 0.f;
-        const float animationDuration = 250.f;
-        std::vector<std::string> explosionImages = {
-                "astro-explo-01",
-                "astro-explo-02",
-                "astro-explo-03"
-        };
+    public:
+        Enemy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts)
+        : Entity(pos, deg, img, type, pts) {}
 
+        Enemy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos,
+                Utils::Vector2D hitboxSize, EntityType type, Uint64 pts)
+        : Entity(pos, deg, img, hitboxPos, hitboxSize, type, pts) {}
 
+        void updateBehaviour(float deltaTime = 0.f) override {
+            Utils::Vector2D currentPosition = this->getOrigin();
+            Utils::Vector2D playerPosition = Utils::GlobalVars::cameraPos;
+            float distance = (currentPosition - playerPosition).length();
+
+            // Moving the attackThreshold as a class member constant
+            if (distance <= attackThreshold) {
+                move2Pos(playerPosition, deltaTime);
+            } else {
+                setRandomTargetPos();
+                move2Pos(targetPos, deltaTime);
+            }
+        }
+
+    private:
         int roundToNearestMultiple(int angleInDegrees, int multiple) {
             int remainder = angleInDegrees % multiple;
             int result = angleInDegrees - remainder;
@@ -84,9 +54,9 @@ namespace Game {
             }
         }
 
-        void move2Pos(EntityModel &model, Utils::Vector2D pos2move, float deltaTime = 0.f) {
+        void move2Pos(Utils::Vector2D pos2move, float deltaTime = 0.f) {
 
-            Utils::Vector2D direction = pos2move - model.getOrigin();
+            Utils::Vector2D direction = pos2move - this->getOrigin();
 
             // Check if the player is spotted
             float distance = direction.length();
@@ -119,7 +89,7 @@ namespace Game {
             Utils::Vector2D newDirection = direction.rotate(turningAngle);
 
             // Calculate the new position using the new direction and speed
-            newPosition = model.getOrigin() + newDirection * speed;
+            newPosition = this->getOrigin() + newDirection * speed;
 
             float angleF = std::atan2(newDirection.y, newDirection.x);
             float angleInDegreesF = angleF * 180 / M_PI;
@@ -128,17 +98,19 @@ namespace Game {
             // Apply a smoothing factor
             const float smoothingFactor = 0.1f;
 
-            float currentAngle = model.getAngle();
+            float currentAngle = this->getAngle();
             float smoothedAngle =
                     currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
 
-            model.setAngle(smoothedAngle);
+            this->setAngle(smoothedAngle);
 
             Utils::Math::wrapPos(&newPosition);
 
-            model.setOrigin(newPosition);
+            this->setOrigin(newPosition);
         }
+
     };
+
 }
 
-#endif //BOSCONIAN_MOVINGBEHAVIOUR_H
+#endif //BOSCONIAN_ENEMY_H

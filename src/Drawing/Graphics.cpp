@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "../Renderer/Renderer.h"
 
 namespace Drawing {
     Graphics* g_drawing;

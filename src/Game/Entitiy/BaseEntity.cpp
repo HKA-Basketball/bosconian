@@ -65,15 +65,16 @@ Game::BaseEntity::BaseEntity(Utils::Vector2D pos, float deg) {
             if (Utils::PlayOptions::maxSpy > 0) {
                 std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true,
                                                                                            "spritesheet.png");
-                m_spy = new Entity((pos + posOffsetList[i]), 0.f, img, EntityType::Moving, 600);
-                m_spy->setBehavior(new SpyBehavior());
+                m_spy = new Spy((pos + posOffsetList[i]), 0.f, img, EntityType::Moving, 600);
+                //m_spy->setBehavior(new SpyBehavior());
                 spy = true;
                 Utils::PlayOptions::maxSpy--;
             }
 
-            baseEntities[i]->setBehavior(new CoreBehavior());
-        } else
-            baseEntities[i]->setBehavior(new CanonBehavior(baseExpoIMG[i], viewOffset[i]));
+            //baseEntities[i]->setBehavior(new CoreBehavior());
+        } else {
+            //baseEntities[i]->setBehavior(new CanonBehavior(baseExpoIMG[i], viewOffset[i]));
+        }
     }
 }
 
@@ -127,26 +128,12 @@ void Game::BaseEntity::update(float deltaTime) {
     }
 }
 
-void Game::BaseEntity::draw(float deltaTime) {
-    if (m_spy && m_spy->isActive())
-        m_spy->draw(deltaTime);
-
-    if (baseEntities[0]->isTriggerAnimation() && baseEntities[0]->isActive()) {
-        baseEntities[0]->draw(deltaTime);
-        return;
-    }
-
-    for (auto& ent : baseEntities) {
-        ent->draw(deltaTime);
-    }
-}
-
 void Game::BaseEntity::createSpy() {
     // TODO: Create Timer
     if (Utils::PlayOptions::maxSpy > 0) {
         std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>("spy", 0.f, true, "spritesheet.png");
-        m_spy = new Entity(baseEntities[0]->getOrigin(), 0.f, img, EntityType::Moving, 600);
-        m_spy->setBehavior(new SpyBehavior());
+        m_spy = new Spy(baseEntities[0]->getOrigin(), 0.f, img, EntityType::Moving, 600);
+        //m_spy->setBehavior(new SpyBehavior());
         spy = true;
         Utils::PlayOptions::maxSpy--;
     }

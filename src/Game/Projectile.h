@@ -99,39 +99,10 @@ namespace Game {
         Physics::Hitbox m_hitbox;
     };
 
-    class ProjectileView {
-    public:
-        ProjectileView(Drawing::Graphics* graphics, const ProjectileModel& model) :
-                m_drawing(graphics),
-                m_model(model) {
-        }
-
-        void render() const {
-            // Render the projectile.
-
-            Utils::Vector2D worldPos = Utils::Vector2D(m_model.getX(), m_model.getY());
-            Utils::Vector2D screenPos;
-
-            Utils::render::WorldToScreen(worldPos, screenPos);
-
-            SDL_FRect rect = { screenPos.x, screenPos.y, (float)m_model.getWidth(), (float)m_model.getHeight() };
-            m_drawing->fillRectangleOutline({ 255, 255, 255, 255 }, rect);
-        }
-
-        Drawing::Graphics* getRenderer() const {
-            return m_drawing;
-        }
-
-    private:
-        Drawing::Graphics* m_drawing;
-        const ProjectileModel& m_model;
-    };
-
     class Projectile {
     public:
         Projectile(int x, int y, int speed, float angle) :
-                m_model(x, y, speed, angle),
-                m_view(Drawing::g_drawing, m_model) {}
+                m_model(x, y, speed, angle) {}
 
         bool isOffscreen() const {
             Utils::Vector2D worldPos = Utils::Vector2D(m_model.getX(), m_model.getY());
@@ -152,6 +123,22 @@ namespace Game {
                     projectileHitbox.y + projectileHitbox.h > entityHitbox.y);
         }
 
+        float getX() {
+            return m_model.getX();
+        }
+
+        float getY() {
+            return m_model.getY();
+        }
+
+        int getWidth() {
+            return m_model.getWidth();
+        }
+
+        int getHeight() {
+            return m_model.getWidth();
+        }
+
         Physics::Hitbox getHitbox() {
             return m_model.getHitbox();
         }
@@ -170,15 +157,8 @@ namespace Game {
             }
         }
 
-        void render() const {
-            if (m_model.getActive()) {
-                m_view.render();
-            }
-        }
-
     private:
         ProjectileModel m_model;
-        ProjectileView m_view;
     };
 
 } // Game

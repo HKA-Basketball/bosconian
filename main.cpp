@@ -132,6 +132,8 @@ int main(int argc, char* args[])
 
         g_game.render(deltaTime);
 
+        Renderer::g_renderer->renderEntity(g_game.getPlayer1(), deltaTime);
+
         if (Utils::GlobalVars::menuActive) {
             // Render Menu
             menu.render();

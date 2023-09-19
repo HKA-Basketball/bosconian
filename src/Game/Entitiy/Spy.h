@@ -1,71 +1,40 @@
-#ifndef BOSCONIAN_SPYBEHAVIOUR_H
-#define BOSCONIAN_SPYBEHAVIOUR_H
+#ifndef BOSCONIAN_SPY_H
+#define BOSCONIAN_SPY_H
 
-#include "Behaviour.h"
-#include "../EntityView.h"
-#include "../EntityModel.h"
+#include "Entity.h"
+#include "../../Drawing/Texture.h"
 
 namespace Game {
 
-    class SpyBehavior : public Behavior {
+    class Spy : public Entity {
     private:
         bool isPlayerSpotted;
         bool isMovingTowardsPlayer;
         Utils::Vector2D startPos;
         bool once = false;
 
-
-        bool animationStart = false;
-        bool animationEnd = false;
-        float animationTime = 0.f;
-        const float animationDuration = 250.f;
-        std::vector<std::string> explosionImages = {
-                "astro-explo-01",
-                "astro-explo-02",
-                "astro-explo-03"
-        };
-
     public:
-        void update(EntityModel &model, float deltaTime = 0.f) override {
+        Spy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts)
+        : Entity(pos, deg, img, type, pts) {}
+
+        Spy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos,
+                Utils::Vector2D hitboxSize, EntityType type, Uint64 pts)
+        : Entity(pos, deg, img, hitboxPos, hitboxSize, type, pts) {}
+
+        void updateBehaviour(float deltaTime = 0.f) override {
             if (!once) {
-                startPos = model.getOrigin();
+                startPos = this->getOrigin();
                 once = true;
             }
 
             // Check if the spy has spotted the player
             if (isPlayerSpotted) {
                 // Move away from the player
-                moveAwayFromPlayer(model, deltaTime);
+                moveAwayFromPlayer(deltaTime);
             } else {
                 // Search for the player
-                searchForPlayer(model, deltaTime);
+                searchForPlayer(deltaTime);
             }
-
-
-            if (model.isTriggerAnimation() && !animationStart) {
-                animationStart = true;
-                animationTime = 0.f;
-                Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
-            }
-
-            if (animationEnd)
-                model.setActive(false);
-        }
-
-        void update(EntityView &view, float deltaTime = 0.f) override {
-            if (!animationStart)
-                return;
-
-            animationTime += deltaTime * 1000.f;
-
-            float progress = animationTime / animationDuration;
-            progress = std::clamp(progress, 0.f, 1.f);
-            int imageIndex = static_cast<int>(progress * (explosionImages.size() - 1));
-
-            view.setTexture(explosionImages[imageIndex]);
-
-            if (animationTime >= animationDuration)
-                animationEnd = true;
         }
 
     private:
@@ -78,10 +47,10 @@ namespace Game {
             return result;
         }
 
-        void searchForPlayer(EntityModel &model, float deltaTime = 0.f) {
+        inline void searchForPlayer(float deltaTime = 0.f) {
             // Perform search behavior to find the player
 
-            Utils::Vector2D direction = Utils::GlobalVars::cameraPos - model.getOrigin();
+            Utils::Vector2D direction = Utils::GlobalVars::cameraPos - this->getOrigin();
 
             // Check if the player is spotted
             float detectionRange = 150.f; // Adjust the range as needed
@@ -116,7 +85,7 @@ namespace Game {
             Utils::Vector2D newDirection = direction.rotate(turningAngle);
 
             // Calculate the new position using the new direction and speed
-            newPosition = model.getOrigin() + newDirection * speed;
+            newPosition = this->getOrigin() + newDirection * speed;
 
             float angleF = std::atan2(newDirection.y, newDirection.x);
             float angleInDegreesF = angleF * 180 / M_PI;
@@ -125,24 +94,24 @@ namespace Game {
             // Apply a smoothing factor
             const float smoothingFactor = 0.1f;
 
-            float currentAngle = model.getAngle();
+            float currentAngle = this->getAngle();
             float smoothedAngle =
                     currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
 
-            model.setAngle(smoothedAngle);
+            this->setAngle(smoothedAngle);
 
             Utils::Math::wrapPos(&newPosition);
 
-            model.setOrigin(newPosition);
+            this->setOrigin(newPosition);
         }
 
-        void moveAwayFromPlayer(EntityModel &model, float deltaTime = 0.f) {
-            if (!model.isTriggerAnimation())
+        inline void moveAwayFromPlayer(float deltaTime = 0.f) {
+            if (!this->isTriggerAnimation())
                 Utils::GlobalVars::condition = 1;
 
             // Calculate the direction away from the player
-            Utils::Vector2D direction2Player = model.getOrigin() - Utils::GlobalVars::cameraPos;
-            Utils::Vector2D direction = startPos - model.getOrigin();
+            Utils::Vector2D direction2Player = this->getOrigin() - Utils::GlobalVars::cameraPos;
+            Utils::Vector2D direction = startPos - this->getOrigin();
 
             float distance2StartPos = direction.length();
 
@@ -178,7 +147,7 @@ namespace Game {
             Utils::Vector2D newDirection = direction.rotate(turningAngle);
 
             // Calculate the new position using the new direction and speed
-            newPosition = model.getOrigin() + newDirection * speed;
+            newPosition = this->getOrigin() + newDirection * speed;
 
             float angleF = std::atan2(newDirection.y, newDirection.x);
             float angleInDegreesF = angleF * 180 / M_PI;
@@ -187,24 +156,23 @@ namespace Game {
             // Apply a smoothing factor
             const float smoothingFactor = 0.1f;
 
-            float currentAngle = model.getAngle();
+            float currentAngle = this->getAngle();
             float smoothedAngle =
                     currentAngle + smoothingFactor * Utils::Math::normalizeAngle180(targetAngle - currentAngle);
 
-            model.setAngle(smoothedAngle);
+            this->setAngle(smoothedAngle);
 
             Utils::Math::wrapPos(&newPosition);
 
-            model.setOrigin(newPosition);
+            this->setOrigin(newPosition);
 
             if (distance2StartPos <= 50.f) {
                 // TODO: Start Attack
                 Utils::GlobalVars::condition = 2;
-                model.setActive(false);
+                this->setActive(false);
             }
         }
     };
-
 }
 
-#endif //BOSCONIAN_SPYBEHAVIOUR_H
+#endif //BOSCONIAN_SPY_H

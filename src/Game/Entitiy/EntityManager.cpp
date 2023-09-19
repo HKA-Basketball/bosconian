@@ -33,10 +33,4 @@ namespace Game {
         }
     }
 
-    void EntityManager::render(float deltaTime) {
-        for (Entity* entity : entities) {
-            entity->draw(deltaTime);
-        }
-    }
-
 } // Game

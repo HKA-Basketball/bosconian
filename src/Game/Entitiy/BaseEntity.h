@@ -1,12 +1,10 @@
 #ifndef BOSCONIAN_BASEENTITY_H
 #define BOSCONIAN_BASEENTITY_H
 
+#include <vector>
 #include "Entity.h"
-#include "Behaviour/Behaviour.h"
-#include "Behaviour/CoreBehaviour.h"
-#include "Behaviour/CanonBehaviour.h"
-#include "Behaviour/SpyBehaviour.h"
 #include "EntityType.h"
+#include "Spy.h"
 
 namespace Game {
 
@@ -54,12 +52,6 @@ namespace Game {
          * \param deltaTime The time elapsed since the last update in seconds.
          */
         void update(float deltaTime);
-
-        /**
-         * Draws the base ship and its entities based on the specified delta time.
-         * \param deltaTime The time elapsed since the last draw in seconds.
-         */
-        void draw(float deltaTime);
 
         /**
          * Gets the spy entity associated with the base ship.

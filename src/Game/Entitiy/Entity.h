@@ -1,144 +1,170 @@
 #ifndef BOSCONIAN_ENTITY_H
 #define BOSCONIAN_ENTITY_H
 
-#include "EntityView.h"
-#include "EntityModel.h"
-#include "EntityType.h"
-#include "Behaviour/Behaviour.h"
-#include "../Projectile.h"
+#include <utility>
+
 #include "../../Drawing/Texture.h"
+#include "EntityType.h"
+#include "../Animations/ExplosionAnimation.h"
+#include "../Projectile.h"
 #include "../../Physics/Hitbox.h"
 #include "../../Physics/Collision.h"
 #include "../../Sound/SoundManager.h"
 #include "../../../includes.h"
+#include "../Animations/Animation.h"
 
 namespace Game {
 
     class Entity {
     private:
-        EntityModel m_model;
-        EntityView m_view;
-        Behavior* m_behavior;
+        ExplosionAnimation explosionAnimation;
+
+        std::shared_ptr<Drawing::Texture> texture;
+
+        //EntityModel m_model;
+        Utils::Vector2D origin;
+        Utils::Vector2D size;
+        float angle{0.0f};
+
+        std::unique_ptr<Physics::Hitbox> hitbox;
+        EntityType type;
+        Uint64 points{0};
+
+        bool triggerAnimation{false};
+        bool active{true};
+
+        std::vector<Projectile*> projectiles;
+
+
+        virtual void updateBehaviour(float deltaTime = 0.f) {
+            /* TODO: Default Behaviour */
+        }
 
     public:
         Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts = 0)
-                : m_model(pos, deg, img->getSize(), type, pts)
-                , m_view(img, m_model)
-                , m_behavior(nullptr)
+                :   origin(pos), angle(deg), size(img->getSize()), type(type), points(pts),
+                    hitbox(std::make_unique<Physics::Hitbox>(origin, size))
         {}
 
         Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, EntityType type, Uint64 pts = 0)
-                : m_model(pos, deg, hitboxPos, hitboxSize, img->getSize(), type, pts)
-                , m_view(img, m_model)
-                , m_behavior(nullptr)
+                :   origin(pos), angle(deg), size(img->getSize()), type(type), points(pts),
+                    hitbox(std::make_unique<Physics::Hitbox>(origin + hitboxPos, hitboxSize))
         {}
 
-        ~Entity() {
-            if (m_behavior)
-                delete m_behavior;
-            m_behavior = nullptr;
-        }
+        ~Entity() {}
 
-        void setBehavior(Behavior* behavior) {
-            if (m_behavior)
-                delete m_behavior;
-
-            m_behavior = behavior;
+        Animation getAnimation() {
+            return explosionAnimation;
         }
 
         void update(float deltaTime = 0.f) {
-            if (m_behavior)
-                m_behavior->update(m_model, deltaTime);
+            updateBehaviour(deltaTime);
 
-            m_model.update();
-            m_view.update();
+            explosionAnimation.update(texture, deltaTime);
+
+            hitbox->updatePosition(origin);
+            hitbox->updateAngle(angle);
 
             // Update the positions of the entity projectiles
-            for (int i = 0; i < m_model.getProjectiles().size(); i++) {
-                m_model.getProjectiles()[i]->update(deltaTime);
+            for (int i = 0; i < projectiles.size(); i++) {
+                projectiles[i]->update(deltaTime);
                 // Check if the projectile is out of bounds
-                if (m_model.getProjectiles()[i]->isOffscreen() || !m_model.getProjectiles()[i]->getActive()) {
-                    m_model.removeProjectile(i);
+                if (projectiles[i]->isOffscreen() || !projectiles[i]->getActive()) {
+                    removeProjectile(i);
                     i--;
                 }
             }
         }
 
-        void draw(float deltaTime = 0.f) {
-            if (m_behavior)
-                m_behavior->update(m_view, deltaTime);
-
-            m_view.drawEntity();
-
-            // Render the entity projectiles
-            for (auto& projectile : m_model.getProjectiles()) {
-                projectile->render();
-            }
+        void addProjectile(Projectile* newProjectile) {
+            projectiles.push_back(newProjectile);
         }
 
-        void addProjectile(Projectile* pro) {
-            m_model.addProjectile(pro);
+        std::vector<Projectile*> getProjectiles() {
+            return projectiles;
         }
 
         bool checkProjectiels(const Physics::Hitbox& entityHitbox) {
-            for (int y = 0; y < m_model.getProjectiles().size(); y++){
-                if (!m_model.getProjectiles()[y]->getActive())
+            for (int y = 0; y < projectiles.size(); y++){
+                if (!projectiles[y]->getActive())
                     continue;
 
-                if (Physics::CollisionManager::checkIntersect(m_model.getProjectiles()[y]->getHitbox(), entityHitbox)) {
-                    m_model.getProjectiles()[y]->setActive(false);
+                if (Physics::CollisionManager::checkIntersect(projectiles[y]->getHitbox(), entityHitbox)) {
+                    projectiles[y]->setActive(false);
                     return true;
                 }
             }
             return false;
         }
 
+        void removeProjectile(size_t index) {
+            if (index < projectiles.size()) {
+                projectiles.erase(projectiles.begin() + index);
+            }
+        }
+
         void clearProjectiels() {
-            m_model.clearProjectiles();
+            projectiles.clear();
+        }
+
+        void setActive(const bool newActive) {
+            active = newActive;
         }
 
         bool isActive() {
-            return m_model.isActive();
+            return active;
         }
 
-        void setTriggerAnimation(bool val) {
-            m_model.setTriggerAnimation(val);
+        void setTriggerAnimation(const bool setTriggerAnimation) {
+            this->triggerAnimation = setTriggerAnimation;
         }
 
-        bool isTriggerAnimation() {
-            return m_model.isTriggerAnimation();
+        bool isTriggerAnimation() const {
+            return triggerAnimation;
         }
 
-        void setOrigin(Utils::Vector2D newOrigin) {
-            m_model.setOrigin(newOrigin);
+        void setOrigin(const Utils::Vector2D& newOrigin) {
+            origin = newOrigin;
         }
 
         EntityType getType() {
-            return m_model.getType();
+            return type;
         }
 
-        Uint64 getPTS() {
-            return m_model.getPts();
+        Uint64 getPts() const {
+            return points;
         }
 
         Utils::Vector2D getOrigin() {
-            return m_model.getOrigin();
+            return origin;
         }
 
         Utils::Vector2D getSize() {
-            return m_model.getSize();
+            return size;
         }
 
         void setAngle(float newAngle) {
-            m_model.setAngle(newAngle);
+            angle = newAngle;
         }
 
         float getAngle() {
-            return m_model.getAngle();
+            return angle;
         }
 
         Physics::Hitbox* getHitbox() {
-            return m_model.getHitbox();
+            return hitbox.get();
+        }
+
+        void setTexture(const std::string& name) {
+            if (!texture)
+                return;
+
+            texture->changeTexture(name, true, "spritesheet.png");
+            update();
+        }
+
+        const std::shared_ptr<Drawing::Texture> &getTexture() const {
+            return texture;
         }
     };
 } // Game
