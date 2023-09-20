@@ -15,7 +15,7 @@ protected:
 
 public:
 
-    Animation() {}
+    Animation() = default;
 
     void startAnimation() {
         animationStart = true;
@@ -24,11 +24,11 @@ public:
 
     void update(std::shared_ptr<Drawing::Texture> texture, float deltaTime);
 
-    bool hasStarted() {
+    bool hasStarted() const {
         return animationStart;
     }
 
-    bool hasEnded() {
+    bool hasEnded() const {
         return animationEnd;
     }
 

@@ -140,7 +140,7 @@ namespace Game {
                 maxAttempts--;
             }
 
-            nonMovingEntitys[i] = new Obstacle(Utils::Vector2D(), 0, std::shared_ptr<Drawing::Texture>(),
+            nonMovingEntitys[i] = new Obstacle(Utils::Vector2D(), 0, img,
                                                EntityType::NonMoving, 0);
             nonMovingEntitys[i]->setAngle(ang);
             //nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());

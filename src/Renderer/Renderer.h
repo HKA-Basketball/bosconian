@@ -86,12 +86,13 @@ namespace Renderer {
 
         void renderEntity(Game::Entity* entity, float deltaTime);
 
+        void renderEntities(const std::vector<Game::Entity *>& entities, float deltaTime);
+
         void renderHitbox(Physics::Hitbox* hitbox, bool active);
 
         void renderProjectile(Game::Projectile *projectile);
 
         void renderBase(Game::BaseEntity *base, float deltaTime);
-
     }; extern RendererSDL* g_renderer;
 
 } // Renderer

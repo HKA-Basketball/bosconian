@@ -5,8 +5,7 @@
 
 class ExplosionAnimation : public Animation {
 public:
-    ExplosionAnimation() {
-        Animation();
+    ExplosionAnimation() : Animation() {
         images = {
             "astro-explo-01",
             "astro-explo-02",

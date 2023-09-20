@@ -17,8 +17,7 @@ namespace Game {
 
     class Entity {
     private:
-        ExplosionAnimation explosionAnimation;
-
+        std::shared_ptr<Animation> explosionAnimation{new ExplosionAnimation()};
         std::shared_ptr<Drawing::Texture> texture;
 
         //EntityModel m_model;
@@ -41,29 +40,36 @@ namespace Game {
         }
 
     public:
-        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts = 0)
-                :   origin(pos), angle(deg), size(img->getSize()), type(type), points(pts),
+        Entity(Utils::Vector2D pos, float deg, const std::shared_ptr<Drawing::Texture>& img, EntityType type, Uint64 pts = 0)
+                :   origin(pos), angle(deg), texture(img), size(img->getSize()), type(type), points(pts),
                     hitbox(std::make_unique<Physics::Hitbox>(origin, size))
         {}
 
-        Entity(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos, Utils::Vector2D hitboxSize, EntityType type, Uint64 pts = 0)
-                :   origin(pos), angle(deg), size(img->getSize()), type(type), points(pts),
+        Entity(Utils::Vector2D pos, float deg, const std::shared_ptr<Drawing::Texture>& img,
+               const Utils::Vector2D& hitboxPos, const Utils::Vector2D& hitboxSize, EntityType type, Uint64 pts = 0)
+                :   origin(pos), angle(deg), texture(img), size(img->getSize()), type(type), points(pts),
                     hitbox(std::make_unique<Physics::Hitbox>(origin + hitboxPos, hitboxSize))
         {}
 
-        ~Entity() {}
+        ~Entity() = default;
 
-        Animation getAnimation() {
-            return explosionAnimation;
+        Animation* getAnimation() {
+            return explosionAnimation.get();
         }
 
         void update(float deltaTime = 0.f) {
             updateBehaviour(deltaTime);
 
-            explosionAnimation.update(texture, deltaTime);
+            explosionAnimation->update(texture, deltaTime);
+
 
             hitbox->updatePosition(origin);
             hitbox->updateAngle(angle);
+
+            Utils::Vector2D screenPos;
+            Utils::render::WorldToScreen(origin, screenPos);
+            texture->setPos(screenPos);
+            texture->setAngle(angle);
 
             // Update the positions of the entity projectiles
             for (int i = 0; i < projectiles.size(); i++) {

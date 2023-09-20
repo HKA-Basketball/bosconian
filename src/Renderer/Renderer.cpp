@@ -67,7 +67,7 @@ namespace Renderer {
     }
 
     void RendererSDL::renderEntity(Game::Entity* entity, float deltaTime) {
-        if (entity->isTriggerAnimation() && !entity->getAnimation().hasStarted()) {
+        if (entity->isTriggerAnimation() && !entity->getAnimation()->hasStarted()) {
             Sound::g_sound->playSound(Sound::SOUND_EXPLODE, 2, 0);
         }
 
@@ -77,6 +77,12 @@ namespace Renderer {
         for (auto& projectile : entity->getProjectiles()) {
             renderProjectile(projectile);
         }
+    }
+
+   void RendererSDL::renderEntities(const std::vector<Game::Entity*>& entities, float deltaTime) {
+       for (Game::Entity* entity : entities) {
+            this->renderEntity(entity, deltaTime);
+       }
     }
 
     void RendererSDL::renderHitbox(Physics::Hitbox* hitbox, bool active) {
