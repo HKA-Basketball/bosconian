@@ -6,10 +6,11 @@
 namespace Game {
 
     class Enemy : public Entity {
-    private:
+    protected:
         std::vector<std::string> images{"E-Type", "I-Type-norm", "P-Type-norm"};
         std::vector<int> pts{70, 50, 60};
 
+    private:
         const float attackThreshold = 250.0f;
         const float detectionRange = 150.f;
 
@@ -18,19 +19,11 @@ namespace Game {
 
     public:
         Enemy(const Utils::Vector2D& pos, float deg, const std::shared_ptr<Drawing::Texture>& img, EntityType type, Uint64 pts)
-        : Entity(pos, deg, img, type, pts) {
-            initTexture();
-        }
+        : Entity(pos, deg, img, type, pts) {}
 
         Enemy(const Utils::Vector2D& pos, float deg, const std::shared_ptr<Drawing::Texture>& img, const Utils::Vector2D& hitboxPos,
                 const Utils::Vector2D& hitboxSize, EntityType type, Uint64 pts)
         : Entity(pos, deg, img, hitboxPos, hitboxSize, type, pts) {}
-
-        void initTexture() {
-            int ranImg = rand() % images.size();
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(images[ranImg], getAngle(), true, "spritesheet.png");
-
-        }
 
         void updateBehaviour(float deltaTime = 0.f) override {
             Utils::Vector2D currentPosition = this->getOrigin();

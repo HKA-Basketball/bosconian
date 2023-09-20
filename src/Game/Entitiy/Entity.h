@@ -16,6 +16,10 @@
 namespace Game {
 
     class Entity {
+    protected:
+        std::vector<std::string> images{};
+        std::vector<int> pointsList{};
+
     private:
         std::shared_ptr<Animation> explosionAnimation{new ExplosionAnimation()};
         std::shared_ptr<Drawing::Texture> texture;
@@ -43,15 +47,36 @@ namespace Game {
         Entity(Utils::Vector2D pos, float deg, const std::shared_ptr<Drawing::Texture>& img, EntityType type, Uint64 pts = 0)
                 :   origin(pos), angle(deg), texture(img), size(img->getSize()), type(type), points(pts),
                     hitbox(std::make_unique<Physics::Hitbox>(origin, size))
-        {}
+        {
+            initTexture();
+        }
 
         Entity(Utils::Vector2D pos, float deg, const std::shared_ptr<Drawing::Texture>& img,
                const Utils::Vector2D& hitboxPos, const Utils::Vector2D& hitboxSize, EntityType type, Uint64 pts = 0)
                 :   origin(pos), angle(deg), texture(img), size(img->getSize()), type(type), points(pts),
                     hitbox(std::make_unique<Physics::Hitbox>(origin + hitboxPos, hitboxSize))
-        {}
+        {
+            initTexture();
+        }
 
         ~Entity() = default;
+
+        void initTexture() {
+            auto imagesSize = images.size();
+            int index = 0;
+
+            if(imagesSize > 1) {
+                index = rand() % imagesSize;
+
+            } else if(imagesSize == 0) {
+                images = {"ship"};
+                pointsList = {0};
+            }
+
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(
+                    images[index], angle, true, "spritesheet.png"
+            );
+        }
 
         Animation* getAnimation() {
             return explosionAnimation.get();

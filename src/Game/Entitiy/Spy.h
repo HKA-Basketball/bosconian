@@ -7,18 +7,22 @@
 namespace Game {
 
     class Spy : public Entity {
+    protected:
+        std::vector<std::string> images{"spy"};
+        std::vector<int> pointsList{600};
+
     private:
-        bool isPlayerSpotted;
-        bool isMovingTowardsPlayer;
+        bool isPlayerSpotted{false};
+        bool isMovingTowardsPlayer{false};
         Utils::Vector2D startPos;
         bool once = false;
 
     public:
-        Spy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, EntityType type, Uint64 pts)
+        Spy(const Utils::Vector2D& pos, float deg, const std::shared_ptr<Drawing::Texture>& img, EntityType type, Uint64 pts)
         : Entity(pos, deg, img, type, pts) {}
 
-        Spy(Utils::Vector2D pos, float deg, std::shared_ptr<Drawing::Texture> img, Utils::Vector2D hitboxPos,
-                Utils::Vector2D hitboxSize, EntityType type, Uint64 pts)
+        Spy(const Utils::Vector2D& pos, float deg, const std::shared_ptr<Drawing::Texture>& img, const Utils::Vector2D& hitboxPos,
+                const Utils::Vector2D& hitboxSize, EntityType type, Uint64 pts)
         : Entity(pos, deg, img, hitboxPos, hitboxSize, type, pts) {}
 
         void updateBehaviour(float deltaTime = 0.f) override {

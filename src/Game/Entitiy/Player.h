@@ -14,11 +14,17 @@ namespace Game {
      * The Player class represents the player's character in the game.
      */
     class Player : public Entity {
+    protected:
+        std::vector<std::string> images{"ship"};
+        std::vector<int> pts{0};
+
     private:
         int lives{3};
         int score{0};
         int currentLevel{1};
         bool dead{false};
+
+        //Uint64 timeSinceLastProjectile{0};
 
     public:
         /**
@@ -28,8 +34,8 @@ namespace Game {
          * \param img The texture of the player as a shared_ptr to Texture.
          * \param lives The initial number of lives for the player (default is 3).
          */
-        Player(const Utils::Vector2D& position, float angle, std::shared_ptr<Drawing::Texture> img, int lives = 3)
-                : Entity(position, angle, std::move(img), EntityType::Player, 0), lives(lives)
+        Player(const Utils::Vector2D& position, float angle, const std::shared_ptr<Drawing::Texture>& img, int lives = 3)
+                : Entity(position, angle, img, EntityType::Player, 0), lives(lives)
         {}
 
         /**
