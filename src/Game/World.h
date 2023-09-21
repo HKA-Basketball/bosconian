@@ -1,11 +1,11 @@
 #ifndef BOSCONIAN_WORLD_H
 #define BOSCONIAN_WORLD_H
 
-#include "../../includes.h"
-#include "../Drawing/Graphics.h"
-#include "../Utilities/GlobalVars.h"
 #include "WorldModel.h"
 #include "WorldView.h"
+
+#include "../../includes.h"
+#include "../Utilities/GlobalVars.h"
 
 namespace Game {
 
