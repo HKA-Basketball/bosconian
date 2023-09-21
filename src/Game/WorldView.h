@@ -24,9 +24,7 @@ namespace Game {
          * \param drawing The drawing graphics interface to use.
          * \param model A constant reference to the WorldModel instance.
          */
-        explicit WorldView(const Game::WorldModel& model)
-            : m_model(model)
-        {}
+        explicit WorldView(const Game::WorldModel& model) : m_model(model) {}
 
         /**
          * Draws the background elements if the world is initialized.
