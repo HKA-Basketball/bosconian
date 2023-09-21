@@ -1,8 +1,8 @@
 #include "Game.h"
-#include "Entitiy/Behaviour/Behaviour.h"
 #include "Entitiy/Behaviour/MovingBehaviour.h"
 #include "Entitiy/Behaviour/NonMovingBehaviour.h"
 #include "Entitiy/EntityType.h"
+#include "Entitiy/EntityData.h"
 
 namespace Game {
     Game::Game()
@@ -11,7 +11,8 @@ namespace Game {
     {
         entities = new EntityManager();
 
-        std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(std::string("ship"), 0.f, true, "spritesheet.png");
+        std::shared_ptr<Drawing::Texture> spaceShip = std::make_shared<Drawing::Texture>(
+                std::string(playerData.spriteName), 0.f, true, "spritesheet.png");
         spaceShip->setPos(Utils::Vector2D(Utils::GlobalVars::windowWidth / 2 - (60 / 2), Utils::GlobalVars::windowHeight / 2 - (64 / 2)));
         player1 = new Player(Utils::GlobalVars::cameraPos, Utils::GlobalVars::playerAngle, spaceShip);
 
@@ -32,14 +33,11 @@ namespace Game {
         player1->setLives(static_cast<int>(Utils::PlayOptions::lives));
         player1->clearProjectiels();
 
-        std::vector<float> list{0.f, 90.f, 45.f, 135.f, 180.f, -45.f, -90.f, -135.f};
-        std::vector<std::string> listIMG{"bomb", "astroid-01", "astroid-02", "astroid-03"};
-        std::vector<int> listPTS{20, 10, 10, 10};
         const float minDistance = 100.f; // minimum distance between non-moving entities
         const int cellSize = 500; // size of each cell in the grid
         const int numCols = (Utils::GlobalVars::lvlWidth + cellSize - 1) / cellSize; // number of columns in the grid
         const int numRows = (Utils::GlobalVars::lvlHeight + cellSize - 1) / cellSize; // number of rows in the grid
-        std::vector<std::vector<std::vector<Entity*>>> grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store entities
+        Grid grid(numCols, std::vector<std::vector<Entity*>>(numRows)); // 3D grid to store entities
 
         if (!Utils::GlobalVars::lvlEditorActive)
             Utils::GlobalVars::cameraPos = lvlmgn.getPlayerSpawnLocation();
@@ -51,9 +49,7 @@ namespace Game {
                 baseShipEntitys[i] = nullptr;
             }
 
-            float ang = list[rand() % 2];
-
-            baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), ang);
+            baseShipEntitys[i] = new BaseEntity(lvlmgn.getBaseShipsSpawnLocations().at(i), getRandomDirection());
 
             // Mark the grid cells around the base ship as occupied
             int col = baseShipEntitys[i]->getEntities()[0]->getOrigin().x / cellSize;
@@ -83,15 +79,17 @@ namespace Game {
                 nonMovingEntitys[i] = nullptr;
             }
 
-            int ranImg = rand() % listIMG.size();
-            float ang = ranImg == 4 ? list[rand() % 2] : list[rand() % list.size()];
+
+            EntityData entityData = getRandomEntityData(obstacleData);
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(
+                    entityData.spriteName, getRandomAngle(), true, "spritesheet.png");
 
             Utils::Vector2D pos;
             bool positionValid = false;
-            int maxAttempts = 100; // Maximum number of attempts to find a valid position
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(listIMG[ranImg], ang, true, "spritesheet.png");
 
-            while (!positionValid && maxAttempts > 0) {
+            for (int attempts = 0; attempts < 100; ++attempts) {
+                if(positionValid) break;
+
                 int col = rand() % numCols;
                 int row = rand() % numRows;
                 int x = col * cellSize + rand() % cellSize;
@@ -135,12 +133,9 @@ namespace Game {
                         }
                     }
                 }
-
-                maxAttempts--;
             }
 
-            nonMovingEntitys[i] = new Entity(pos, ang, img, EntityType::NonMoving, listPTS[ranImg]);
-            nonMovingEntitys[i]->setAngle(ang);
+            nonMovingEntitys[i] = new Entity(pos, img->getAngle(), img, EntityType::NonMoving, entityData.points);
             nonMovingEntitys[i]->setBehavior(new NonMovingBehavior());
             entities->addEntity(nonMovingEntitys[i]);
 
@@ -151,18 +146,14 @@ namespace Game {
         }
         // -------------------------------------------------------------------------------------
 
-
-        std::vector<std::string> listIMGMoving{"E-Type", "I-Type-norm", "P-Type-norm"};
-        std::vector<int> listPTSMoving{70, 50, 60};
-
         for (int i = 0; i < 10; ++i) {
-            int ranImg = rand() % listIMGMoving.size();
-            float ang = static_cast<float>(rand() % 361);
             int maxAttempts = 100;
             int attempt = 0;
 
             // Create the shared pointer for the Texture
-            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(listIMGMoving[ranImg], ang, true, "spritesheet.png");
+            EntityData entityData = getRandomEntityData(enemyData);
+            std::shared_ptr<Drawing::Texture> img = std::make_shared<Drawing::Texture>(
+                    entityData.spriteName, getRandomAngle(), true, "spritesheet.png");
 
             int posX, posY;
             Utils::Vector2D pos;
@@ -177,7 +168,7 @@ namespace Game {
             if (attempt == maxAttempts)
                 continue;
 
-            Entity* movingEntity = new Entity(pos, ang, img, EntityType::Moving, listPTSMoving[ranImg]);
+            Entity* movingEntity = new Entity(pos, img->getAngle(), img, EntityType::Moving, entityData.points);
             movingEntity->setBehavior(new MovingBehavior());
             entities->addEntity(movingEntity);
         }

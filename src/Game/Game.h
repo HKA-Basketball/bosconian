@@ -12,6 +12,8 @@
 
 namespace Game {
 
+    typedef std::vector<std::vector<std::vector<Entity*>>> Grid; // 3D grid to store entities
+
     /**
      * The Game class manages the main gameplay loop, entities, and levels in the game.
      */
