@@ -3,8 +3,6 @@
 
 #include "../../includes.h"
 #include "Window.h"
-//#include <d3d9.h>
-//#include <d3dx9.h>
 
 namespace Renderer {
 
@@ -74,12 +72,12 @@ namespace Renderer {
         /**
          * Begin rendering a scene.
          */
-        void beginScene();
+        void beginScene() const;
 
         /**
          * End rendering a scene.
          */
-        void endScene();
+        void endScene() const;
 
     }; extern RendererSDL* g_renderer;
 

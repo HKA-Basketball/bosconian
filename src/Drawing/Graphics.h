@@ -6,16 +6,12 @@
 #include <list>
 #include <algorithm>
 #include <memory>
+
 #include "../../includes.h"
+#include "SDL_Rotated_Rect.h"
 #include "../Renderer/Renderer.h"
 
 namespace Drawing {
-
-    struct SDL_Rotated_Rect {
-        int x, y;
-        int w, h;
-        double angle;
-    };
 
     /**
      * \enum Alignment

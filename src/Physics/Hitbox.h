@@ -2,7 +2,7 @@
 #define BOSCONIAN_HITBOX_H
 
 #include "../../includes.h"
-#include "../Drawing/Graphics.h"
+#include "../Drawing/SDL_Rotated_Rect.h"
 
 namespace Physics {
 
@@ -113,7 +113,7 @@ namespace Physics {
          *
          * @return An SDL_Rotated_Rect structure representing the hitbox.
          */
-        explicit operator Drawing::SDL_Rotated_Rect() const;
+        explicit operator SDL_Rotated_Rect() const;
     };
 
 } // namespace Physics

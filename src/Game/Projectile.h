@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <SDL.h>
+
 #include "../../includes.h"
 #include "../Drawing/Graphics.h"
 #include "../Utilities/GlobalVars.h"

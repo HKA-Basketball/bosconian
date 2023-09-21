@@ -4,6 +4,7 @@
 #include "EntityModel.h"
 #include "../../Sound/SoundManager.h"
 #include "../../Physics/Hitbox.h"
+#include "../../Drawing/SDL_Rotated_Rect.h"
 #include "../../Drawing/Texture.h"
 #include "../../../includes.h"
 
@@ -76,7 +77,7 @@ namespace Game {
                 Drawing::g_drawing->rectangle(color, rect);
 
             } else {
-                auto rotatedRect = (Drawing::SDL_Rotated_Rect) *m_model.getHitbox();
+                auto rotatedRect = (SDL_Rotated_Rect) *m_model.getHitbox();
                 rotatedRect.x = static_cast<int>(screenPos.x);
                 rotatedRect.y = static_cast<int>(screenPos.y);
 

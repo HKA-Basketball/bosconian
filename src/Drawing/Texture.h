@@ -2,14 +2,14 @@
 #define BOSCONIAN_TEXTURE_H
 
 #include "../../includes.h"
-#include "Graphics.h"
 #include "../Utilities/GlobalVars.h"
+#include "Graphics.h"
 
 namespace Drawing {
 
     class Texture {
     private:
-        Drawing::Graphics* g_drawing;
+        Graphics* g_drawing;
 
         std::string name;
 
@@ -79,7 +79,6 @@ namespace Drawing {
          * Draw the texture on the screen.
          */
         void draw();
-
     };
 
 } // Drawing

@@ -56,13 +56,13 @@ namespace Renderer {
         return 1;
     }
 
-    void RendererSDL::beginScene() {
+    void RendererSDL::beginScene() const {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         //SDL_DestroyTexture(texture);
     }
 
-    void RendererSDL::endScene() {
+    void RendererSDL::endScene() const {
         SDL_RenderPresent(renderer);
     }
 

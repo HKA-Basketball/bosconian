@@ -2,6 +2,7 @@
 #include "Texture.h"
 
 namespace Drawing {
+
     Texture::Texture(std::string filename, float deg, bool clipped, std::string spritesheet) {
         this->g_drawing = Drawing::g_drawing;
         angle = deg;

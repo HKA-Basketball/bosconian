@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "SDL_Rotated_Rect.h"
 
 namespace Drawing {
     Graphics* g_drawing;

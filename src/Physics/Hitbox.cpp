@@ -1,4 +1,3 @@
-#include <stack>
 #include "Hitbox.h"
 
 namespace Physics {
@@ -36,8 +35,8 @@ namespace Physics {
         };
     }
 
-    Hitbox::operator Drawing::SDL_Rotated_Rect() const {
-        return Drawing::SDL_Rotated_Rect{
+    Hitbox::operator SDL_Rotated_Rect() const {
+        return SDL_Rotated_Rect{
                 static_cast<int>(position.x),
                 static_cast<int>(position.y),
                 static_cast<int>(size.x),
