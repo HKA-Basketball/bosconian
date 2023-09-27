@@ -19,7 +19,6 @@ private:
     float elapsedTimeSinceLastShot{0.f};
     float viewAngle{DEFAULT_VIEW_ANGLE};
     float viewLength{DEFAULT_VIEW_LENGTH};
-    float viewDirection; // Initialize this as needed
 
     Projectiles* projectiles = new Projectiles(0);
 public:
@@ -37,6 +36,7 @@ public:
 
     void update(float deltaTime) override {
         Entity::update(deltaTime);
+        hitbox.updateAngle(0);
 
         elapsedTimeSinceLastShot += deltaTime;
 
@@ -47,8 +47,8 @@ public:
         float angleToPlayer = std::atan2(direction.y, direction.x) * (180.0f / M_PI);
         float targetAngle = Math::normalizeAngle180(angleToPlayer + 90.f);
 
-        float startAngle = Math::normalizeAngle360(viewDirection - (viewAngle / 2.0f));
-        float endAngle = Math::normalizeAngle360(viewDirection + (viewAngle / 2.0f));
+        float startAngle = Math::normalizeAngle360(angle.getDegree() - (viewAngle / 2.0f));
+        float endAngle = Math::normalizeAngle360(angle.getDegree() + (viewAngle / 2.0f));
         angleToPlayer = Math::normalizeAngle360(angleToPlayer);
 
         bool playerInViewArea = (startAngle <= endAngle) ? (angleToPlayer >= startAngle && angleToPlayer <= endAngle) : (angleToPlayer >= startAngle || angleToPlayer <= endAngle);
@@ -70,10 +70,6 @@ public:
 
     float getViewLength() const {
         return viewLength;
-    }
-
-    float getViewDirection() const {
-        return viewDirection;
     }
 
     Projectiles *getProjectiles() const {

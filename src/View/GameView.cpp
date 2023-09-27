@@ -25,8 +25,8 @@ void drawCannonHitbox(Cannon* cannon) {
     const SDL_Color redColor = {255, 0, 0, 255};
 
     // Calculate the start and end angles of the view cone
-    float startAngle = Math::normalizeAngle360(cannon->getViewDirection() - (cannon->getViewAngle() / 2.0f));
-    float endAngle = Math::normalizeAngle360(cannon->getViewDirection() + (cannon->getViewAngle() / 2.0f));
+    float startAngle = Math::normalizeAngle360(cannon->getAngle().getDegree() - (cannon->getViewAngle() / 2.0f));
+    float endAngle = Math::normalizeAngle360(cannon->getAngle().getDegree() + (cannon->getViewAngle() / 2.0f));
 
     // Calculate points for view cone lines
 
@@ -59,7 +59,7 @@ void drawCannonHitbox(Cannon* cannon) {
     }
 
     Hitbox hitbox = cannon->getHitbox();
-    Vector2D pos = Camera::Instance()->WorldToScreen(hitbox.getPosition());
+    Vector2D pos = Camera::Instance()->WorldToScreen(cannon->getPosition());
     renderEngine->renderRotatedRectangle(pos, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 
     for (Projectile* projectile : *cannon->getProjectiles()) {
