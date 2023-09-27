@@ -1,15 +1,58 @@
 #include "InputHandler.h"
 
-InputHandler::InputHandler() {
-    // Initialize the keyboard state to the current state of the keyboard
-    keyboardState = SDL_GetKeyboardState(NULL);
-}
+// Initialize the static instance pointer to nullptr
+InputHandler* InputHandler::instance = nullptr;
+
 
 void InputHandler::update() {
-    // Update the keyboard state
-    SDL_PumpEvents();
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                // Handle quit event (e.g., set a flag to exit the game loop)
+                SDL_Quit();
+                break;
+            case SDL_KEYDOWN:
+                keysPressed.insert(event.key.keysym.sym);
+                break;
+            case SDL_KEYUP:
+                keysPressed.erase(event.key.keysym.sym);
+                break;
+            case SDL_MOUSEMOTION:
+                mousePosition.x = event.motion.x;
+                mousePosition.y = event.motion.y;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    mouseButtonPressed = true;
+                }
+                break;
+            case SDL_MOUSEBUTTONUP:
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    mouseButtonPressed = false;
+                }
+                break;
+        }
+    }
 }
 
-bool InputHandler::isKeyDown(SDL_Scancode key) const {
-    return keyboardState[key];
+bool InputHandler::isKeyPressed(SDL_Keycode key) const {
+    return keysPressed.find(key) != keysPressed.end();
+}
+
+bool InputHandler::isKeyPressedAndErase(SDL_Keycode key) {
+    if (isKeyPressed(key)) {
+        keysPressed.erase(key);
+        return true;
+    }
+
+    return false;
+}
+
+Vector2D InputHandler::getMousePosition() const {
+    return mousePosition;
+}
+
+bool InputHandler::isMouseButtonPressed() const {
+    return mouseButtonPressed;
 }

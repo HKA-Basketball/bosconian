@@ -3,30 +3,64 @@
 
 #pragma once
 
+#include <array>
+#include <string>
+
 #include <SDL.h>
+#include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "HUD.h"
-#include "../Model/Camera.h"
-#include "../Model/Entity/Player.h"
-#include "../Menu/MainMenu.h"
+#include "../Graphic/Sprite.h"
+#include "../Graphic/Fonts.h"
 
-// Enum to represent different fonts.
-enum : uint32_t {
-    FONT_JOYSTIX_38PX = 0,  // Larger Joystix font
-    FONT_JOYSTIX_16PX,      // Smaller Joystix font
-
-    FONT_MAX                // Maximum number of font options
-};
+#include "../Utilities/Config.h"
+#include "../Utilities/Vector2D.h"
+#include "../Utilities/Degree.h"
 
 class RenderEngine {
-public:
-    RenderEngine(int windowWidth, int windowHeight);
-    ~RenderEngine();
+private:
+    static RenderEngine* instance;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    SDL_Texture* spritesheet;
+    std::array<TTF_Font*, Font::MAX> fonts;
 
-    void Render(const GameSession& session, const Camera& camera); // We'll add more parameters as necessary.
-    void Render(const MainMenu& mainMenu);
-    void RenderObject(const Entity &object, const GameMap &gameMap);
+    int width{Config::windowWidth};
+    int height{Config::windowHeight};
+
+    void InitializeSDL();
+    void CleanupSDL();
+
+    void loadSpritesheet();
+    void unloadSpritesheet();
+
+    void loadFonts();
+    void unloadFonts();
+
+    // Private constructor and destructor to prevent instantiation
+    RenderEngine() {
+        InitializeSDL();
+        loadSpritesheet();
+        loadFonts();
+    }
+    ~RenderEngine() {
+        unloadSpritesheet();
+        unloadFonts();
+        CleanupSDL();
+    }
+
+    // Private copy constructor and assignment operator to prevent copying
+    RenderEngine(const RenderEngine&) = delete;
+    RenderEngine& operator=(const RenderEngine&) = delete;
+
+public:
+    static RenderEngine* Instance() {
+        if (!instance) {
+            instance = new RenderEngine();
+            return instance;
+        }
+        return instance;
+    }
 
     void beginScene() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -37,25 +71,21 @@ public:
         SDL_RenderPresent(renderer);
     }
 
-private:
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    std::vector<TTF_Font*> fonts; // Vector to store TTF_Font pointers
+    void renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color &color);
 
-    int width, height;
+    void renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color &color);
 
-    /**
-     * Add a font from memory to the renderer.
-     * \param mem Pointer to the memory containing the font data.
-     * \param size Size of the font data in bytes.
-     * \param fontIndex Index of the font to add.
-     * \param fontPT Point size of the font.
-     */
-    void addFont(const void* mem, int size, int fontIndex, int fontPT);
+    void renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color &color, bool filled);
 
-    void InitializeSDL();
-    void CleanupSDL();
+    void renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color);
 
+    void renderSprite(Sprite& sprite, float angle = 0.0, bool centered = false, SDL_FPoint* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE) const;
+
+    void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, bool centered = false) const;
+
+    SDL_Renderer* getRenderer() const {
+        return renderer;
+    }
 };
 
 #endif //BOSCONIAN_RENDERENGINE_H

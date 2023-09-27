@@ -1,33 +1,9 @@
 #include "RenderEngine.h"
+
 #include <cstdio>
 
-#include "../../Resources/fonts.h"
-
-RenderEngine::RenderEngine(int windowWidth, int windowHeight)
-        : width(windowWidth), height(windowHeight) {
-    InitializeSDL();
-}
-
-RenderEngine::~RenderEngine() {
-    CleanupSDL();
-}
-
-void RenderEngine::addFont(const void *mem, int size, int fontIndex, int fontPT) {
-    SDL_RWops* pFontMem = SDL_RWFromConstMem(mem, size);
-
-    if(!pFontMem) {
-        fprintf(stderr, "SDL_ttf could not initialize font memory! TTF_Error: %s\n", TTF_GetError());
-        exit(1);
-    }
-
-    fonts[fontIndex] = TTF_OpenFontRW(pFontMem, 1, fontPT);
-
-    if (!fonts[fontIndex]) {
-        fprintf(stderr, "SDL_ttf could not load font index (%d)! TTF_Error: %s\n", fontIndex, TTF_GetError());
-        exit(1);
-    }
-
-}
+// Initialize the static instance pointer to nullptr
+RenderEngine* RenderEngine::instance = nullptr;
 
 void RenderEngine::InitializeSDL() {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2"); // needed?
@@ -61,19 +37,46 @@ void RenderEngine::InitializeSDL() {
         exit(1);
     }
 
-    fonts.resize(FONT_MAX);
+}
 
-    addFont(joystix_ttf, sizeof(joystix_ttf), FONT_JOYSTIX_38PX, 38);
-    addFont(joystix_ttf, sizeof(joystix_ttf), FONT_JOYSTIX_16PX, 16);
+void RenderEngine::loadSpritesheet() {
+    std::string fullPath = SDL_GetBasePath();
+    fullPath.append("images/spritesheet.png");
 
+    spritesheet = IMG_LoadTexture(renderer, fullPath.c_str());
+
+    if(!spritesheet) {
+        fprintf(stderr, "Spritesheet could not load Texture\n");
+    }
+}
+
+void RenderEngine::unloadSpritesheet() {
+    SDL_DestroyTexture(spritesheet);
+}
+
+void RenderEngine::loadFonts() {
+    fonts[Font::JOYSTIX_128PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 128);
+    fonts[Font::JOYSTIX_64PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 64);
+    fonts[Font::JOYSTIX_38PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 38);
+    fonts[Font::JOYSTIX_24PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 24);
+    fonts[Font::JOYSTIX_16PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 16);
+    // Load more fonts as needed
+
+    // Check for errors in loading fonts
+    for (auto font : fonts) {
+        if (!font) {
+            // Handle error
+        }
+    }
+}
+
+void RenderEngine::unloadFonts() {
+    for (auto font : fonts) {
+        TTF_CloseFont(font);
+    }
 }
 
 void RenderEngine::CleanupSDL() {
-    // Clean up fonts
-    for (TTF_Font* font : fonts) {
-        TTF_CloseFont(font);
-    }
-    fonts.clear();
     TTF_Quit();
 
     SDL_DestroyRenderer(renderer);
@@ -81,80 +84,103 @@ void RenderEngine::CleanupSDL() {
     SDL_Quit();
 }
 
-void RenderEngine::RenderObject(const Entity& object, const GameMap& gameMap) {
-    int worldWidth = gameMap.getWidth();
-    int worldHeight = gameMap.getHeight();
-    // ... rest of the rendering code ...
+void RenderEngine::renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color& color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawLineF(renderer, start.x, start.y, end.x, end.y);
 }
 
-void RenderEngine::Render(const GameSession& session, const Camera& camera) {
-    // Center the camera on the player.
-    //camera.centerOn(session.getPlayer());
+void RenderEngine::renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color& color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-    // Render game objects.
-    /*for (const auto& obj : session.getObjects()) {
-        if (camera.isInView(obj)) {
-            RenderObject(obj);
-        }
+    // Define the points of the cone
+    SDL_FPoint points[3];
+    points[0].x = start.x;
+    points[0].y = start.y;
+    points[1].x = apex.x;
+    points[1].y = apex.y;
+    points[2].x = end.x;
+    points[2].y = end.y;
 
-        // Handle world wrapping.
-        // This is a simple example, but you'd probably need to expand upon it.
-        if (obj.getX() - obj.getWidth() < 0) {
-            Entity wrappedObj = obj;
-            wrappedObj.setX(session.getGameMap().getWidth() + obj.getX());
-            RenderObject(wrappedObj);
-        }
-        // Similarly for other directions (right, top, bottom).
-    }*/
-
-    // Render player.
-    //RenderPlayer(session.getPlayer());
+    // Draw the lines forming the cone
+    SDL_RenderDrawLinesF(renderer, points, 3);
 }
 
-void RenderEngine::Render(const MainMenu &mainMenu) {
-    // Get the menu options and selected index from the mainMenu object
-    const auto& options = mainMenu.getOptions();
-    size_t selectedIndex = mainMenu.getSelectedIndex();
+void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color& color, bool filled = false) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_FRect fRect = {position.x, position.y, size.x, size.y};
 
-    // Define colors for normal and selected menu options
-    SDL_Color normalColor = {255, 255, 255, 255}; // White color for normal options
-    SDL_Color selectedColor = {255, 0, 0, 255};   // Red color for selected option
+    if(filled) {
+        SDL_RenderFillRectF(renderer, &fRect);
+    } else {
+        SDL_RenderDrawRectF(renderer, &fRect);
+    }
+}
 
-    // Calculate total menu height to centralize vertically
-    int totalMenuHeight = 0;
-    for (const auto& option : options) {
-        int textWidth, textHeight;
-        TTF_SizeText(fonts[FONT_JOYSTIX_38PX], option.c_str(), &textWidth, &textHeight);
-        totalMenuHeight += textHeight + 10; // Adding 10 as a padding between menu items
+void RenderEngine::renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color) {
+    float angleRadians = angle.toRadians();
+    float halfWidth = size.x / 2.f;
+    float halfHeight = size.y / 2.f;
+
+    float cosAngle = std::cos(angleRadians);
+    float sinAngle = std::sin(angleRadians);
+
+    SDL_FPoint points[5];
+
+    // Calculate the four corner points of the rotated rectangle
+    points[0].x = position.x + halfWidth * cosAngle - halfHeight * sinAngle;
+    points[0].y = position.y + halfWidth * sinAngle + halfHeight * cosAngle;
+
+    points[1].x = position.x - halfWidth * cosAngle - halfHeight * sinAngle;
+    points[1].y = position.y - halfWidth * sinAngle + halfHeight * cosAngle;
+
+    points[2].x = 2 * position.x - points[0].x;
+    points[2].y = 2 * position.y - points[0].y;
+
+    points[3].x = 2 * position.x - points[1].x;
+    points[3].y = 2 * position.y - points[1].y;
+
+    points[4] = points[0]; // Close the loop
+
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawLinesF(renderer, points, 5);
+}
+
+void RenderEngine::renderSprite(Sprite& sprite, float angle, bool centered, SDL_FPoint* center, SDL_RendererFlip flip) const {
+    SDL_Rect srcRect = sprite.getSourceRectangle();
+    SDL_FRect destRect = sprite.getDestinationRectangle(centered);
+    SDL_RenderCopyExF(renderer, spritesheet, &srcRect, &destRect, angle, center, flip);
+}
+
+void RenderEngine::renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, bool centered) const {
+    if (fontIndex >= Font::MAX) return; // Invalid font index
+    TTF_Font* font = fonts[fontIndex];
+
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    if (!surface) {
+        // Handle error ...
+        return;
     }
 
-    int y = (height - totalMenuHeight) / 2;
-
-    // Render each menu option
-    for (size_t i = 0; i < options.size(); ++i) {
-        SDL_Color color = (i == selectedIndex) ? selectedColor : normalColor;
-        int textWidth, textHeight;
-        TTF_SizeText(fonts[FONT_JOYSTIX_38PX], options[i].c_str(), &textWidth, &textHeight);
-
-        int x = (width - textWidth) / 2; // Centralize horizontally
-        // Create a surface from the text
-        SDL_Surface* surface = TTF_RenderText_Blended(fonts[FONT_JOYSTIX_38PX], options[i].c_str(), color);
-
-        // Create a texture from the surface
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-        // Free the surface
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture) {
+        // Handle error ...
         SDL_FreeSurface(surface);
-
-        // Define the destination rectangle for the texture
-        SDL_Rect dstRect = {x, y, textWidth, textHeight};
-
-        // Copy the texture to the rendering target
-        SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-
-        // Destroy the texture
-        SDL_DestroyTexture(texture);
-
-        y += textHeight + 10; // Move y down for next item with padding
+        return;
     }
+
+    SDL_Rect dstRect;
+    dstRect.x = position.x;
+    dstRect.y = position.y;
+
+    SDL_QueryTexture(texture, NULL, NULL, &dstRect.w, &dstRect.h);
+
+    if(centered) {
+        dstRect.x = dstRect.x - (dstRect.w / 2);
+        dstRect.y = dstRect.y - (dstRect.h / 2);
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
 }

@@ -1,34 +1,43 @@
 #ifndef BOSCONIAN_CAMERA_H
 #define BOSCONIAN_CAMERA_H
 
-#include "Entity/Entity.h"
-#include "Entity/Player.h"
+#include "Entities/Entity.h"
+#include "Entities/Player.h"
+#include "../Utilities/Config.h"
 
 class Camera {
 private:
-    Vec2 center; // Center of the camera
-    int width;  // Screen width
-    int height; // Screen height
+    static Camera* instance;
+
+    Vector2D center{0, 0}; // Center of the camera
+    Vector2D size{Config::screenWidth, Config::screenHeight}; // Screen size
+
+
+    Camera() {}
+    ~Camera() {}
 
 public:
-    Camera(int w, int h) : center(Vec2()), width(w), height(h) {}
+    //Camera(const Vector2D& size) : size(size) {}
 
-    void centerOn(const Player& player) {
-        center = player.getPosition();
+    static Camera* Instance() {
+        if (!instance) {
+            instance = new Camera();
+            return instance;
+        }
+        return instance;
     }
 
-    bool isInView(const Entity& entity) const {
-        int halfWidth = width / 2;
-        int halfHeight = height / 2;
+    void centerOn(const Vector2D& newCenter);
 
-        Vec2 position = entity.getPosition();
-        return (position.x > center.x - halfWidth && position.x < center.x + halfWidth &&
-                position.y > center.y - halfHeight && position.y < center.y + halfHeight);
-    }
+    // Method to transform world coordinates to screen coordinates
+    Vector2D WorldToScreen(const Vector2D& worldPosition) const;
 
-    Vec2 getCenter() const { return center; }
-    int getWidth() const { return width; }
-    int getHeight() const { return height; }
+    // Check if the object is within the camera's view
+    bool IsInView(const Entity& entity) const;
+
+    Vector2D getCenter() const { return this->center; }
+    Vector2D getSize() const { return this->size; }
+    void setSize(const Vector2D& newSize) { this->size = newSize; }
 };
 
 

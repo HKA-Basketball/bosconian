@@ -1,66 +1,32 @@
-#include <fileapi.h>
-#include <functional>
+#include <iostream>
 
-#include "src/Core/GameState.h"
-#include "src/Core/StateManager.h"
-#include "src/Menu/MainMenu.h"
-#include "src/Model/GameSession.h"
+#include "src/Model/GameModel.h"
 #include "src/View/RenderEngine.h"
-#include "src/Controller/GameController.h"
+#include "src/Controller/InputHandler.h"
+#include "src/States/StateMachine.h"
+#include "src/Graphic/Fonts.h"
+#include "src/Utilities/FrameTimer.h"
 
 int main(int argc, char* args[]) {
+    auto frameTimer = FrameTimer(60);
 
+    while(true) {
+        frameTimer.startFrame();
 
-    // Initialization code...
-    StateManager stateManager;
-    MainMenu mainMenu;
-    GameSession session;
-    RenderEngine view(800, 600);
-    GameController controller;
+        InputHandler::Instance()->update();
 
+        StateMachine::Instance()->getCurrentState()->handleInput(frameTimer.getDeltaTime());
 
-    Uint32 lastFrameTime = SDL_GetTicks();  // Gets the number of milliseconds since the SDL library initialization
+        StateMachine::Instance()->getCurrentState()->update(frameTimer.getDeltaTime());
 
-    while (controller.isRunning()) {
-        Uint32 currentFrameTime = SDL_GetTicks();
-        float deltaTime = static_cast<float>(currentFrameTime - lastFrameTime) / 1000.0f;  // Dividing by 1000 to convert ms to seconds
-        lastFrameTime = currentFrameTime;
+        RenderEngine::Instance()->beginScene();
 
-        // Handle events and user inputs
-        controller.HandleInput();
+        StateMachine::Instance()->getCurrentState()->render();
 
-        // Update game state
-        //session.update();
+        RenderEngine::Instance()->endScene();
 
-        // Render the game state
-        //view.render(session.getGameState());
-        view.beginScene();
-
-        // ... (event handling, etc.)
-
-        switch (stateManager.getGameState()) {
-            case GameState::MainMenu:
-                // Update and render main menu
-                mainMenu.update();
-                view.Render(mainMenu);
-                break;
-            case GameState::PauseMenu:
-                // Update and render pause menu
-                break;
-            case GameState::GameSession:
-                // Update and render game session
-                session.Update(deltaTime);
-                break;
-        }
-
-        // ... (any other update/render logic)
-        view.endScene();
-
-        // Swap buffers, etc.
+        frameTimer.delayFrame();
     }
 
-    // Cleanup and exit...
-
     return 0;
-
 }
