@@ -21,7 +21,12 @@ namespace Config {
     const int levelHeight = 4000;
     const float parallaxFactor = 0.6f; // Adjust this value to control the strength of the Stars parallax effect
 
-    const float titlePositionX = static_cast<float>(windowWidth)/2;
+    const float windowCenterX = static_cast<float>(windowWidth)/2;
+    const float windowCenterY = static_cast<float>(windowHeight)/2;
+    const float screenCenterX = static_cast<float>(screenWidth)/2;
+    const float screenCenterY = static_cast<float>(screenHeight)/2;
+
+    const float titlePositionX = windowCenterX;
     const float titlePositionY = 150.f;
 
     const SDL_Color ColorBlack = {0, 0, 0, 255};

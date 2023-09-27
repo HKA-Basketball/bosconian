@@ -107,7 +107,7 @@ void RenderEngine::renderCone(const Vector2D &start, const Vector2D &apex, const
     SDL_RenderDrawLinesF(renderer, points, 3);
 }
 
-void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color& color, bool filled = false) {
+void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color& color, bool filled) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_FRect fRect = {position.x, position.y, size.x, size.y};
 

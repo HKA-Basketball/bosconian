@@ -1,35 +1,23 @@
 #ifndef BOSCONIAN_MAINMENU_H
 #define BOSCONIAN_MAINMENU_H
 
-#include <vector>
-#include <map>
-#include <SDL.h>
-#include "MenuItem.h"
+#include "Menu.h"
 
 #include "../../Utilities/Config.h"
 #include "../../Utilities/Vector2D.h"
 
-class MainMenu {
-public:
-    enum Option : uint32_t {
-        NONE = 0,
-        START,
-        EXIT
-    };
-
+class MainMenu : public Menu {
 private:
     static MainMenu* instance;
 
-    std::map<Option, MenuItem> menuItems = {
-            {START, {"Start", {Config::titlePositionX, 350}, {150, 25}, true}}
+    MainMenu() {
+        menuItems = {
+            {START, {"Start", {Config::titlePositionX, 350}, {150, 30}, true}},
+            {OPTIONS, {"Options", {Config::titlePositionX, 400}, {220, 30}, true}},
+            {EXIT, {"Exit", {Config::titlePositionX, 450}, {140, 30}, true}}
+        };
     };
 
-    Option clickedOption{NONE};
-
-    Vector2D mousePosition;
-    bool isMouseButtonPressed{false};
-
-    MainMenu() = default;
     ~MainMenu() = default;
 
 public:
@@ -39,36 +27,6 @@ public:
             return instance;
         }
         return instance;
-    }
-
-    void update() {
-        clickedOption = NONE;
-
-        for (auto& item : menuItems) {
-            bool isHovered = item.second.containsPoint(mousePosition);
-
-            item.second.setHovered(isHovered);
-
-            if(isHovered && isMouseButtonPressed) {
-                clickedOption = item.first;
-            }
-        }
-    }
-
-    void handleHover(const Vector2D& newMousePosition) {
-        mousePosition = newMousePosition;
-    }
-
-    void handleClick(bool clicked) {
-        isMouseButtonPressed = clicked;
-    }
-
-    std::map<Option, MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
-    Option getClickedOption() {
-        return clickedOption;
     }
 };
 

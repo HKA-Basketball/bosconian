@@ -76,7 +76,7 @@ public:
 
     void renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color &color);
 
-    void renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color &color, bool filled);
+    void renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color &color, bool filled = false);
 
     void renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color);
 

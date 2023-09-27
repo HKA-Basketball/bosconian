@@ -17,10 +17,11 @@ void MainMenuState::update(float deltaTime) {
     MainMenu::Option clickedOption =  MainMenu::Instance()->getClickedOption();
 
     if(clickedOption == MainMenu::Option::START) {
+        MainMenu::Instance()->reset();
         StateMachine::Instance()->changeState(new PlayingState());
     }
 }
 
 void MainMenuState::render() {
-    MenuView::Instance()->render();
+    MenuView::Instance()->renderMain();
 }

@@ -5,6 +5,7 @@
 #include "../Utilities/Config.h"
 #include "../Graphic/Fonts.h"
 #include "../Model/Menus/MainMenu.h"
+#include "../Model/Menus/PauseMenu.h"
 
 class MenuView {
 private:
@@ -22,10 +23,10 @@ public:
         return instance;
     }
 
-    void render() {
+    void renderMain() {
         RenderEngine::Instance()->renderText(
                 "Bosconian",
-                {Config::titlePositionX, Config::titlePositionY},
+                {Config::windowCenterX, Config::titlePositionY},
                 Config::ColorRed,
                 Font::Type::JOYSTIX_128PX,
                 true);
@@ -34,6 +35,17 @@ public:
             RenderEngine::Instance()->renderMenuItem(item.second,
              item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
              Font::Type::JOYSTIX_38PX);
+        }
+    }
+
+    void renderPause() {
+        RenderEngine::Instance()->renderRectangle({325, 325}, {500, 500}, Config::ColorBlack, true);
+        RenderEngine::Instance()->renderRectangle({325, 325}, {500, 500}, Config::ColorWhite);
+
+        for (auto& item : PauseMenu::Instance()->getMenuItems()) {
+            RenderEngine::Instance()->renderMenuItem(item.second,
+                                                     item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
+                                                     Font::Type::JOYSTIX_38PX);
         }
     }
 
