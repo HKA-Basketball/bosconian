@@ -11,7 +11,7 @@ private:
     static StateMachine* instance;
     State* currentState;
 
-    StateMachine() : currentState(new MainMenuState()) {} /*TODO Change to MainMenuState/Intro */
+    StateMachine() : currentState(new MainMenuState()) {}
     ~StateMachine() { delete currentState; }
 
 public:

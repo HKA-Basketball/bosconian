@@ -32,9 +32,8 @@ public:
                 true);
 
         for (auto& item : MainMenu::Instance()->getMenuItems()) {
-            RenderEngine::Instance()->renderMenuItem(item.second,
-             item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
-             Font::Type::JOYSTIX_38PX);
+            SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
+            RenderEngine::Instance()->renderMenuItem(item.second, color, Font::Type::JOYSTIX_38PX);
         }
     }
 
@@ -43,9 +42,8 @@ public:
         RenderEngine::Instance()->renderRectangle({325, 325}, {500, 500}, Config::ColorWhite);
 
         for (auto& item : PauseMenu::Instance()->getMenuItems()) {
-            RenderEngine::Instance()->renderMenuItem(item.second,
-                                                     item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
-                                                     Font::Type::JOYSTIX_38PX);
+            SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
+            RenderEngine::Instance()->renderMenuItem(item.second, color, Font::Type::JOYSTIX_38PX);
         }
     }
 
