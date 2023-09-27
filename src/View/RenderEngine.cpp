@@ -2,6 +2,8 @@
 
 #include <cstdio>
 
+#include "../Model/Menus/MenuItem.h"
+
 // Initialize the static instance pointer to nullptr
 RenderEngine* RenderEngine::instance = nullptr;
 
@@ -55,11 +57,11 @@ void RenderEngine::unloadSpritesheet() {
 }
 
 void RenderEngine::loadFonts() {
-    fonts[Font::JOYSTIX_128PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 128);
-    fonts[Font::JOYSTIX_64PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 64);
-    fonts[Font::JOYSTIX_38PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 38);
-    fonts[Font::JOYSTIX_24PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 24);
-    fonts[Font::JOYSTIX_16PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 16);
+    fonts[Font::Type::JOYSTIX_128PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 128);
+    fonts[Font::Type::JOYSTIX_64PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 64);
+    fonts[Font::Type::JOYSTIX_38PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 38);
+    fonts[Font::Type::JOYSTIX_24PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 24);
+    fonts[Font::Type::JOYSTIX_16PX] = TTF_OpenFont("fonts/joystix_monospace.otf", 16);
     // Load more fonts as needed
 
     // Check for errors in loading fonts
@@ -183,4 +185,9 @@ void RenderEngine::renderText(const std::string& text, const Vector2D& position,
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
+}
+
+void RenderEngine::renderMenuItem(const MenuItem& menuItem, const SDL_Color& color, const uint32_t& fontIndex) const {
+    SDL_FRect position = menuItem.getBounds();
+    renderText(menuItem.getText(), {position.x, position.y}, color, fontIndex, menuItem.isCentered());
 }

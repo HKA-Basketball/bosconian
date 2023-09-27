@@ -16,6 +16,7 @@
 #include "../Utilities/Config.h"
 #include "../Utilities/Vector2D.h"
 #include "../Utilities/Degree.h"
+#include "../Model/Menus/MenuItem.h"
 
 class RenderEngine {
 private:
@@ -23,7 +24,7 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* spritesheet;
-    std::array<TTF_Font*, Font::MAX> fonts;
+    std::array<TTF_Font*, Font::Type::MAX> fonts;
 
     int width{Config::windowWidth};
     int height{Config::windowHeight};
@@ -83,8 +84,14 @@ public:
 
     void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, bool centered = false) const;
 
+    void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color, const uint32_t& fontIndex) const;
+
     SDL_Renderer* getRenderer() const {
         return renderer;
+    }
+
+    TTF_Font* getFont(Font::Type fontType) {
+        return fonts.at(fontType);
     }
 };
 

@@ -21,7 +21,7 @@ private:
     static MainMenu* instance;
 
     std::map<Option, MenuItem> menuItems = {
-            {START, {"Start", SDL_FRect{Config::titlePositionX, 550, 500, 20}}}
+            {START, {"Start", {Config::titlePositionX, 350}, {150, 25}, true}}
     };
 
     Option clickedOption{NONE};

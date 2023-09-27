@@ -4,7 +4,7 @@
 #include <stdint-gcc.h>
 
 namespace Font {
-    enum : int
+    enum Type : int
     {
         JOYSTIX_128PX = 0,
         JOYSTIX_64PX,

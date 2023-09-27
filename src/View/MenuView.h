@@ -27,17 +27,13 @@ public:
                 "Bosconian",
                 {Config::titlePositionX, Config::titlePositionY},
                 Config::ColorRed,
-                Font::JOYSTIX_128PX,
+                Font::Type::JOYSTIX_128PX,
                 true);
 
         for (auto& item : MainMenu::Instance()->getMenuItems()) {
-            SDL_FRect rect = item.second.getBounds();
-            RenderEngine::Instance()->renderText(
-                    item.second.getText(),
-                    {rect.x, rect.y},
-                    item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
-                    Font::JOYSTIX_38PX,
-                    true);
+            RenderEngine::Instance()->renderMenuItem(item.second,
+             item.second.isHovered() ? Config::ColorRed : Config::ColorWhite,
+             Font::Type::JOYSTIX_38PX);
         }
     }
 
