@@ -106,10 +106,14 @@ void GameView::drawHitbox() {
     for (Base* base : *GameModel::Instance()->getBases()) {
         Vector2D position = Camera::Instance()->WorldToScreen(base->getPosition());
         //Camera::Instance()->IsInView()
+        drawEntity(base);
         RenderEngine::Instance()->renderRotatedRectangle(position, base->getHitbox().getSize(), base->getHitbox().getAngle(), Config::ColorGreen);
 
         for (Cannon* cannon : *base->getCannons()) {
-            drawEntity(cannon);
+            //drawEntity(cannon);
+            Vector2D screenPos = Camera::Instance()->WorldToScreen(cannon->getPosition());
+            Sprite entitySprite(cannon->getSpriteInfo(), screenPos);
+            RenderEngine::Instance()->renderSprite(entitySprite, base->getAngle().getDegree(), true);
             drawCannonHitbox(cannon);
         }
     }

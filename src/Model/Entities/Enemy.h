@@ -36,6 +36,7 @@ public:
             setRandomTargetPos();
         }
 
+        /* TODO 45 Degree steps so we can shoot him */
         Vector2D direction = (targetPosition - position).normalized();
         float targetAngle = std::atan2(direction.y, direction.x) * 180.0f / M_PI;
         angle = Math::normalizeAngle180(targetAngle + 90.0f);

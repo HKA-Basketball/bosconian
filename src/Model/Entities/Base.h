@@ -14,21 +14,25 @@ class Base : public Entity {
 private:
     std::vector<Cannon*>* cannons = new std::vector<Cannon*>();
 
+    const std::vector<CannonInfo> cannonInfos = {
+        {{-112, 0}, {-90.f}, SpriteInfo::CANON_L_NORM},
+        {{-62, -80}, {0.f}, SpriteInfo::CANON_L_UP_NORM},
+        {{-62, 80}, {-180.f}, SpriteInfo::CANON_L_DOWN_NORM},
+        {{112, 0}, {90.f}, SpriteInfo::CANON_R_NORM},
+        {{62, -80}, {0.f}, SpriteInfo::CANON_R_UP_NORM},
+        {{62, 80}, {180.f}, SpriteInfo::CANON_R_DOWN_NORM},
+    };
+
 public:
     explicit Base(const Vector2D& position, const Degree angle) : Entity(position, angle) {
+        spriteInfo = SpriteInfo::KERN;
         hitbox = {{0, 0}, {25, 25}};
-
-        std::vector<CannonInfo> cannonInfos{
-                {{-112, 0}, {180.f}, SpriteInfo::CANON_L_NORM},
-                {{-62, -80}, {-90.f}, SpriteInfo::CANON_L_NORM},
-                {{-62, 80}, {90.f}, SpriteInfo::CANON_L_NORM},
-                {{112, 0}, {0.f}, SpriteInfo::CANON_L_NORM},
-                {{62, -80}, {-90.f}, SpriteInfo::CANON_L_NORM},
-                {{62, 80}, {90.f}, SpriteInfo::CANON_L_NORM},
-        };
 
         for (int i = 0; i < 6; ++i) {
             Vector2D cannonPos = position + cannonInfos[i].positionOffset.rotate(angle.toRadians());
+            float radians = angle.toRadians() - M_PI_2;
+            cannonPos.x += std::cos(radians);
+            cannonPos.y += std::sin(radians);
             Degree cannonAngle = angle + cannonInfos[i].angleOffset;
             cannons->push_back(new Cannon(cannonPos, cannonAngle, cannonInfos[i].spriteInfo));
         }
