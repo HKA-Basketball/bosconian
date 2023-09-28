@@ -28,7 +28,7 @@ public:
     }
 
     void update(float deltaTime) override {
-        float distance = (position - playerPosition).length();
+        float distance = (position.getCenterPosition() - playerPosition).length();
 
         if (distance <= attackThreshold) {
             targetPosition = playerPosition;
@@ -37,7 +37,7 @@ public:
         }
 
         /* TODO 45 Degree steps so we can shoot him */
-        Vector2D direction = (targetPosition - position).normalized();
+        Vector2D direction = (targetPosition - position.getCenterPosition()).normalized();
         float targetAngle = std::atan2(direction.y, direction.x) * 180.0f / M_PI;
         angle = Math::normalizeAngle180(targetAngle + 90.0f);
 

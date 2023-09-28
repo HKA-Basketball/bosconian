@@ -40,7 +40,7 @@ public:
 
         elapsedTimeSinceLastShot += deltaTime;
 
-        Vector2D direction = playerPosition - position;
+        Vector2D direction = playerPosition - position.getCenterPosition();
         float distance = direction.length();
         direction.normalize();
 
@@ -56,7 +56,7 @@ public:
 
         if (playerInViewArea && playerWithinDistance && elapsedTimeSinceLastShot >= SHOT_COOLDOWN_DURATION) {
             elapsedTimeSinceLastShot = 0;
-            projectiles->push_back(new Projectile(position, targetAngle));
+            projectiles->push_back(new Projectile(position.getCenterPosition(), targetAngle));
         }
 
         for (auto& projectile : *projectiles) {

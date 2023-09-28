@@ -28,7 +28,6 @@ public:
 
     void update(float deltaTime) override {
         Entity::update(deltaTime);
-        position = World::WrapPosition(position);
 
         elapsedTimeSinceLastShot += deltaTime;
 
@@ -40,8 +39,8 @@ public:
     // Function to make the player shoot.
     void shoot(float deltaTime) {
         if (elapsedTimeSinceLastShot >= shotCooldownDuration) {
-            projectiles->push_back(new Projectile(position, angle));
-            projectiles->push_back(new Projectile(position, angle + 180));
+            projectiles->push_back(new Projectile(position.getCenterPosition(), angle));
+            projectiles->push_back(new Projectile(position.getCenterPosition(), angle + 180));
             elapsedTimeSinceLastShot = 0; // Reset the timer
         }
     }

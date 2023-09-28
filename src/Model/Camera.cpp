@@ -23,21 +23,9 @@ std::optional<Vector2D> Camera::IsInView(const Entity& entity) const {
     Vector2D cameraCenter = center;
 
     // Get the center position of the entity
-    Vector2D entityCenter = entity.getPosition();
+    WrappedPositions positionsToCheck = entity.getWrappedPositions();
 
     // Check for collisions with the entity's original and wrapped positions
-    std::vector<Vector2D> positionsToCheck = {
-            entityCenter,
-            entityCenter + Vector2D(Config::levelWidth, 0),
-            entityCenter - Vector2D(Config::levelWidth, 0),
-            entityCenter + Vector2D(0, Config::levelHeight),
-            entityCenter - Vector2D(0, Config::levelHeight),
-            entityCenter + Vector2D(Config::levelWidth, Config::levelHeight),
-            entityCenter - Vector2D(Config::levelWidth, Config::levelHeight),
-            entityCenter + Vector2D(Config::levelWidth, 0) - Vector2D(0, Config::levelHeight),
-            entityCenter - Vector2D(Config::levelWidth, 0) + Vector2D(0, Config::levelHeight)
-    };
-
     for (const auto& position : positionsToCheck) {
         float distance = (cameraCenter - position).length();
         if (distance < (cameraRadius + entityRadius)) {

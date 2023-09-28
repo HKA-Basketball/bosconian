@@ -5,7 +5,6 @@
 
 #include "Entities/Entity.h"
 #include "Entities/Player.h"
-#include "../Utilities/Config.h"
 
 class Camera {
 private:

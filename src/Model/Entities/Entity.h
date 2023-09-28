@@ -1,12 +1,14 @@
 #ifndef BOSCONIAN_ENTITY_H
 #define BOSCONIAN_ENTITY_H
 
+#include "../../Utilities/Position.h"
 #include "../../Physics/Hitbox.h"
 #include "../../Graphic/SpriteInfo.h"
+#include "../World.h"
 
 class Entity {
 protected:
-    Vector2D position{0, 0};
+    Position position{0, 0};
     Degree angle{0};
     float speed{0.f};
 
@@ -23,15 +25,19 @@ public:
 
     virtual void update(float deltaTime) {
         float radians = angle.toRadians() - M_PI_2;
-        position.x += speed * deltaTime * std::cos(radians);
-        position.y += speed * deltaTime * std::sin(radians);
+        Vector2D newPosition = position.getCenterPosition();
+        newPosition.x += speed * deltaTime * std::cos(radians);
+        newPosition.y += speed * deltaTime * std::sin(radians);
+        newPosition = World::WrapPosition(newPosition);
+        position.setCenterPosition(newPosition);
 
-        hitbox.updatePosition(position);
+        hitbox.updatePosition(position.getCenterPosition());
         hitbox.updateAngle(angle);
     }
 
-    Vector2D getPosition() const { return position; }
-    void setPosition(const Vector2D& newPosition) { position = newPosition; }
+    Vector2D getPosition() const { return position.getCenterPosition(); }
+    void setPosition(const Vector2D& newPosition) { position.setCenterPosition(newPosition); }
+    WrappedPositions getWrappedPositions() const { return position.getWrappedPositions(); }
 
     Degree getAngle() const { return angle; }
     void setAngle(const Degree newAngle) { angle = newAngle; }

@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_CONFIG_H
 #define BOSCONIAN_CONFIG_H
 
+#include "SDL.h"
+
 namespace Config {
 
     const int screenWidth = 896;   // 224 * 4;
