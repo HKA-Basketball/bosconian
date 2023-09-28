@@ -62,10 +62,7 @@ public:
 
         Background::Instance()->updateStars(deltaTime, camera->getCenter());
 
-        for (Projectile* projectile : *player->getProjectiles()) {
-            //projectile->setPosition(World::WrapPosition(projectile->getPosition()));
-            //camera->IsInView()
-        }
+        updateProjectiles(player->getProjectiles());
 
         for (Enemy* enemy : *enemies) {
             enemy->updatePlayerPosition(player->getWrappedPositions());
@@ -79,6 +76,10 @@ public:
         for (Base* base : *bases) {
             base->updatePlayerPosition(player->getPosition());
             base->update(deltaTime);
+
+            for (Cannon* cannon : *base->getCannons()) {
+                updateProjectiles(cannon->getProjectiles());
+            }
         }
 
     }
@@ -101,6 +102,20 @@ public:
 
     unsigned int getLives() const {
         return lives;
+    }
+
+private:
+
+    void updateProjectiles(Projectiles* projectiles) {
+        //auto& projectiles = *p;
+        for (auto it = projectiles->begin(); it != projectiles->end(); /* no increment here */) {
+            Projectile* projectile = *it;
+            if (!Camera::Instance()->IsInView(*projectile)) {
+                it = projectiles->erase(it); // erase returns the iterator pointing to the next element
+            } else {
+                ++it;
+            }
+        }
     }
 
 };
