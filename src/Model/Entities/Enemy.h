@@ -6,15 +6,16 @@
 #include "../../Utilities/Random.h"
 
 class Enemy : public Entity {
-    Vector2D playerPosition{500, 500};
+    WrappedPositions playerPositions;
+
     Vector2D targetPosition;
     bool needNewPosition{true};
 
-    const float attackThreshold{250.0f};
-    const float detectionRange{150.f};
+    const float attackThreshold{std::max(Config::screenWidth, Config::screenHeight) * 0.45f};
+
 
 public:
-    explicit Enemy(const Vector2D& position, const Degree angle) : Entity(position, angle) {
+    explicit Enemy(const Vector2D &position, const Degree angle) : Entity(position, angle) {
         speed = 155.0f;
         spriteInfo = Random::getRandomOne(
                 SpriteInfo::E_TYPE,
@@ -23,22 +24,42 @@ public:
         );
     }
 
-    void updatePlayerPosition(const Vector2D& newPlayerPosition) {
-        playerPosition = newPlayerPosition;
+    void updatePlayerPosition(const WrappedPositions& newPlayerPositions) {
+        playerPositions = newPlayerPositions;
     }
 
+    /* TODO 45 Degree steps so we can shoot him */
     void update(float deltaTime) override {
-        float distance = (position.getCenterPosition() - playerPosition).length();
 
-        if (distance <= attackThreshold) {
-            targetPosition = playerPosition;
-        } else if (distance <= detectionRange || needNewPosition) {
+        // Find the closest wrapped player position
+        Vector2D closestPosition = playerPositions.at(Position::CENTER);
+        float minDistance = (position.getCenterPosition() - closestPosition).length();
+
+        for (const Vector2D& wrappedPos : playerPositions) {
+            float distance = (position.getCenterPosition() - wrappedPos).length();
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPosition = wrappedPos;
+            }
+        }
+
+        // Check if the enemy has reached the target position
+        if ((position.getCenterPosition() - targetPosition).length() < speed * deltaTime) {
+            needNewPosition = true;
+        }
+
+        // Follow the player if within attackThreshold, otherwise move to a random position
+        if (minDistance <= attackThreshold) {
+            targetPosition = closestPosition;
+            needNewPosition = false; // The enemy has a new target, so it doesn't need a new position
+        }
+
+        if (needNewPosition) {
             setRandomTargetPos();
         }
 
-        /* TODO 45 Degree steps so we can shoot him */
         Vector2D direction = (targetPosition - position.getCenterPosition()).normalized();
-        float targetAngle = std::atan2(direction.y, direction.x) * 180.0f / M_PI;
+        float targetAngle = std::atan2(direction.y, direction.x) * 180.0f / static_cast<float>(M_PI);
         angle = Math::normalizeAngle180(targetAngle + 90.0f);
 
         Entity::update(deltaTime);
@@ -46,13 +67,10 @@ public:
 
 private:
     void setRandomTargetPos() {
-        if (needNewPosition) {
-            // TODO: Level Size
-            float randomX = 1200 * static_cast<float>(rand()) / RAND_MAX;
-            float randomY = 1200 * static_cast<float>(rand()) / RAND_MAX;
-            targetPosition = {randomX, randomY};
-            needNewPosition = false;
-        }
+        float randomX = Math::randomFloat(0, Config::screenWidth);
+        float randomY = Math::randomFloat(0, Config::screenHeight);
+        targetPosition = {randomX, randomY};
+        needNewPosition = false;
     }
 
 };

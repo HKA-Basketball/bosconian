@@ -22,6 +22,7 @@ class GameModel {
     static GameModel* instance;
 
     Player* player;
+
     unsigned int points{0};
     unsigned int highScore{0};
     unsigned int lives{3};
@@ -55,9 +56,8 @@ public:
 
     void update(float deltaTime) {
         player->update(deltaTime);
-        //player->setPosition(World::WrapPosition(player->getPosition()));
-        Camera* camera = Camera::Instance();
 
+        Camera* camera = Camera::Instance();
         camera->centerOn(player->getPosition());
 
         Background::Instance()->updateStars(deltaTime, camera->getCenter());
@@ -68,7 +68,7 @@ public:
         }
 
         for (Enemy* enemy : *enemies) {
-            enemy->updatePlayerPosition(player->getPosition());
+            enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
         }
 
