@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_CAMERA_H
 #define BOSCONIAN_CAMERA_H
 
+#include <optional>
+
 #include "Entities/Entity.h"
 #include "Entities/Player.h"
 #include "../Utilities/Config.h"
@@ -33,7 +35,7 @@ public:
     Vector2D WorldToScreen(const Vector2D& worldPosition) const;
 
     // Check if the object is within the camera's view
-    bool IsInView(const Entity& entity) const;
+    std::optional<Vector2D> IsInView(const Entity& entity) const;
 
     Vector2D getCenter() const { return this->center; }
     Vector2D getSize() const { return this->size; }

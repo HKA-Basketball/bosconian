@@ -11,6 +11,7 @@
 
 #include "../../Utilities/Vector2D.h"
 #include "../../Utilities/Degree.h"
+#include "../World.h"
 
 
 class Player : public Entity {
@@ -27,6 +28,7 @@ public:
 
     void update(float deltaTime) override {
         Entity::update(deltaTime);
+        position = World::WrapPosition(position);
 
         elapsedTimeSinceLastShot += deltaTime;
 
