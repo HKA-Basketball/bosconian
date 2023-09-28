@@ -24,6 +24,7 @@ private:
 public:
     explicit Cannon(const Vector2D& position, const Degree angle, SpriteInfo spriteInfo) : Entity(position, angle) {
         this->spriteInfo = spriteInfo;
+        hitbox = {position, {75, 75}};
     }
 
     Vector2D getPlayerPosition() const {
