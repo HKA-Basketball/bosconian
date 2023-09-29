@@ -26,7 +26,7 @@ private:
 public:
     explicit Base(const Vector2D& position, const Degree angle) : Entity(position, angle) {
         spriteInfo = SpriteInfo::KERN;
-        hitbox = {{0, 0}, {25, 25}};
+        hitbox = {{0, 0}, {30, 45}};
 
         for (const auto& cannonInfo : cannonInfos) {
             Vector2D cannonPos = position + cannonInfo.positionOffset.rotate(angle.toRadians());

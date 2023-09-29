@@ -48,7 +48,8 @@ enum class SpriteInfo {
     P_TYPE_ATTACK,
     P_TYPE_NORM,
     PLAYER,
-    SPY
+    SPY,
+    PROJECTILE
 };
 
 const std::map<SpriteInfo, SDL_Rect> spriteMap = {
@@ -95,7 +96,8 @@ const std::map<SpriteInfo, SDL_Rect> spriteMap = {
         {SpriteInfo::P_TYPE_ATTACK, {156, 0, 52, 48}},
         {SpriteInfo::P_TYPE_NORM, {208, 0, 52, 48}},
         {SpriteInfo::PLAYER, {216, 60, 60, 64}},
-        {SpriteInfo::SPY, {260, 0, 44, 52}}
+        {SpriteInfo::SPY, {260, 0, 44, 52}},
+        {SpriteInfo::PROJECTILE, {276, 60, 8, 8}}
 };
 
 

@@ -58,11 +58,6 @@ void drawCannonHitbox(Cannon* cannon) {
     Hitbox hitbox = cannon->getHitbox();
     Vector2D pos = Camera::Instance()->WorldToScreen(cannon->getPosition());
     renderEngine->renderRotatedRectangle(pos, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
-
-    for (Projectile* projectile : *cannon->getProjectiles()) {
-        Vector2D position = Camera::Instance()->WorldToScreen(projectile->getPosition());
-        renderEngine->renderRotatedRectangle(position, projectile->getHitbox().getSize(), projectile->getHitbox().getAngle(), Config::ColorGreen);
-    }
 }
 
 void drawEntity(Entity* entity) {
@@ -75,6 +70,16 @@ void drawEntity(Entity* entity) {
     }
 }
 
+void drawProjectile(Projectile* projectile) {
+    std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*projectile);
+    if (renderPosition) {
+        Vector2D position = Camera::Instance()->WorldToScreen(renderPosition.value());
+        Sprite entitySprite(projectile->getSpriteInfo(), position);
+        RenderEngine::Instance()->renderSprite(entitySprite, projectile->getAngle().getDegree(), true);
+        RenderEngine::Instance()->renderRotatedRectangle(position, projectile->getHitbox().getSize(), projectile->getHitbox().getAngle(), Config::ColorGreen);
+    }
+}
+
 void GameView::drawHitbox() {
     Player* player = GameModel::Instance()->getPlayer();
     Hitbox hitbox = player->getHitbox();
@@ -83,10 +88,7 @@ void GameView::drawHitbox() {
     RenderEngine::Instance()->renderRotatedRectangle(pos, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 
     for (Projectile* projectile : *player->getProjectiles()) {
-        Vector2D position = Camera::Instance()->WorldToScreen(projectile->getPosition());
-        //Camera::Instance()->IsInView()
-        RenderEngine::Instance()->renderRotatedRectangle(position, projectile->getHitbox().getSize(),
-                                                         projectile->getHitbox().getAngle(), Config::ColorGreen);
+        drawProjectile(projectile);
     }
 
 
@@ -107,6 +109,10 @@ void GameView::drawHitbox() {
             Sprite entitySprite(cannon->getSpriteInfo(), screenPos);
             RenderEngine::Instance()->renderSprite(entitySprite, base->getAngle().getDegree(), true);
             drawCannonHitbox(cannon);
+
+            for (Projectile* projectile : *cannon->getProjectiles()) {
+                drawProjectile(projectile);
+            }
         }
     }
 }

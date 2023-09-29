@@ -10,6 +10,7 @@ class Projectile : public Entity {
 public:
     explicit Projectile(const Vector2D& position, const Degree angle) : Entity(position, angle) {
         speed = 1000.f;
+        spriteInfo = SpriteInfo::PROJECTILE;
         hitbox = {{0, 0}, {10, 10}};
     }
 
