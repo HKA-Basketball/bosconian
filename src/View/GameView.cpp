@@ -66,9 +66,13 @@ void drawCannonHitbox(Cannon* cannon) {
 }
 
 void drawEntity(Entity* entity) {
-    Vector2D screenPos = Camera::Instance()->WorldToScreen(entity->getPosition());
-    Sprite entitySprite(entity->getSpriteInfo(), screenPos);
-    RenderEngine::Instance()->renderSprite(entitySprite, entity->getAngle().getDegree(), true);
+    std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*entity);
+    if (renderPosition) {
+        Vector2D position = Camera::Instance()->WorldToScreen(renderPosition.value());
+        Sprite entitySprite(entity->getSpriteInfo(), position);
+        RenderEngine::Instance()->renderSprite(entitySprite, entity->getAngle().getDegree(), true);
+        RenderEngine::Instance()->renderRotatedRectangle(position, entity->getHitbox().getSize(), entity->getHitbox().getAngle(), Config::ColorGreen);
+    }
 }
 
 void GameView::drawHitbox() {
@@ -87,34 +91,15 @@ void GameView::drawHitbox() {
 
 
     for (Enemy* enemy : *GameModel::Instance()->getEnemies()) {
-        //Vector2D position = Camera::Instance()->WorldToScreen(enemy->getPosition());
-        //Camera::Instance()->IsInView()
-        //drawEntity(enemy);
-        //Vector2D screenPos = Camera::Instance()->WorldToScreen(entity->getPosition());
-
-        std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*enemy);
-
-        if (renderPosition) {
-            Vector2D position = Camera::Instance()->WorldToScreen(renderPosition.value());
-            Sprite entitySprite(enemy->getSpriteInfo(), position);
-            RenderEngine::Instance()->renderSprite(entitySprite, enemy->getAngle().getDegree(), true);
-            RenderEngine::Instance()->renderRotatedRectangle(position, enemy->getHitbox().getSize(), enemy->getHitbox().getAngle(), Config::ColorGreen);
-        }
-
+        drawEntity(enemy);
     }
 
     for (Obstacle* enemy : *GameModel::Instance()->getObstacles()) {
-        Vector2D position = Camera::Instance()->WorldToScreen(enemy->getPosition());
-        //Camera::Instance()->IsInView()
         drawEntity(enemy);
-        RenderEngine::Instance()->renderRotatedRectangle(position, enemy->getHitbox().getSize(), enemy->getHitbox().getAngle(), Config::ColorGreen);
     }
 
     for (Base* base : *GameModel::Instance()->getBases()) {
-        Vector2D position = Camera::Instance()->WorldToScreen(base->getPosition());
-        //Camera::Instance()->IsInView()
         drawEntity(base);
-        RenderEngine::Instance()->renderRotatedRectangle(position, base->getHitbox().getSize(), base->getHitbox().getAngle(), Config::ColorGreen);
 
         for (Cannon* cannon : *base->getCannons()) {
             //drawEntity(cannon);
@@ -128,7 +113,12 @@ void GameView::drawHitbox() {
 
 void GameView::drawPlayer() {
     Player* player = GameModel::Instance()->getPlayer();
-    drawEntity(player);
+    Vector2D position = Camera::Instance()->WorldToScreen(player->getPosition());
+    Hitbox hitbox = player->getHitbox();
+
+    Sprite entitySprite(player->getSpriteInfo(), position);
+    RenderEngine::Instance()->renderSprite(entitySprite, player->getAngle().getDegree(), true);
+    RenderEngine::Instance()->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 }
 
 

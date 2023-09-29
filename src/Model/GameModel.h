@@ -36,8 +36,10 @@ class GameModel {
     GameModel() {
         player = new Player({1500, 1500}, 0);
         obstacles->push_back(new Obstacle({1600, 1600}, 0));
+        obstacles->push_back(new Obstacle({5, 5}, 45));
         enemies->push_back(new Enemy({1350, 1350}, 0));
-        bases->push_back(new Base({1250, 1750}, 0));
+        bases->push_back(new Base({1050, 1750}, 0));
+        bases->push_back(new Base({2350, 1500}, 0));
     }
 
     ~GameModel() {
