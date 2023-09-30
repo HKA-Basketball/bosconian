@@ -82,10 +82,6 @@ void drawProjectile(Projectile* projectile) {
 
 void GameView::drawHitbox() {
     Player* player = GameModel::Instance()->getPlayer();
-    Hitbox hitbox = player->getHitbox();
-
-    Vector2D pos = Camera::Instance()->WorldToScreen(hitbox.getPosition());
-    RenderEngine::Instance()->renderRotatedRectangle(pos, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 
     for (Projectile* projectile : *player->getProjectiles()) {
         drawProjectile(projectile);
