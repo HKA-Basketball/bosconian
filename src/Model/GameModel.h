@@ -119,6 +119,18 @@ public:
         return bases;
     }
 
+    void raiseLives() {
+        if(lives < 5) {
+            lives++;
+        }
+    }
+
+    void reduceLives() {
+        if(lives > 0) {
+            lives--;
+        }
+    }
+
     unsigned int getLives() const {
         return lives;
     }
