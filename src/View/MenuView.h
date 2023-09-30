@@ -6,6 +6,7 @@
 #include "../Graphic/Fonts.h"
 #include "../Model/Menus/MainMenu.h"
 #include "../Model/Menus/PauseMenu.h"
+#include "../Model/Menus/MainMenuOption.h"
 
 class MenuView {
 private:
@@ -34,6 +35,18 @@ public:
         for (auto& item : MainMenu::Instance()->getMenuItems()) {
             SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
             RenderEngine::Instance()->renderMenuItem(item.second, color, Font::Type::JOYSTIX_38PX);
+        }
+    }
+
+    void renderMainOption() {
+        for (auto& item : MainMenuOption::Instance()->getMenuItems()) {
+            SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
+            RenderEngine::Instance()->renderMenuItem(item.second, color, Font::Type::JOYSTIX_38PX);
+        }
+
+        for (auto& item : MainMenuOption::Instance()->getSwitchItems()) {
+            SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
+            RenderEngine::Instance()->renderSwitchItem(item.second, color);
         }
     }
 

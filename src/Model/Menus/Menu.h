@@ -11,7 +11,12 @@ public:
         NONE,
         START,
         CONTINUE,
+
         OPTIONS,
+        SWA,
+        SWB,
+        DEBUG,
+
         EXIT
     };
 
