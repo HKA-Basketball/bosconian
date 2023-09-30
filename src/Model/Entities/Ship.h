@@ -1,11 +1,11 @@
-#ifndef BOSCONIAN_ENEMY_H
-#define BOSCONIAN_ENEMY_H
+#ifndef BOSCONIAN_SHIP_H
+#define BOSCONIAN_SHIP_H
 
 #include "Entity.h"
 #include "../../Utilities/Math.h"
 #include "../../Utilities/Random.h"
 
-class Enemy : public Entity {
+class Ship : public Entity {
     WrappedPositions playerPositions;
 
     Vector2D targetPosition;
@@ -15,7 +15,7 @@ class Enemy : public Entity {
 
 
 public:
-    explicit Enemy(const Vector2D &position, const Degree angle) : Entity(position, angle) {
+    explicit Ship(const Vector2D &position, const Degree angle) : Entity(position, angle) {
         speed = 155.0f;
         spriteInfo = Random::getRandomOne(
                 SpriteInfo::E_TYPE,
@@ -75,4 +75,4 @@ private:
 
 };
 
-#endif //BOSCONIAN_ENEMY_H
+#endif //BOSCONIAN_SHIP_H

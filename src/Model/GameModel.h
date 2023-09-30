@@ -5,7 +5,7 @@
 
 #include "Entities/Player.h"
 #include "Entities/Obstacle.h"
-#include "Entities/Enemy.h"
+#include "Entities/Ship.h"
 #include "Entities/Base.h"
 #include "Camera.h"
 #include "World.h"
@@ -30,7 +30,7 @@ class GameModel {
 
     AlertStatus status{GREEN};
 
-    std::vector<Enemy*>* enemies = new std::vector<Enemy*>();
+    std::vector<Ship*>* enemies = new std::vector<Ship*>();
     std::vector<Obstacle*>* obstacles = new std::vector<Obstacle*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
 
@@ -38,7 +38,7 @@ class GameModel {
         player = new Player({1500, 1500}, 0);
         obstacles->push_back(new Obstacle({1600, 1600}, 0));
         obstacles->push_back(new Obstacle({5, 5}, 45));
-        enemies->push_back(new Enemy({1350, 1350}, 0));
+        enemies->push_back(new Ship({1350, 1350}, 0));
         bases->push_back(new Base({1050, 1750}, 0));
         bases->push_back(new Base({2350, 1500}, 0));
     }
@@ -73,7 +73,7 @@ public:
 
         updateProjectiles(player->getProjectiles());
 
-        for (Enemy* enemy : *enemies) {
+        for (Ship* enemy : *enemies) {
             enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
 
@@ -99,7 +99,7 @@ public:
         return player;
     }
 
-    std::vector<Enemy*>* getEnemies() {
+    std::vector<Ship*>* getEnemies() {
         return enemies;
     }
 
