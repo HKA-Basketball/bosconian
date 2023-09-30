@@ -31,16 +31,15 @@ class GameModel {
 
     AlertStatus status{GREEN};
 
-    std::vector<Ship*>* enemies = new std::vector<Ship*>();
-    std::vector<Obstacle*>* obstacles = new std::vector<Obstacle*>();
+    std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
 
     GameModel() {
         player = new Player({1500, 1500}, 0);
         *playerPosition = player->getPosition();
 
-        obstacles->push_back(new Obstacle({1600, 1600}, 0));
-        obstacles->push_back(new Obstacle({5, 5}, 45));
+        enemies->push_back(new Obstacle({1600, 1600}, 0));
+        enemies->push_back(new Obstacle({5, 5}, 45));
         enemies->push_back(new Ship({1350, 1350}, 0, playerPosition));
         bases->push_back(new Base({1050, 1750}, 0, playerPosition));
         bases->push_back(new Base({2500, 1500}, 0, playerPosition));
@@ -48,11 +47,10 @@ class GameModel {
 
     ~GameModel() {
         delete player;
+        delete playerPosition;
         for (auto enemy : *enemies) delete enemy;
-        for (auto obstacle : *obstacles) delete obstacle;
         for (auto base : *bases) delete base;
         delete enemies;
-        delete obstacles;
         delete bases;
     }
 
@@ -78,24 +76,12 @@ public:
         updateProjectiles(player->getProjectiles());
 
         for (auto it = enemies->begin(); it != enemies->end(); ) {
-            Ship* enemy = *it;
+            Entity* enemy = *it;
             enemy->update(deltaTime);
             checkforCollision(enemy, player->getProjectiles());
 
             if (enemy->isDead()) {
                 it = enemies->erase(it);
-            } else {
-                ++it;
-            }
-        }
-
-        for (auto it = obstacles->begin(); it != obstacles->end(); ) {
-            Entity* obstacle = *it;
-            obstacle->update(deltaTime);
-            checkforCollision(obstacle, player->getProjectiles());
-
-            if (obstacle->isDead()) {
-                it = obstacles->erase(it);
             } else {
                 ++it;
             }
@@ -112,6 +98,7 @@ public:
             }
 
             if (base->isDead()) {
+                delete *it;
                 it = bases->erase(it);
             } else {
                 ++it;
@@ -124,12 +111,8 @@ public:
         return player;
     }
 
-    std::vector<Ship*>* getEnemies() {
+    std::vector<Entity*>* getEnemies() {
         return enemies;
-    }
-
-    std::vector<Obstacle*>* getObstacles() {
-        return obstacles;
     }
 
     std::vector<Base*>* getBases() {
@@ -174,41 +157,6 @@ private:
         if (entityCollisionDetected) {
             if (!entity->isDefeated()) {
                 entity->setDefeated();
-            }
-        }
-    }
-
-    void checkforCollision(std::vector<Entity*>* entities, Projectiles* projectiles) {
-        for (auto entityIt = entities->begin(); entityIt != entities->end(); /* no increment here */) {
-            bool entityCollisionDetected = false;
-            auto projectileIt = projectiles->begin();
-
-            while (projectileIt != projectiles->end()) {
-                if (HitboxManager::areColliding((*entityIt)->getHitbox(), (*projectileIt)->getHitbox())) {
-                    entityCollisionDetected = true;
-
-                    // Free memory if needed, e.g., if using raw pointers
-                    delete *projectileIt;
-
-                    // Erase the collided projectile and update the iterator
-                    projectileIt = projectiles->erase(projectileIt);
-                } else {
-                    ++projectileIt;
-                }
-            }
-
-            if (entityCollisionDetected) {
-                if (!(*entityIt)->isDefeated()) {
-                    (*entityIt)->setDefeated();
-                }
-
-                // Free memory if needed, e.g., if using raw pointers
-                //delete *entityIt;
-
-                // Erase the collided entity and update the iterator
-                //entityIt = entities->erase(entityIt);
-            } else {
-                ++entityIt;
             }
         }
     }

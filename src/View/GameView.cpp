@@ -95,11 +95,7 @@ void GameView::drawHitbox() {
     }
 
 
-    for (Ship* enemy : *GameModel::Instance()->getEnemies()) {
-        drawEntity(enemy);
-    }
-
-    for (Obstacle* enemy : *GameModel::Instance()->getObstacles()) {
+    for (Entity* enemy : *GameModel::Instance()->getEnemies()) {
         drawEntity(enemy);
     }
 
