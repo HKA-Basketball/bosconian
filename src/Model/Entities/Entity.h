@@ -40,7 +40,11 @@ public:
         newPosition = World::WrapPosition(newPosition);
         position.setCenterPosition(newPosition);
 
-        hitbox.updatePosition(position.getCenterPosition());
+        Vector2D hitboxPosition = position.getCenterPosition();
+        Vector2D hitboxSize = hitbox.getSize();
+        hitboxPosition.x -= hitboxSize.x / 2.f;
+        hitboxPosition.y -= hitboxSize.y / 2.f;
+        hitbox.updatePosition(hitboxPosition);
         hitbox.updateAngle(angle);
     }
 
