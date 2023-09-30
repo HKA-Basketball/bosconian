@@ -32,7 +32,7 @@ public:
         isMouseButtonPressed = false;
     }
 
-    void update() {
+    virtual void update() {
         clickedOption = NONE;
 
         for (auto& item : menuItems) {
