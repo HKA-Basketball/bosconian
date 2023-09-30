@@ -7,8 +7,8 @@
 
 class Menu {
 public:
-    enum Option : uint32_t {
-        NONE = 0,
+    enum Option {
+        NONE,
         START,
         CONTINUE,
         OPTIONS,
