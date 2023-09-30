@@ -6,7 +6,7 @@
 #include "../../Utilities/Random.h"
 
 class Ship : public Entity {
-    WrappedPositions playerPositions;
+    Position* playerPositions;
 
     Vector2D targetPosition;
     bool needNewPosition{true};
@@ -15,7 +15,7 @@ class Ship : public Entity {
 
 
 public:
-    explicit Ship(const Vector2D &position, const Degree angle) : Entity(position, angle) {
+    explicit Ship(const Vector2D &position, const Degree angle, Position* playerPositions) : Entity(position, angle), playerPositions(playerPositions) {
         speed = 155.0f;
         spriteInfo = Random::getRandomOne(
                 SpriteInfo::E_TYPE,
@@ -24,18 +24,14 @@ public:
         );
     }
 
-    void updatePlayerPosition(const WrappedPositions& newPlayerPositions) {
-        playerPositions = newPlayerPositions;
-    }
-
     /* TODO 45 Degree steps so we can shoot him */
     void update(float deltaTime) override {
 
         // Find the closest wrapped player position
-        Vector2D closestPosition = playerPositions.at(Position::CENTER);
+        Vector2D closestPosition = playerPositions->getCenterPosition();
         float minDistance = (position.getCenterPosition() - closestPosition).length();
 
-        for (const Vector2D& wrappedPos : playerPositions) {
+        for (const Vector2D& wrappedPos : playerPositions->getWrappedPositions()) {
             float distance = (position.getCenterPosition() - wrappedPos).length();
             if (distance < minDistance) {
                 minDistance = distance;

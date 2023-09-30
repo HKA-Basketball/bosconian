@@ -18,22 +18,29 @@ bool GameView::drawBackground() {
 void drawCannonHitbox(Cannon* cannon) {
     RenderEngine* renderEngine = RenderEngine::Instance();
 
-    Vector2D screenPosition = Camera::Instance()->WorldToScreen(cannon->getPosition());
-    Vector2D playerPosition = Camera::Instance()->WorldToScreen(cannon->getPlayerPosition());
+    std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*cannon);
+    if (!renderPosition) {
+        return;
+    }
+
+    Player* player = GameModel::Instance()->getPlayer();
+
+    Vector2D screenPosition = Camera::Instance()->WorldToScreen(renderPosition.value());
+    Vector2D playerPosition = Camera::Instance()->WorldToScreen(player->getPosition());
 
     // Calculate the start and end angles of the view cone
     float startAngle = Math::normalizeAngle360(cannon->getAngle().getDegree() - (cannon->getViewAngle() / 2.0f));
     float endAngle = Math::normalizeAngle360(cannon->getAngle().getDegree() + (cannon->getViewAngle() / 2.0f));
 
     // Calculate points for view cone lines
-
+    auto M_FPI = static_cast<float>(M_PI);
     Vector2D startCone = {
-            static_cast<float>(screenPosition.x + cannon->getViewLength() * std::cos(startAngle * (M_PI / 180.0f))),
-            static_cast<float>(screenPosition.y + cannon->getViewLength() * std::sin(startAngle * (M_PI / 180.0f)))
+        screenPosition.x + cannon->getViewLength() * std::cos(startAngle * (M_FPI / 180.0f)),
+        screenPosition.y + cannon->getViewLength() * std::sin(startAngle * (M_FPI / 180.0f))
     };
     Vector2D endCone = {
-            static_cast<float>(screenPosition.x + cannon->getViewLength() * std::cos(endAngle * (M_PI / 180.0f))),
-            static_cast<float>(screenPosition.y + cannon->getViewLength() * std::sin(endAngle * (M_PI / 180.0f)))
+        screenPosition.x + cannon->getViewLength() * std::cos(endAngle * (M_FPI / 180.0f)),
+        screenPosition.y + cannon->getViewLength() * std::sin(endAngle * (M_FPI / 180.0f))
     };
 
     // Draw view cone
@@ -100,11 +107,14 @@ void GameView::drawHitbox() {
         drawEntity(base);
 
         for (Cannon* cannon : *base->getCannons()) {
-            //drawEntity(cannon);
-            Vector2D screenPos = Camera::Instance()->WorldToScreen(cannon->getPosition());
-            Sprite entitySprite(cannon->getSpriteInfo(), screenPos);
-            RenderEngine::Instance()->renderSprite(entitySprite, base->getAngle().getDegree(), true);
-            drawCannonHitbox(cannon);
+            std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*cannon);
+            if (renderPosition) {
+                Vector2D position = Camera::Instance()->WorldToScreen(renderPosition.value());
+                Sprite entitySprite(cannon->getSpriteInfo(), position);
+                RenderEngine::Instance()->renderSprite(entitySprite, base->getAngle().getDegree(), true);
+                RenderEngine::Instance()->renderRotatedRectangle(position, cannon->getHitbox().getSize(), cannon->getHitbox().getAngle(), Config::ColorGreen);
+                drawCannonHitbox(cannon);
+            }
 
             for (Projectile* projectile : *cannon->getProjectiles()) {
                 drawProjectile(projectile);

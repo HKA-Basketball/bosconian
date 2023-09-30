@@ -23,6 +23,7 @@ class GameModel {
     static GameModel* instance;
 
     Player* player;
+    Position* playerPosition{new Position(0, 0)};
 
     unsigned int points{0};
     unsigned int highScore{0};
@@ -36,11 +37,13 @@ class GameModel {
 
     GameModel() {
         player = new Player({1500, 1500}, 0);
+        *playerPosition = player->getPosition();
+
         obstacles->push_back(new Obstacle({1600, 1600}, 0));
         obstacles->push_back(new Obstacle({5, 5}, 45));
-        enemies->push_back(new Ship({1350, 1350}, 0));
-        bases->push_back(new Base({1050, 1750}, 0));
-        bases->push_back(new Base({2350, 1500}, 0));
+        enemies->push_back(new Ship({1350, 1350}, 0, playerPosition));
+        bases->push_back(new Base({1050, 1750}, 0, playerPosition));
+        bases->push_back(new Base({2500, 1500}, 0, playerPosition));
     }
 
     ~GameModel() {
@@ -65,6 +68,7 @@ public:
 
     void update(float deltaTime) {
         player->update(deltaTime);
+        *playerPosition = player->getPosition();
 
         Camera* camera = Camera::Instance();
         camera->centerOn(player->getPosition());
@@ -75,7 +79,6 @@ public:
 
         for (auto it = enemies->begin(); it != enemies->end(); ) {
             Ship* enemy = *it;
-            enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
             checkforCollision(enemy, player->getProjectiles());
 
@@ -100,7 +103,6 @@ public:
 
         for (auto it = bases->begin(); it != bases->end(); ) {
             Base* base = *it;
-            base->updatePlayerPosition(player->getPosition());
             base->update(deltaTime);
             checkforCollision(base, player->getProjectiles());
 

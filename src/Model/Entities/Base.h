@@ -13,6 +13,7 @@ struct CannonInfo {
 
 class Base : public Entity {
 private:
+    Position* playerPositions;
     std::vector<Cannon*>* cannons = new std::vector<Cannon*>();
 
     const std::vector<CannonInfo> cannonInfos = {
@@ -25,7 +26,7 @@ private:
     };
 
 public:
-    explicit Base(const Vector2D& position, const Degree angle) : Entity(position, angle) {
+    explicit Base(const Vector2D& position, const Degree angle, Position* playerPositions) : Entity(position, angle), playerPositions(playerPositions) {
         spriteInfo = SpriteInfo::KERN;
         hitbox = {{0, 0}, {30, 45}};
 
@@ -35,15 +36,9 @@ public:
             cannonPos.x += std::cos(radians);
             cannonPos.y += std::sin(radians);
             Degree cannonAngle = angle + cannonInfo.angleOffset;
-            cannons->emplace_back(new Cannon(cannonPos, cannonAngle, cannonInfo.spriteInfo, cannonInfo.explosionSpriteInfo));
+            cannons->emplace_back(new Cannon(cannonPos, cannonAngle, playerPositions, cannonInfo.spriteInfo, cannonInfo.explosionSpriteInfo));
         }
 
-    }
-
-    void updatePlayerPosition(const Vector2D& newPlayerPosition) {
-        for (Cannon* cannon : *cannons) {
-            cannon->updatePlayerPosition(newPlayerPosition);
-        }
     }
 
     void update(float deltaTime) override {

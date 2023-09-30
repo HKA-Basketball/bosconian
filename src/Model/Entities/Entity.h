@@ -63,6 +63,7 @@ public:
     }
 
     Vector2D getPosition() const { return position.getCenterPosition(); }
+    Position getPositions() const { return position.getCenterPosition(); }
     void setPosition(const Vector2D& newPosition) { position.setCenterPosition(newPosition); }
     WrappedPositions getWrappedPositions() const { return position.getWrappedPositions(); }
 

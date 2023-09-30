@@ -15,25 +15,17 @@ private:
     static constexpr float DEFAULT_VIEW_LENGTH = 400.0f;
     static constexpr float SHOT_COOLDOWN_DURATION = 1.5f;
 
-    Vector2D playerPosition{500, 500};
+    Position* playerPositions;
     float elapsedTimeSinceLastShot{0.f};
     float viewAngle{DEFAULT_VIEW_ANGLE};
     float viewLength{DEFAULT_VIEW_LENGTH};
 
     Projectiles* projectiles = new Projectiles(0);
 public:
-    explicit Cannon(const Vector2D& position, const Degree angle, SpriteInfo spriteInfo, SpriteInfo explosionSpriteInfo) : Entity(position, angle) {
+    explicit Cannon(const Vector2D& position, const Degree angle, Position* playerPositions, SpriteInfo spriteInfo, SpriteInfo explosionSpriteInfo) : Entity(position, angle), playerPositions(playerPositions) {
         this->spriteInfo = spriteInfo;
         hitbox = {position, {75, 75}};
         explosion = {{explosionSpriteInfo}};
-    }
-
-    Vector2D getPlayerPosition() const {
-        return playerPosition;
-    }
-
-    void updatePlayerPosition(const Vector2D& newPlayerPosition) {
-        playerPosition = newPlayerPosition;
     }
 
     void update(float deltaTime) override {
@@ -42,7 +34,7 @@ public:
 
         elapsedTimeSinceLastShot += deltaTime;
 
-        Vector2D direction = playerPosition - position.getCenterPosition();
+        Vector2D direction = playerPositions->getCenterPosition() - position.getCenterPosition();
         float distance = direction.length();
         direction.normalize();
 
