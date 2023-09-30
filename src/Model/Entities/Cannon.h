@@ -22,9 +22,10 @@ private:
 
     Projectiles* projectiles = new Projectiles(0);
 public:
-    explicit Cannon(const Vector2D& position, const Degree angle, SpriteInfo spriteInfo) : Entity(position, angle) {
+    explicit Cannon(const Vector2D& position, const Degree angle, SpriteInfo spriteInfo, SpriteInfo explosionSpriteInfo) : Entity(position, angle) {
         this->spriteInfo = spriteInfo;
         hitbox = {position, {75, 75}};
+        explosion = {{explosionSpriteInfo}};
     }
 
     Vector2D getPlayerPosition() const {

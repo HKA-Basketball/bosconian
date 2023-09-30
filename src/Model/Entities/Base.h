@@ -8,6 +8,7 @@ struct CannonInfo {
     Vector2D positionOffset;
     Degree angleOffset;
     SpriteInfo spriteInfo;
+    SpriteInfo explosionSpriteInfo;
 };
 
 class Base : public Entity {
@@ -15,12 +16,12 @@ private:
     std::vector<Cannon*>* cannons = new std::vector<Cannon*>();
 
     const std::vector<CannonInfo> cannonInfos = {
-        {{-112, 0}, {180.f}, SpriteInfo::CANON_L_NORM},
-        {{-62, -80}, {225.f}, SpriteInfo::CANON_L_UP_NORM},
-        {{-62, 80}, {135.f}, SpriteInfo::CANON_L_DOWN_NORM},
-        {{112, 0}, {0.f}, SpriteInfo::CANON_R_NORM},
-        {{62, -80}, {315.f}, SpriteInfo::CANON_R_UP_NORM},
-        {{62, 80}, {45.f}, SpriteInfo::CANON_R_DOWN_NORM},
+        {{-112, 0}, {180.f}, SpriteInfo::CANON_L_NORM, SpriteInfo::CANON_L},
+        {{-62, -80}, {225.f}, SpriteInfo::CANON_L_UP_NORM, SpriteInfo::CANON_L_UP},
+        {{-62, 80}, {135.f}, SpriteInfo::CANON_L_DOWN_NORM, SpriteInfo::CANON_L_DOWN},
+        {{112, 0}, {0.f}, SpriteInfo::CANON_R_NORM, SpriteInfo::CANON_R},
+        {{62, -80}, {315.f}, SpriteInfo::CANON_R_UP_NORM, SpriteInfo::CANON_R_UP},
+        {{62, 80}, {45.f}, SpriteInfo::CANON_R_DOWN_NORM, SpriteInfo::CANON_R_DOWN},
     };
 
 public:
@@ -34,7 +35,7 @@ public:
             cannonPos.x += std::cos(radians);
             cannonPos.y += std::sin(radians);
             Degree cannonAngle = angle + cannonInfo.angleOffset;
-            cannons->emplace_back(new Cannon(cannonPos, cannonAngle, cannonInfo.spriteInfo));
+            cannons->emplace_back(new Cannon(cannonPos, cannonAngle, cannonInfo.spriteInfo, cannonInfo.explosionSpriteInfo));
         }
 
     }
@@ -47,8 +48,19 @@ public:
 
     void update(float deltaTime) override {
         Entity::update(deltaTime);
+
+        bool allCannonsDefeated = true;
         for (Cannon* cannon : *cannons) {
             cannon->update(deltaTime);
+
+            if(!cannon->isDefeated()) {
+                allCannonsDefeated = false;
+            }
+
+        }
+
+        if(allCannonsDefeated && !defeated) {
+            this->setDefeated();
         }
     }
 

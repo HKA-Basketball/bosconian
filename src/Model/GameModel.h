@@ -76,20 +76,23 @@ public:
         for (Ship* enemy : *enemies) {
             enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
+            checkforCollision(enemy, player->getProjectiles());
 
         }
 
-        for (Obstacle* obstacle : *obstacles) {
+        for (Entity* obstacle : *obstacles) {
             obstacle->update(deltaTime);
+            checkforCollision(obstacle, player->getProjectiles());
         }
-        checkforCollision(obstacles, player->getProjectiles());
 
         for (Base* base : *bases) {
             base->updatePlayerPosition(player->getPosition());
             base->update(deltaTime);
+            checkforCollision(base, player->getProjectiles());
 
             for (Cannon* cannon : *base->getCannons()) {
                 updateProjectiles(cannon->getProjectiles());
+                checkforCollision(cannon, player->getProjectiles());
             }
         }
 
@@ -128,8 +131,32 @@ private:
             }
         }
     }
+    void checkforCollision(Entity* entity, Projectiles* projectiles) {
+        bool entityCollisionDetected = false;
+        auto projectileIt = projectiles->begin();
 
-    void checkforCollision(std::vector<Obstacle*>* entities, Projectiles* projectiles) {
+        while (projectileIt != projectiles->end()) {
+            if (HitboxManager::areColliding(entity->getHitbox(), (*projectileIt)->getHitbox())) {
+                entityCollisionDetected = true;
+
+                // Free memory if needed, e.g., if using raw pointers
+                delete *projectileIt;
+
+                // Erase the collided projectile and update the iterator
+                projectileIt = projectiles->erase(projectileIt);
+            } else {
+                ++projectileIt;
+            }
+        }
+
+        if (entityCollisionDetected) {
+            if (!entity->isDefeated()) {
+                entity->setDefeated();
+            }
+        }
+    }
+
+    void checkforCollision(std::vector<Entity*>* entities, Projectiles* projectiles) {
         for (auto entityIt = entities->begin(); entityIt != entities->end(); /* no increment here */) {
             bool entityCollisionDetected = false;
             auto projectileIt = projectiles->begin();

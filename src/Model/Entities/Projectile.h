@@ -12,6 +12,7 @@ public:
         speed = 1000.f;
         spriteInfo = SpriteInfo::PROJECTILE;
         hitbox = {{0, 0}, {10, 10}};
+        explosion = {{SpriteInfo::PROJECTILE}};
     }
 
 };
