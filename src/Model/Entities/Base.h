@@ -18,11 +18,11 @@ private:
 
     const std::vector<CannonInfo> cannonInfos = {
         {{-112, 0}, {180.f}, SpriteInfo::CANON_L_NORM, SpriteInfo::CANON_L},
-        {{-62, -80}, {225.f}, SpriteInfo::CANON_L_UP_NORM, SpriteInfo::CANON_L_UP},
-        {{-62, 80}, {135.f}, SpriteInfo::CANON_L_DOWN_NORM, SpriteInfo::CANON_L_DOWN},
+        {{-62, -80}, {255.f}, SpriteInfo::CANON_L_UP_NORM, SpriteInfo::CANON_L_UP},
+        {{-62, 80}, {105.f}, SpriteInfo::CANON_L_DOWN_NORM, SpriteInfo::CANON_L_DOWN},
         {{112, 0}, {0.f}, SpriteInfo::CANON_R_NORM, SpriteInfo::CANON_R},
-        {{62, -80}, {315.f}, SpriteInfo::CANON_R_UP_NORM, SpriteInfo::CANON_R_UP},
-        {{62, 80}, {45.f}, SpriteInfo::CANON_R_DOWN_NORM, SpriteInfo::CANON_R_DOWN},
+        {{62, -80}, {285.f}, SpriteInfo::CANON_R_UP_NORM, SpriteInfo::CANON_R_UP},
+        {{62, 80}, {75.f}, SpriteInfo::CANON_R_DOWN_NORM, SpriteInfo::CANON_R_DOWN},
     };
 
 public:

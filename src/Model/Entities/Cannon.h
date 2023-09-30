@@ -11,7 +11,7 @@
 
 class Cannon : public Entity {
 private:
-    static constexpr float DEFAULT_VIEW_ANGLE = 90.f;
+    static constexpr float DEFAULT_VIEW_ANGLE = 100.f;
     static constexpr float DEFAULT_VIEW_LENGTH = 400.0f;
     static constexpr float SHOT_COOLDOWN_DURATION = 1.5f;
 
