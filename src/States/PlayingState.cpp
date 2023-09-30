@@ -40,6 +40,10 @@ void PlayingState::handleInput(float deltaTime) {
         GameModel::Instance()->getPlayer()->shoot(deltaTime);
     }
 
+    if (inputHandler->isKeyPressed(SDLK_k)) {
+        GameModel::Instance()->getPlayer()->setDefeated();
+    }
+
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
         StateMachine::Instance()->changeState(new PauseState());
     }
