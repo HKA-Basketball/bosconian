@@ -191,3 +191,21 @@ void RenderEngine::renderMenuItem(const MenuItem& menuItem, const SDL_Color& col
     SDL_FRect position = menuItem.getBounds();
     renderText(menuItem.getText(), {position.x, position.y}, color, fontIndex, menuItem.isCentered());
 }
+
+void RenderEngine::renderSwitchItem(const SwitchItem& switchItem, const SDL_Color& color, const SDL_Color& textColor, const uint32_t& fontIndex) const {
+    SDL_FRect textBounds = switchItem.getTextBounds();
+    Vector2D textPosition = {textBounds.x + (textBounds.w/2), textBounds.y};
+    renderText(switchItem.getText(), textPosition, textColor, fontIndex, true);
+
+    for (int switchIndex = 0; switchIndex < switchItem.getNumSwitches(); ++switchIndex) {
+        SDL_FRect switchBound = switchItem.getSwitchBounds().at(switchIndex);
+        bool active = Math::getBitAtIndex(switchItem.getState(), switchIndex);
+
+        renderRectangle({switchBound.x, switchBound.y}, {switchBound.w, switchBound.h}, Config::ColorGrey, true);
+
+        switchBound.h /= 2.f;
+        switchBound.y += active ? 0 : switchBound.h;
+        SDL_Color activeColor = active ? Config::ColorGreen : Config::ColorRed;
+        renderRectangle({switchBound.x, switchBound.y}, {switchBound.w, switchBound.h}, activeColor, true);
+    }
+}

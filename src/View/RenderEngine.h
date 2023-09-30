@@ -85,8 +85,10 @@ public:
 
     void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX, bool centered = false) const;
 
-    void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color, const uint32_t& fontIndex) const;
     void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX) const;
+
+    void renderSwitchItem(const SwitchItem &switchItem, const SDL_Color &color, const SDL_Color &textColor = Config::ColorWhite,
+                          const uint32_t &fontIndex = Font::JOYSTIX_38PX) const;
 
     SDL_Renderer* getRenderer() const {
         return renderer;
