@@ -81,6 +81,7 @@ public:
             checkforCollision(enemy, player->getProjectiles());
 
             if (enemy->isDead()) {
+                delete *it;
                 it = enemies->erase(it);
             } else {
                 ++it;
