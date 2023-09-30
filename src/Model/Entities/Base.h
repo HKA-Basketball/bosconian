@@ -13,7 +13,6 @@ struct CannonInfo {
 
 class Base : public Entity {
 private:
-    Position* playerPositions;
     std::vector<Cannon*>* cannons = new std::vector<Cannon*>();
 
     const std::vector<CannonInfo> cannonInfos = {
@@ -26,7 +25,7 @@ private:
     };
 
 public:
-    explicit Base(const Vector2D& position, const Degree angle, Position* playerPositions) : Entity(position, angle), playerPositions(playerPositions) {
+    explicit Base(const Vector2D& position, const Degree angle, Position* playerPositions) : Entity(position, angle) {
         spriteInfo = SpriteInfo::KERN;
         hitbox = {{0, 0}, {30, 45}};
 
