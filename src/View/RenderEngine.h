@@ -17,6 +17,7 @@
 #include "../Utilities/Vector2D.h"
 #include "../Utilities/Degree.h"
 #include "../Model/Menus/MenuItem.h"
+#include "../Model/Menus/Items/SwitchItem.h"
 
 class RenderEngine {
 private:
@@ -72,19 +73,20 @@ public:
         SDL_RenderPresent(renderer);
     }
 
-    void renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color &color);
+    void renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color &color) const;
 
-    void renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color &color);
+    void renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color &color) const;
 
-    void renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color &color, bool filled = false);
+    void renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color &color, bool filled = false) const;
 
-    void renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color);
+    void renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color) const;
 
     void renderSprite(Sprite& sprite, float angle = 0.0, bool centered = false, SDL_FPoint* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE) const;
 
-    void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, bool centered = false) const;
+    void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX, bool centered = false) const;
 
     void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color, const uint32_t& fontIndex) const;
+    void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX) const;
 
     SDL_Renderer* getRenderer() const {
         return renderer;

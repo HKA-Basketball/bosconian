@@ -1,8 +1,8 @@
 #include "RenderEngine.h"
+#include "../Utilities/Math.h"
 
 #include <cstdio>
 
-#include "../Model/Menus/MenuItem.h"
 
 // Initialize the static instance pointer to nullptr
 RenderEngine* RenderEngine::instance = nullptr;
@@ -86,12 +86,12 @@ void RenderEngine::CleanupSDL() {
     SDL_Quit();
 }
 
-void RenderEngine::renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color& color) {
+void RenderEngine::renderLine(const Vector2D &start, const Vector2D &end, const SDL_Color& color) const {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawLineF(renderer, start.x, start.y, end.x, end.y);
 }
 
-void RenderEngine::renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color& color) {
+void RenderEngine::renderCone(const Vector2D &start, const Vector2D &apex, const Vector2D &end, const SDL_Color& color) const {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
     // Define the points of the cone
@@ -107,7 +107,7 @@ void RenderEngine::renderCone(const Vector2D &start, const Vector2D &apex, const
     SDL_RenderDrawLinesF(renderer, points, 3);
 }
 
-void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color& color, bool filled) {
+void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &size, const SDL_Color& color, bool filled) const {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_FRect fRect = {position.x, position.y, size.x, size.y};
 
@@ -118,7 +118,7 @@ void RenderEngine::renderRectangle(const Vector2D &position, const Vector2D &siz
     }
 }
 
-void RenderEngine::renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color) {
+void RenderEngine::renderRotatedRectangle(const Vector2D &position, const Vector2D &size, const Degree &angle, const SDL_Color& color) const {
     float angleRadians = angle.toRadians();
     float halfWidth = size.x / 2.f;
     float halfHeight = size.y / 2.f;
