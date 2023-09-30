@@ -4,6 +4,7 @@
 #include "../../Utilities/Position.h"
 #include "../../Physics/Hitbox.h"
 #include "../../Graphic/SpriteInfo.h"
+#include "../Animations/Animation.h"
 #include "../World.h"
 
 class Entity {
@@ -12,10 +13,12 @@ protected:
     Degree angle{0};
     float speed{0.f};
 
+    bool defeated{false};
     bool dead{false};
 
     SpriteInfo spriteInfo = SpriteInfo::PLAYER;
     Hitbox hitbox{{0, 0}, {50, 50}};
+    Animation explosion = {{SpriteInfo::ASTRO_EXPLO_01, SpriteInfo::ASTRO_EXPLO_02, SpriteInfo::ASTRO_EXPLO_03}};
 
 public:
     explicit Entity(const Vector2D& position, const Degree angle) : position(position), angle(angle) {
@@ -24,6 +27,12 @@ public:
     }
 
     virtual void update(float deltaTime) {
+        if(defeated) {
+            explosion.update(deltaTime);
+            spriteInfo = explosion.getCurrentSprite();
+            dead = explosion.isDone();
+        }
+
         float radians = angle.toRadians() - M_PI_2;
         Vector2D newPosition = position.getCenterPosition();
         newPosition.x += speed * deltaTime * std::cos(radians);
@@ -33,6 +42,20 @@ public:
 
         hitbox.updatePosition(position.getCenterPosition());
         hitbox.updateAngle(angle);
+    }
+
+    void setDefeated() {
+        defeated = true;
+        speed = 0.f;
+        explosion.start();
+    }
+
+    bool isDefeated() const {
+        return defeated;
+    }
+
+    bool isDead() const {
+        return dead;
     }
 
     Vector2D getPosition() const { return position.getCenterPosition(); }
