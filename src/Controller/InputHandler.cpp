@@ -56,3 +56,9 @@ Vector2D InputHandler::getMousePosition() const {
 bool InputHandler::isMouseButtonPressed() const {
     return mouseButtonPressed;
 }
+
+bool InputHandler::isMouseButtonPressedAndErase() {
+    bool wasPressed = mouseButtonPressed;
+    mouseButtonPressed = false;
+    return wasPressed;
+}

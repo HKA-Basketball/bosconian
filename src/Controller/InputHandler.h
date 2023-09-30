@@ -43,6 +43,7 @@ public:
     bool isKeyPressedAndErase(SDL_Keycode key);
     Vector2D getMousePosition() const;
     bool isMouseButtonPressed() const;
+    bool isMouseButtonPressedAndErase();
 };
 
 #endif //BOSCONIAN_INPUTHANDLER_H
