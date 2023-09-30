@@ -56,7 +56,7 @@ public:
         bool playerInViewArea = (startAngle <= endAngle) ? (angleToPlayer >= startAngle && angleToPlayer <= endAngle) : (angleToPlayer >= startAngle || angleToPlayer <= endAngle);
         bool playerWithinDistance = distance <= viewLength;
 
-        if (playerInViewArea && playerWithinDistance && elapsedTimeSinceLastShot >= SHOT_COOLDOWN_DURATION) {
+        if (playerInViewArea && playerWithinDistance && elapsedTimeSinceLastShot >= SHOT_COOLDOWN_DURATION && !defeated) {
             elapsedTimeSinceLastShot = 0;
             projectiles->push_back(new Projectile(position.getCenterPosition(), targetAngle));
         }
