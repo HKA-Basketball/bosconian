@@ -32,4 +32,9 @@ namespace Math {
         return angle;
     }
 
+    bool getBitAtIndex(uint32_t number, uint8_t index) {
+        index %= 32;
+        return (number & (1u << index)) != 0;
+    }
+
 }
