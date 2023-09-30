@@ -44,8 +44,14 @@ class GameModel {
 
     ~GameModel() {
         delete player;
-
+        for (auto enemy : *enemies) delete enemy;
+        for (auto obstacle : *obstacles) delete obstacle;
+        for (auto base : *bases) delete base;
+        delete enemies;
+        delete obstacles;
+        delete bases;
     }
+
 
 public:
     static GameModel* Instance() {
