@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "World.h"
 #include "../View/Background.h"
+#include "../Physics/HitboxManager.h"
 
 enum AlertStatus {
     GREEN,
@@ -75,11 +76,13 @@ public:
         for (Enemy* enemy : *enemies) {
             enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
+
         }
 
         for (Obstacle* obstacle : *obstacles) {
             obstacle->update(deltaTime);
         }
+        checkforCollision(obstacles, player->getProjectiles());
 
         for (Base* base : *bases) {
             base->updatePlayerPosition(player->getPosition());
@@ -122,6 +125,41 @@ private:
                 it = projectiles->erase(it); // erase returns the iterator pointing to the next element
             } else {
                 ++it;
+            }
+        }
+    }
+
+    void checkforCollision(std::vector<Obstacle*>* entities, Projectiles* projectiles) {
+        for (auto entityIt = entities->begin(); entityIt != entities->end(); /* no increment here */) {
+            bool entityCollisionDetected = false;
+            auto projectileIt = projectiles->begin();
+
+            while (projectileIt != projectiles->end()) {
+                if (HitboxManager::areColliding((*entityIt)->getHitbox(), (*projectileIt)->getHitbox())) {
+                    entityCollisionDetected = true;
+
+                    // Free memory if needed, e.g., if using raw pointers
+                    delete *projectileIt;
+
+                    // Erase the collided projectile and update the iterator
+                    projectileIt = projectiles->erase(projectileIt);
+                } else {
+                    ++projectileIt;
+                }
+            }
+
+            if (entityCollisionDetected) {
+                if (!(*entityIt)->isDefeated()) {
+                    (*entityIt)->setDefeated();
+                }
+
+                // Free memory if needed, e.g., if using raw pointers
+                //delete *entityIt;
+
+                // Erase the collided entity and update the iterator
+                //entityIt = entities->erase(entityIt);
+            } else {
+                ++entityIt;
             }
         }
     }
