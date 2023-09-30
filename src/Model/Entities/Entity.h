@@ -28,6 +28,7 @@ public:
 
     virtual void update(float deltaTime) {
         if(defeated) {
+            angle = 0.f;
             explosion.update(deltaTime);
             spriteInfo = explosion.getCurrentSprite();
             dead = explosion.isDone();
