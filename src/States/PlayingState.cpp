@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "PauseState.h"
+#include "GameOverState.h"
 #include "StateMachine.h"
 #include "../Model/GameModel.h"
 #include "../View/GameView.h"
@@ -47,6 +48,12 @@ void PlayingState::handleInput(float deltaTime) {
 void PlayingState::update(float deltaTime) {
     // Update GameState
     GameModel::Instance()->update(deltaTime);
+
+    Player* player = GameModel::Instance()->getPlayer();
+
+    if(player->isDefeated()) {
+        StateMachine::Instance()->changeState(new GameOverState());
+    }
 }
 
 void PlayingState::render() {

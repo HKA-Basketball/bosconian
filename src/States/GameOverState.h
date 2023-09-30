@@ -5,17 +5,11 @@
 
 class GameOverState : public State {
 public:
-    void handleInput(float deltaTime) override {
-        // Handle Input for GameStateState
-    }
+    void handleInput(float deltaTime) override;
 
-    void update(float deltaTime) override {
-        // Update GameStateState
-    }
+    void update(float deltaTime) override;
 
-    void render() override {
-        // Render GameStateState
-    }
+    void render() override;
 };
 
 #endif //BOSCONIAN_GAMEOVERSTATE_H
