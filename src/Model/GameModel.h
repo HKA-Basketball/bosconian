@@ -73,19 +73,33 @@ public:
 
         updateProjectiles(player->getProjectiles());
 
-        for (Ship* enemy : *enemies) {
+        for (auto it = enemies->begin(); it != enemies->end(); ) {
+            Ship* enemy = *it;
             enemy->updatePlayerPosition(player->getWrappedPositions());
             enemy->update(deltaTime);
             checkforCollision(enemy, player->getProjectiles());
 
+            if (enemy->isDead()) {
+                it = enemies->erase(it);
+            } else {
+                ++it;
+            }
         }
 
-        for (Entity* obstacle : *obstacles) {
+        for (auto it = obstacles->begin(); it != obstacles->end(); ) {
+            Entity* obstacle = *it;
             obstacle->update(deltaTime);
             checkforCollision(obstacle, player->getProjectiles());
+
+            if (obstacle->isDead()) {
+                it = obstacles->erase(it);
+            } else {
+                ++it;
+            }
         }
 
-        for (Base* base : *bases) {
+        for (auto it = bases->begin(); it != bases->end(); ) {
+            Base* base = *it;
             base->updatePlayerPosition(player->getPosition());
             base->update(deltaTime);
             checkforCollision(base, player->getProjectiles());
@@ -93,6 +107,12 @@ public:
             for (Cannon* cannon : *base->getCannons()) {
                 updateProjectiles(cannon->getProjectiles());
                 checkforCollision(cannon, player->getProjectiles());
+            }
+
+            if (base->isDead()) {
+                it = bases->erase(it);
+            } else {
+                ++it;
             }
         }
 
