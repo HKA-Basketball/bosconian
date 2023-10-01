@@ -30,7 +30,7 @@ public:
                 {Config::windowCenterX, Config::titlePositionY},
                 Config::ColorRed,
                 Font::Type::JOYSTIX_128PX,
-                true);
+                TextAlign::CENTER);
 
         for (auto& item : MainMenu::Instance()->getMenuItems()) {
             SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;

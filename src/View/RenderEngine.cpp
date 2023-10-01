@@ -153,7 +153,7 @@ void RenderEngine::renderSprite(Sprite& sprite, float angle, bool centered, SDL_
     SDL_RenderCopyExF(renderer, spritesheet, &srcRect, &destRect, angle, center, flip);
 }
 
-void RenderEngine::renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, bool centered) const {
+void RenderEngine::renderText(const std::string& text, const Vector2D& position, const SDL_Color& color, const uint32_t& fontIndex, TextAlign align) const {
     if (fontIndex >= Font::MAX) return; // Invalid font index
     TTF_Font* font = fonts[fontIndex];
 
@@ -176,9 +176,18 @@ void RenderEngine::renderText(const std::string& text, const Vector2D& position,
 
     SDL_QueryTexture(texture, NULL, NULL, &dstRect.w, &dstRect.h);
 
-    if(centered) {
-        dstRect.x = dstRect.x - (dstRect.w / 2);
-        dstRect.y = dstRect.y - (dstRect.h / 2);
+    switch (align) {
+        case TextAlign::CENTER:
+            dstRect.x = dstRect.x - (dstRect.w / 2);
+            dstRect.y = dstRect.y - (dstRect.h / 2);
+            break;
+        case TextAlign::RIGHT:
+            dstRect.x = dstRect.x - dstRect.w;
+            break;
+        case TextAlign::LEFT:
+        default:
+            // For LEFT alignment, no modification is needed.
+            break;
     }
 
     SDL_RenderCopy(renderer, texture, NULL, &dstRect);
@@ -187,15 +196,17 @@ void RenderEngine::renderText(const std::string& text, const Vector2D& position,
     SDL_FreeSurface(surface);
 }
 
+
 void RenderEngine::renderMenuItem(const MenuItem& menuItem, const SDL_Color& color, const uint32_t& fontIndex) const {
     SDL_FRect position = menuItem.getBounds();
-    renderText(menuItem.getText(), {position.x, position.y}, color, fontIndex, menuItem.isCentered());
+    TextAlign align = menuItem.isCentered() ? TextAlign::CENTER : TextAlign::LEFT;
+    renderText(menuItem.getText(), {position.x, position.y}, color, fontIndex, align);
 }
 
 void RenderEngine::renderSwitchItem(const SwitchItem& switchItem, const SDL_Color& color, const SDL_Color& textColor, const uint32_t& fontIndex) const {
     SDL_FRect textBounds = switchItem.getTextBounds();
     Vector2D textPosition = {textBounds.x + (textBounds.w/2), textBounds.y};
-    renderText(switchItem.getText(), textPosition, textColor, fontIndex, true);
+    renderText(switchItem.getText(), textPosition, textColor, fontIndex, TextAlign::CENTER);
 
     for (int switchIndex = 0; switchIndex < switchItem.getNumSwitches(); ++switchIndex) {
         SDL_FRect switchBound = switchItem.getSwitchBounds().at(switchIndex);

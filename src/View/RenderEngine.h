@@ -18,6 +18,7 @@
 #include "../Utilities/Degree.h"
 #include "../Model/Menus/MenuItem.h"
 #include "../Model/Menus/Items/SwitchItem.h"
+#include "../Graphic/TextAlign.h"
 
 class RenderEngine {
 private:
@@ -83,7 +84,7 @@ public:
 
     void renderSprite(Sprite& sprite, float angle = 0.0, bool centered = false, SDL_FPoint* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE) const;
 
-    void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX, bool centered = false) const;
+    void renderText(const std::string& text, const Vector2D& position, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX, TextAlign align = TextAlign::LEFT) const;
 
     void renderMenuItem(const MenuItem& menuItem, const SDL_Color& color = Config::ColorWhite, const uint32_t& fontIndex = Font::JOYSTIX_38PX) const;
 
