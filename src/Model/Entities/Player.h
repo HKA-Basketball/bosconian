@@ -45,6 +45,14 @@ public:
         }
     }
 
+    void reset() {
+        defeated = false;
+        dead = false;
+
+        speed = 200.0f;
+        spriteInfo = SpriteInfo::PLAYER;
+    }
+
     Projectiles* getProjectiles() const { return projectiles; }
 };
 

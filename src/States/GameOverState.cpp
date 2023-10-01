@@ -15,6 +15,7 @@ void GameOverState::update(float deltaTime) {
         GameModel::Instance()->reduceLives();
 
         if(GameModel::Instance()->getLives() > 0) {
+            GameModel::Instance()->getPlayer()->reset();
             StateMachine::Instance()->changeState(new PlayingState());
         } else {
             StateMachine::Instance()->changeState(new MainMenuState());
