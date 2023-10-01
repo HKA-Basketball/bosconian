@@ -12,6 +12,9 @@
 #include "../View/Background.h"
 #include "../Physics/HitboxManager.h"
 
+#include "Level/LevelInfo.h"
+#include "Level/LevelManager.h"
+
 enum AlertStatus {
     GREEN,
     YELLOW,
@@ -31,18 +34,29 @@ class GameModel {
 
     AlertStatus status{GREEN};
 
+    unsigned int round{1};
+    LevelInfo levelInfo;
+    LevelManager* levelManager;
+
     std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
 
     GameModel() {
-        player = new Player({1500, 1500}, 0);
-        *playerPosition = player->getPosition();
+        levelManager = new LevelManager();
+        levelInfo = levelManager->getLevelInfo(round);
+
+        player = new Player(levelInfo.playerSpawn, 0);
 
         enemies->push_back(new Obstacle({1600, 1600}, 0));
         enemies->push_back(new Obstacle({5, 5}, 45));
         enemies->push_back(new Ship({1350, 1350}, 0, playerPosition));
-        bases->push_back(new Base({1050, 1750}, 0, playerPosition));
-        bases->push_back(new Base({2500, 1500}, 0, playerPosition));
+
+        for (Vector2D basePosition : levelInfo.basePositions) {
+            bases->push_back(new Base(basePosition, 0, playerPosition));
+        }
+
+        //bases->push_back(new Base({1050, 1750}, 0, playerPosition));
+        //bases->push_back(new Base({2500, 1500}, 0, playerPosition));
     }
 
     ~GameModel() {
