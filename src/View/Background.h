@@ -72,10 +72,10 @@ public:
         float parallaxFactor = Config::parallaxFactor; // Adjust this value to control the strength of the parallax effect
         for (const auto& star : stars) {
             // Calculate parallax effect for each star
-            float parallaxX = fmod(star.rect.x + parallaxFactor * cameraCenter.x, Config::levelWidth * Config::parallaxFactor);
+            float parallaxX = fmod(star.rect.x - parallaxFactor * cameraCenter.x, Config::levelWidth * Config::parallaxFactor);
             if (parallaxX < 0) parallaxX += Config::levelWidth * Config::parallaxFactor;
 
-            float parallaxY = fmod(star.rect.y + parallaxFactor * cameraCenter.y, Config::levelHeight * Config::parallaxFactor);
+            float parallaxY = fmod(star.rect.y - parallaxFactor * cameraCenter.y, Config::levelHeight * Config::parallaxFactor);
             if (parallaxY < 0) parallaxY += Config::levelHeight * Config::parallaxFactor;
 
             // Draw star with parallax effect
