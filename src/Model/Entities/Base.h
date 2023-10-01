@@ -75,6 +75,43 @@ public:
     Spy* getSpy() const {
         return spy;
     }
+
+    Vector2D getTotalSize() const {
+        // Initialize the bounds with very large and very small values
+        float leftmost = std::numeric_limits<float>::max();
+        float rightmost = std::numeric_limits<float>::min();
+        float highest = std::numeric_limits<float>::max();
+        float lowest = std::numeric_limits<float>::min();
+
+        for (const Cannon* cannon : *cannons) {
+            Vector2D cannonSize = cannon->getHitbox().getSize();
+            float halfWidth = cannonSize.x / 2.0f;
+            float halfHeight = cannonSize.y / 2.0f;
+
+            if (cannon->getPosition().x - halfWidth < leftmost) {
+                leftmost = cannon->getPosition().x - halfWidth;
+            }
+
+            if (cannon->getPosition().x + halfWidth > rightmost) {
+                rightmost = cannon->getPosition().x + halfWidth;
+            }
+
+            if (cannon->getPosition().y - halfHeight < highest) {
+                highest = cannon->getPosition().y - halfHeight;
+            }
+
+            if (cannon->getPosition().y + halfHeight > lowest) {
+                lowest = cannon->getPosition().y + halfHeight;
+            }
+        }
+
+        Vector2D totalSize;
+        totalSize.x = rightmost - leftmost;
+        totalSize.y = lowest - highest;
+
+        return totalSize;
+    }
+
 };
 
 #endif //BOSCONIAN_BASE_H
