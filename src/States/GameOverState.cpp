@@ -14,16 +14,24 @@ void GameOverState::handleInput(float deltaTime) {
 }
 
 void GameOverState::update(float deltaTime) {
-    GameModel::Instance()->update(deltaTime);
-
     if(GameModel::Instance()->getPlayer()->isDead()) {
         GameModel::Instance()->reduceLives();
 
         if(GameModel::Instance()->getLives() > 0) {
-            GameModel::Instance()->getPlayer()->reset();
+            GameModel::Instance()->resetRound();
             StateMachine::Instance()->changeState(new RoundStartState());
         } else {
-            StateMachine::Instance()->changeState(new MainMenuState());
+            TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
+
+            if (gameOverAnimation->isDone()) {
+                gameOverAnimation->start();
+            }
+
+            gameOverAnimation->update(deltaTime);
+
+            if (gameOverAnimation->isDone()) {
+                StateMachine::Instance()->changeState(new MainMenuState());
+            }
         }
     }
 }

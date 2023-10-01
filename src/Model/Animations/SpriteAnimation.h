@@ -15,6 +15,11 @@ private:
 public:
     SpriteAnimation(const std::vector<SpriteInfo>& sprites) : Animation(), sprites(sprites) {}
 
+    void start() override {
+        currentFrame = 0;
+        Animation::start();
+    }
+
     void update(float deltaTime) override {
         if (!isPlaying) {
             return;

@@ -117,6 +117,13 @@ public:
         return highscore;
     };
 
+    void resetRound() {
+        player->reset();
+        player->setPosition(levelInfo.playerSpawn);
+        camera->centerOn(player->getPosition());
+        status = GREEN;
+    }
+
     void nextRound() {
         if(round < UINT32_MAX) {
             round++;

@@ -55,7 +55,7 @@ void PlayingState::update(float deltaTime) {
 
     Player* player = GameModel::Instance()->getPlayer();
 
-    if(player->isDefeated()) {
+    if(player->isDead()) {
         StateMachine::Instance()->changeState(new GameOverState());
     }
 }
