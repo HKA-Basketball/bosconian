@@ -23,6 +23,13 @@ void drawCannonHitbox(Cannon* cannon) {
         return;
     }
 
+    Hitbox hitbox = cannon->getHitbox();
+    renderEngine->renderRotatedRectangle(renderPosition.value(), hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
+
+    if(cannon->isDefeated()) {
+        return;
+    }
+
     Player* player = GameModel::Instance()->getPlayer();
 
     Vector2D screenPosition = Camera::Instance()->WorldToScreen(renderPosition.value());
@@ -61,10 +68,6 @@ void drawCannonHitbox(Cannon* cannon) {
         };
         renderEngine->renderLine(screenPosition, playerLineEnd, Config::ColorRed);
     }
-
-    Hitbox hitbox = cannon->getHitbox();
-    Vector2D pos = Camera::Instance()->WorldToScreen(cannon->getPosition());
-    renderEngine->renderRotatedRectangle(pos, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 }
 
 void drawEntity(Entity* entity) {
