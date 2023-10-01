@@ -59,11 +59,26 @@ public:
     void updateStars(float deltaTime, const Vector2D& cameraCenter) {
         elapsedTime += deltaTime * 1000; // Convert deltaTime to milliseconds
         if (elapsedTime > randomizeDelay) {
-            for (auto& star : stars) {
+            static bool bToggle = false;
+            std::pair<int, int> starsToUpdate;
+            int starsSize = stars.size();
+
+            if (bToggle) {
+                starsToUpdate.first = 0;
+                starsToUpdate.second = starsSize / 2;
+            } else {
+                starsToUpdate.first = starsSize / 2;
+                starsToUpdate.second = starsSize;
+            }
+
+            for (size_t i = starsToUpdate.first; i < starsToUpdate.second; i++) {
+                auto& star = stars.at(i);
+
                 star.randomizePosition();
                 star.randomizeColor();
             }
             elapsedTime = 0;
+            bToggle = !bToggle;
         }
     }
 
