@@ -10,6 +10,7 @@
 class Entity {
 protected:
     unsigned int points{0};
+    bool receivedPoints{false};
 
     Position position{0, 0};
     Degree angle{0};
@@ -79,7 +80,12 @@ public:
     SpriteInfo getSpriteInfo() const { return spriteInfo; }
     void setSpriteInfo(const SpriteInfo& newSpriteInfo) { spriteInfo = newSpriteInfo; }
 
-    unsigned int getPoints() const {
+    unsigned int receivePoints() {
+        if(receivedPoints) {
+            return 0;
+        }
+
+        receivedPoints = true;
         return points;
     }
 };

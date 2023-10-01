@@ -80,6 +80,10 @@ public:
             enemy->update(deltaTime);
             checkforCollision(enemy, player->getProjectiles());
 
+            if(enemy->isDefeated()) {
+                score += enemy->receivePoints();
+            }
+
             if (enemy->isDead()) {
                 delete *it;
                 it = enemies->erase(it);
@@ -93,9 +97,17 @@ public:
             base->update(deltaTime);
             checkforCollision(base, player->getProjectiles());
 
+            if(base->isDefeated()) {
+                score += base->receivePoints();
+            }
+
             for (Cannon* cannon : *base->getCannons()) {
                 updateProjectiles(cannon->getProjectiles());
                 checkforCollision(cannon, player->getProjectiles());
+
+                if(cannon->isDefeated()) {
+                    score += cannon->receivePoints();
+                }
             }
 
             if (base->isDead()) {
@@ -177,7 +189,6 @@ private:
 
         if (entityCollisionDetected) {
             if (!entity->isDefeated()) {
-                score += entity->getPoints();
                 entity->setDefeated();
             }
         }
