@@ -4,6 +4,7 @@
 #include <random>
 
 namespace Math {
+    float randomInt(const int min, const int max);
     float randomFloat(const float min, const float max);
     float normalizeAngle180(float angle);
     float normalizeAngle360(float angle);
