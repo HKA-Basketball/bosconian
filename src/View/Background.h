@@ -21,7 +21,7 @@ public:
 
     void randomizePosition() {
         rect.x = Math::randomFloat(0, Config::levelWidth * Config::parallaxFactor); // 3000 * 0.6f
-        rect.y = Math::randomFloat(0, Config::levelWidth * Config::parallaxFactor); // 4000 * 0.6f
+        rect.y = Math::randomFloat(0, Config::levelHeight * Config::parallaxFactor); // 4000 * 0.6f
     }
 
     void randomizeSize() {
