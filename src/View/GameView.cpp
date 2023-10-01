@@ -105,6 +105,12 @@ void GameView::drawHitbox() {
     for (Base* base : *GameModel::Instance()->getBases()) {
         drawEntity(base);
 
+        std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*base);
+        if (renderPosition) {
+            Vector2D position = Camera::Instance()->WorldToScreen(renderPosition.value());
+            RenderEngine::Instance()->renderRotatedRectangle(position, base->getTotalSize(), base->getHitbox().getAngle(), Config::ColorGrey);
+        }
+
         if (base->getSpy()->isLoaded()) {
             drawEntity(base->getSpy());
         }
@@ -136,9 +142,22 @@ void GameView::drawPlayer() {
     RenderEngine::Instance()->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
 }
 
+void renderChunks() {
+    World* world = GameModel::Instance()->getWorld();
+    for (Chunk chunk : world->getUnoccupiedChunks()) {
+        Vector2D position = Camera::Instance()->WorldToScreen({chunk.x, chunk.y});
+        RenderEngine::Instance()->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorGrey);
+    }
+    for (Chunk chunk : world->getOccupiedChunks()) {
+        Vector2D position = Camera::Instance()->WorldToScreen({chunk.x, chunk.y});
+        RenderEngine::Instance()->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorRed);
+    }
+}
+
 
 void GameView::render(float deltaTime) {
     drawBackground();
+    renderChunks();
     drawPlayer();
     drawHitbox();
     HUD::render();

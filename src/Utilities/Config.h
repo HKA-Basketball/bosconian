@@ -21,6 +21,9 @@ namespace Config {
 
     const int levelWidth = 3000;
     const int levelHeight = 4000;
+    const int chunkWidth = 500;
+    const int chunkHeight = 500;
+
     const float parallaxFactor = 0.6f; // Adjust this value to control the strength of the Stars parallax effect
 
     const float windowCenterX = static_cast<float>(windowWidth)/2;

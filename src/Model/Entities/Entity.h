@@ -41,7 +41,7 @@ public:
         Vector2D newPosition = position.getCenterPosition();
         newPosition.x += speed * deltaTime * std::cos(radians);
         newPosition.y += speed * deltaTime * std::sin(radians);
-        newPosition = World::WrapPosition(newPosition);
+        newPosition = World::wrapPosition(newPosition);
         position.setCenterPosition(newPosition);
 
         Vector2D hitboxPosition = position.getCenterPosition();
