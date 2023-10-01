@@ -1,4 +1,7 @@
 #include "MainMenuState.h"
+
+#include "StateMachine.h"
+#include "RoundStartState.h"
 #include "MainMenuOptionState.h"
 
 #include "../Model/Menus/MainMenu.h"
@@ -19,7 +22,7 @@ void MainMenuState::update(float deltaTime) {
 
     if(clickedOption == Menu::Option::START) {
         MainMenu::Instance()->reset();
-        StateMachine::Instance()->changeState(new PlayingState());
+        StateMachine::Instance()->changeState(new RoundStartState());
     } else if(clickedOption == Menu::Option::OPTIONS) {
         MainMenu::Instance()->reset();
         StateMachine::Instance()->changeState(new MainMenuOptionState());

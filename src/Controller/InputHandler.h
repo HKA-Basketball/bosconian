@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <unordered_set>
 
-#include "../States/StateMachine.h"
 #include "../Utilities/Vector2D.h"
 
 class InputHandler {

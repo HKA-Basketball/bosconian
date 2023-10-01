@@ -1,5 +1,8 @@
 #include "MainMenuOptionState.h"
 
+#include "StateMachine.h"
+#include "MainMenuState.h"
+
 #include "../View/MenuView.h"
 #include "../Controller/InputHandler.h"
 

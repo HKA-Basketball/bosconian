@@ -4,7 +4,7 @@
 #include "../../Utilities/Position.h"
 #include "../../Physics/Hitbox.h"
 #include "../../Graphic/SpriteInfo.h"
-#include "../Animations/Animation.h"
+#include "../Animations/SpriteAnimation.h"
 #include "../World.h"
 
 class Entity {
@@ -21,7 +21,7 @@ protected:
 
     SpriteInfo spriteInfo = SpriteInfo::PLAYER;
     Hitbox hitbox{{0, 0}, {50, 50}};
-    Animation explosion = {{SpriteInfo::ASTRO_EXPLO_01, SpriteInfo::ASTRO_EXPLO_02, SpriteInfo::ASTRO_EXPLO_03}};
+    SpriteAnimation explosion = {{SpriteInfo::ASTRO_EXPLO_01, SpriteInfo::ASTRO_EXPLO_02, SpriteInfo::ASTRO_EXPLO_03}};
 
 public:
     explicit Entity(const Vector2D& position, const Degree angle) : position(position), angle(angle) {

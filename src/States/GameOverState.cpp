@@ -1,8 +1,13 @@
 #include "GameOverState.h"
 
+#include "StateMachine.h"
+#include "RoundStartState.h"
+#include "MainMenuState.h"
+
 #include "../Model/GameModel.h"
 #include "../View/GameView.h"
 #include "../Controller/InputHandler.h"
+
 
 void GameOverState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
@@ -16,7 +21,7 @@ void GameOverState::update(float deltaTime) {
 
         if(GameModel::Instance()->getLives() > 0) {
             GameModel::Instance()->getPlayer()->reset();
-            StateMachine::Instance()->changeState(new PlayingState());
+            StateMachine::Instance()->changeState(new RoundStartState());
         } else {
             StateMachine::Instance()->changeState(new MainMenuState());
         }

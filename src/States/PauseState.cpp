@@ -1,7 +1,9 @@
 #include "PauseState.h"
 
-#include "PlayingState.h"
 #include "StateMachine.h"
+#include "PlayingState.h"
+#include "MainMenuState.h"
+
 #include "../Model/Menus/PauseMenu.h"
 #include "../View/GameView.h"
 #include "../Controller/InputHandler.h"

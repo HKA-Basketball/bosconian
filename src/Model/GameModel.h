@@ -14,6 +14,7 @@
 
 #include "Level/LevelInfo.h"
 #include "Level/LevelManager.h"
+#include "Animations/TextAnimation.h"
 
 enum AlertStatus {
     GREEN,
@@ -28,6 +29,8 @@ class GameModel {
     Player* player;
     Position* playerPosition{new Position(0, 0)};
 
+    Camera* camera = Camera::Instance();
+
     unsigned int score{0};
     unsigned int highscore{0};
     unsigned int lives{3};
@@ -38,6 +41,9 @@ class GameModel {
     LevelInfo levelInfo;
     LevelManager* levelManager;
 
+    TextAnimation* readyAnimation{new TextAnimation("Ready")};
+    TextAnimation* gameOverAnimation{new TextAnimation("Game Over")};
+
     std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
 
@@ -47,14 +53,20 @@ class GameModel {
 
         initLevelInfo();
 
-        enemies->push_back(new Obstacle({1600, 1600}, 0));
+        Vector2D shipPosition = levelInfo.playerSpawn;
+        shipPosition.x += 200;
+        shipPosition.y += 250;
+
+        enemies->push_back(new Obstacle({2000, 3600}, 0));
         enemies->push_back(new Obstacle({5, 5}, 45));
-        enemies->push_back(new Ship({1350, 1350}, 0, playerPosition));
+        enemies->push_back(new Ship(shipPosition, 0, playerPosition));
     }
 
     ~GameModel() {
         delete player;
         delete playerPosition;
+        delete readyAnimation;
+        delete gameOverAnimation;
         for (auto enemy : *enemies) delete enemy;
         for (auto base : *bases) delete base;
         delete enemies;
@@ -74,8 +86,6 @@ public:
     void update(float deltaTime) {
         player->update(deltaTime);
         *playerPosition = player->getPosition();
-
-        Camera* camera = Camera::Instance();
         camera->centerOn(player->getPosition());
 
         Background::Instance()->updateStars(deltaTime, camera->getCenter());
@@ -107,6 +117,20 @@ public:
         return highscore;
     };
 
+    void nextRound() {
+        if(round < UINT32_MAX) {
+            round++;
+        }
+        initLevelInfo();
+    }
+
+    void previousRound() {
+        if(round > 1) {
+            round--;
+        }
+        initLevelInfo();
+    }
+
     void raiseLives() {
         if(lives < 5) {
             lives++;
@@ -123,6 +147,14 @@ public:
         return lives;
     }
 
+    TextAnimation* getReadyAnimation() const {
+        return readyAnimation;
+    }
+
+    TextAnimation* getGameOverAnimation() const {
+        return gameOverAnimation;
+    }
+
 private:
 
     void initLevelInfo() {
@@ -130,7 +162,9 @@ private:
 
         player->setPosition(levelInfo.playerSpawn);
         player->setAngle(0);
+        camera->centerOn(player->getPosition());
 
+        for (auto base : *bases) delete base;
         for (Vector2D basePosition : levelInfo.basePositions) {
             bases->push_back(new Base(basePosition, 0, playerPosition));
         }
