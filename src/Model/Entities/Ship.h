@@ -63,8 +63,8 @@ public:
         }
 
         if (needNewPosition) {
-            float randomX = Math::randomFloat(0, Config::screenWidth);
-            float randomY = Math::randomFloat(0, Config::screenHeight);
+            float randomX = Math::randomFloat(0, Config::levelWidth);
+            float randomY = Math::randomFloat(0, Config::levelHeight);
             targetPosition = {randomX, randomY};
             needNewPosition = false;
         }
