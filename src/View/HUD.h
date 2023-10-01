@@ -13,6 +13,7 @@ public:
         renderBackground();
         renderRadar();
         renderLives();
+        renderScore();
     }
 
 private:
@@ -50,6 +51,11 @@ private:
             playerSprite.setSize({Config::liveSpriteWidth, Config::liveSpriteHeight});
             RenderEngine::Instance()->renderSprite(playerSprite, 0);
         }
+    }
+
+    static void renderScore() {
+        unsigned int points = GameModel::Instance()->getPoints();
+        RenderEngine::Instance()->renderText(std::to_string(points), {Config::windowWidth, 0}, Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
     }
 
     static Vector2D scalePositionToMapSize(const Vector2D& position) {
