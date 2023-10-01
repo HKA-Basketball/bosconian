@@ -2,6 +2,7 @@
 #define BOSCONIAN_SHIP_H
 
 #include "Entity.h"
+#include "../../Utilities/Vector2D.h"
 #include "../../Utilities/Math.h"
 #include "../../Utilities/Random.h"
 
@@ -62,7 +63,10 @@ public:
         }
 
         if (needNewPosition) {
-            setRandomTargetPos();
+            float randomX = Math::randomFloat(0, Config::screenWidth);
+            float randomY = Math::randomFloat(0, Config::screenHeight);
+            targetPosition = {randomX, randomY};
+            needNewPosition = false;
         }
 
         Vector2D direction = (targetPosition - position.getCenterPosition()).normalized();
@@ -70,14 +74,6 @@ public:
         angle = Math::normalizeAngle180(targetAngle + 90.0f);
 
         Entity::update(deltaTime);
-    }
-
-private:
-    void setRandomTargetPos() {
-        float randomX = Math::randomFloat(0, Config::screenWidth);
-        float randomY = Math::randomFloat(0, Config::screenHeight);
-        targetPosition = {randomX, randomY};
-        needNewPosition = false;
     }
 
 };
