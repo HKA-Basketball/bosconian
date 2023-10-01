@@ -5,6 +5,8 @@
 
 class MainMenuOptionState : public State {
 public:
+    MainMenuOptionState();
+
     void handleInput(float deltaTime) override;
 
     void update(float deltaTime) override;

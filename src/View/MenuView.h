@@ -44,7 +44,7 @@ public:
             RenderEngine::Instance()->renderMenuItem(item.second, color, Font::Type::JOYSTIX_38PX);
         }
 
-        for (auto& item : MainMenuOption::Instance()->getSwitchItems()) {
+        for (auto& item : *MainMenuOption::Instance()->getSwitchItems()) {
             SDL_Color color = item.second.isHovered() ? Config::ColorRed : Config::ColorWhite;
             RenderEngine::Instance()->renderSwitchItem(item.second, color);
         }

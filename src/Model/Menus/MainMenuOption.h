@@ -9,11 +9,11 @@ class MainMenuOption : public Menu {
 private:
     static MainMenuOption* instance;
 
-    std::map<Option, SwitchItem> switchItems;
+    std::map<Option, SwitchItem>* switchItems;
 
     MainMenuOption() {
         // Initialize the two SwitchItems with appropriate parameters
-        switchItems = {
+        switchItems = new std::map<Option, SwitchItem>{
                 {SWA, {8, {130, 100}, {45, 35}, "SWA"}},
                 {SWB, {8, {630, 100}, {45, 35}, "SWB"}},
                 {DEBUG, {1, {290, 275}, {60, 60}, "DEBUG MODE"}},
@@ -41,7 +41,7 @@ public:
         Menu::update();
 
         // Update the states of the SwitchItems
-        for (auto& item : switchItems) {
+        for (auto& item : *switchItems) {
             int switchIndex = item.second.containsPoint(mousePosition);
 
             if(switchIndex != -1 && isMouseButtonPressed) {
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    std::map<Option, SwitchItem> getSwitchItems() {
+    std::map<Option, SwitchItem>* getSwitchItems() {
         return switchItems;
     }
 };
