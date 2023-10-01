@@ -25,7 +25,7 @@ void MainMenuOptionState::handleInput(float deltaTime) {
 void MainMenuOptionState::update(float deltaTime) {
     MainMenuOption::Instance()->update();
 
-    Menu::Option clickedOption =  MainMenuOption::Instance()->getClickedOption();
+    Menu::Option clickedOption = MainMenuOption::Instance()->getClickedOption();
 
     if(clickedOption == Menu::Option::EXIT) {
         MainMenuOption* obj = MainMenuOption::Instance();
