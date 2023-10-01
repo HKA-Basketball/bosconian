@@ -18,10 +18,21 @@ public:
     explicit Ship(const Vector2D &position, const Degree angle, Position* playerPositions) : Entity(position, angle), playerPositions(playerPositions) {
         speed = 155.0f;
         spriteInfo = Random::getRandomOne(
-                SpriteInfo::E_TYPE,
-                SpriteInfo::I_TYPE_NORM,
-                SpriteInfo::P_TYPE_NORM
+            SpriteInfo::I_TYPE_NORM,
+            SpriteInfo::P_TYPE_NORM,
+            SpriteInfo::E_TYPE
         );
+        switch (spriteInfo) {
+            default:
+                points = 50;
+                break;
+            case SpriteInfo::P_TYPE_NORM:
+                points = 60;
+                break;
+            case SpriteInfo::E_TYPE:
+                points = 70;
+                break;
+        }
     }
 
     /* TODO 45 Degree steps so we can shoot him */

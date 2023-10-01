@@ -16,6 +16,15 @@ public:
                 SpriteInfo::ASTROID_02,
                 SpriteInfo::ASTROID_03
         );
+        switch (spriteInfo) {
+            default:
+                points = 10;
+                break;
+            case SpriteInfo::BOMB:
+                points = 20;
+                break;
+        }
+
     }
 
 };

@@ -28,6 +28,7 @@ public:
     explicit Base(const Vector2D& position, const Degree angle, Position* playerPositions) : Entity(position, angle) {
         spriteInfo = SpriteInfo::KERN;
         hitbox = {{0, 0}, {30, 45}};
+        points = 1500;
 
         for (const auto& cannonInfo : cannonInfos) {
             Vector2D cannonPos = position + cannonInfo.positionOffset.rotate(angle.toRadians());

@@ -9,6 +9,8 @@
 
 class Entity {
 protected:
+    unsigned int points{0};
+
     Position position{0, 0};
     Degree angle{0};
     float speed{0.f};
@@ -76,6 +78,10 @@ public:
 
     SpriteInfo getSpriteInfo() const { return spriteInfo; }
     void setSpriteInfo(const SpriteInfo& newSpriteInfo) { spriteInfo = newSpriteInfo; }
+
+    unsigned int getPoints() const {
+        return points;
+    }
 };
 
 #endif //BOSCONIAN_ENTITY_H

@@ -24,6 +24,7 @@ private:
 public:
     explicit Cannon(const Vector2D& position, const Degree angle, Position* playerPositions, SpriteInfo spriteInfo, SpriteInfo explosionSpriteInfo) : Entity(position, angle), playerPositions(playerPositions) {
         this->spriteInfo = spriteInfo;
+        points = 200;
         hitbox = {position, {75, 75}};
         explosion = {{explosionSpriteInfo}};
     }

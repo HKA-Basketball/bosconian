@@ -120,6 +120,10 @@ public:
         return bases;
     }
 
+    unsigned int getPoints() const {
+        return points;
+    };
+
     void raiseLives() {
         if(lives < 5) {
             lives++;
@@ -169,6 +173,7 @@ private:
 
         if (entityCollisionDetected) {
             if (!entity->isDefeated()) {
+                points += entity->getPoints();
                 entity->setDefeated();
             }
         }
