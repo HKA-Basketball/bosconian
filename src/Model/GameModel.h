@@ -31,6 +31,8 @@ class GameModel {
 
     Camera* camera = Camera::Instance();
 
+    World* world{new World()};
+
     unsigned int score{0};
     unsigned int highscore{0};
     unsigned int lives{3};
@@ -57,9 +59,41 @@ class GameModel {
         shipPosition.x += 200;
         shipPosition.y += 250;
 
-        enemies->push_back(new Obstacle({2000, 3600}, 0));
-        enemies->push_back(new Obstacle({5, 5}, 45));
-        enemies->push_back(new Ship(shipPosition, 0, playerPosition));
+        world->markOccupied(levelInfo.playerSpawn, {50, 50});
+
+        for (Base* base : *bases) {
+            world->markOccupied(base->getPosition(), base->getTotalSize());
+        }
+
+        std::vector<std::vector<Vector2D>> predefinedPositions = world->predefinedPositions();
+
+// Calculate total number of positions to reserve space efficiently
+        size_t totalPositions = 0;
+        for (const auto& posSet : predefinedPositions) {
+            totalPositions += posSet.size();
+        }
+        enemies->reserve(enemies->size() + totalPositions);
+
+        int totalUnoccupiedChunks = world->getUnoccupiedChunks().size();
+        int shipsToSpawn = 12; // maximum number of ships to spawn
+        int shipsPerChunk = shipsToSpawn / totalUnoccupiedChunks; // evenly distribute ships among chunks
+
+        for (const Chunk& chunk : world->getUnoccupiedChunks()) {
+            std::vector<Vector2D> positions = predefinedPositions.at(Math::randomInt(0, predefinedPositions.size() - 1));
+
+            int shipsInThisChunk = 0;
+            for (Vector2D& position : positions) {
+                position.x += chunk.x;
+                position.y += chunk.y;
+
+                if (shipsInThisChunk < shipsPerChunk || Math::randomFloat(0.0f, 1.0f) > 0.20f) {
+                    enemies->push_back(new Obstacle(position, Math::randomFloat(0, 359)));
+                } else {
+                    enemies->push_back(new Ship(position, Math::randomFloat(0, 359), playerPosition));
+                    shipsInThisChunk++;
+                }
+            }
+        }
     }
 
     ~GameModel() {
@@ -97,7 +131,11 @@ public:
 
     }
 
-    Player* getPlayer() {
+    World* getWorld() const {
+        return world;
+    }
+
+    Player* getPlayer() const {
         return player;
     }
 
