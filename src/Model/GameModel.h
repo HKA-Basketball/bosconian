@@ -43,20 +43,13 @@ class GameModel {
 
     GameModel() {
         levelManager = new LevelManager();
-        levelInfo = levelManager->getLevelInfo(round);
+        player = new Player({0, 0}, 0);
 
-        player = new Player(levelInfo.playerSpawn, 0);
+        initLevelInfo();
 
         enemies->push_back(new Obstacle({1600, 1600}, 0));
         enemies->push_back(new Obstacle({5, 5}, 45));
         enemies->push_back(new Ship({1350, 1350}, 0, playerPosition));
-
-        for (Vector2D basePosition : levelInfo.basePositions) {
-            bases->push_back(new Base(basePosition, 0, playerPosition));
-        }
-
-        //bases->push_back(new Base({1050, 1750}, 0, playerPosition));
-        //bases->push_back(new Base({2500, 1500}, 0, playerPosition));
     }
 
     ~GameModel() {
@@ -89,48 +82,8 @@ public:
 
         updateProjectiles(player->getProjectiles());
 
-        for (auto it = enemies->begin(); it != enemies->end(); ) {
-            Entity* enemy = *it;
-            enemy->update(deltaTime);
-            checkforCollision(enemy, player->getProjectiles());
-
-            if(enemy->isDefeated()) {
-                score += enemy->receivePoints();
-            }
-
-            if (enemy->isDead()) {
-                delete *it;
-                it = enemies->erase(it);
-            } else {
-                ++it;
-            }
-        }
-
-        for (auto it = bases->begin(); it != bases->end(); ) {
-            Base* base = *it;
-            base->update(deltaTime);
-            checkforCollision(base, player->getProjectiles());
-
-            if(base->isDefeated()) {
-                score += base->receivePoints();
-            }
-
-            for (Cannon* cannon : *base->getCannons()) {
-                updateProjectiles(cannon->getProjectiles());
-                checkforCollision(cannon, player->getProjectiles());
-
-                if(cannon->isDefeated()) {
-                    score += cannon->receivePoints();
-                }
-            }
-
-            if (base->isDead()) {
-                delete *it;
-                it = bases->erase(it);
-            } else {
-                ++it;
-            }
-        }
+        updateEnemies(deltaTime);
+        updateBases(deltaTime);
 
     }
 
@@ -171,6 +124,64 @@ public:
     }
 
 private:
+
+    void initLevelInfo() {
+        levelInfo = levelManager->getLevelInfo(round);
+
+        player->setPosition(levelInfo.playerSpawn);
+        player->setAngle(0);
+
+        for (Vector2D basePosition : levelInfo.basePositions) {
+            bases->push_back(new Base(basePosition, 0, playerPosition));
+        }
+    }
+
+    void updateEnemies(float deltaTime) {
+        for (auto it = enemies->begin(); it != enemies->end(); ) {
+            Entity* enemy = *it;
+            enemy->update(deltaTime);
+            checkforCollision(enemy, player->getProjectiles());
+
+            if(enemy->isDefeated()) {
+                score += enemy->receivePoints();
+            }
+
+            if (enemy->isDead()) {
+                delete *it;
+                it = enemies->erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+
+    void updateBases(float deltaTime) {
+        for (auto it = bases->begin(); it != bases->end(); ) {
+            Base* base = *it;
+            base->update(deltaTime);
+            checkforCollision(base, player->getProjectiles());
+
+            if(base->isDefeated()) {
+                score += base->receivePoints();
+            }
+
+            for (Cannon* cannon : *base->getCannons()) {
+                updateProjectiles(cannon->getProjectiles());
+                checkforCollision(cannon, player->getProjectiles());
+
+                if(cannon->isDefeated()) {
+                    score += cannon->receivePoints();
+                }
+            }
+
+            if (base->isDead()) {
+                delete *it;
+                it = bases->erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
 
     void updateProjectiles(Projectiles* projectiles) {
         //auto& projectiles = *p;
