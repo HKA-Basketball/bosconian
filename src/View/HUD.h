@@ -54,8 +54,17 @@ private:
     }
 
     static void renderScore() {
-        unsigned int points = GameModel::Instance()->getPoints();
-        RenderEngine::Instance()->renderText(std::to_string(points), {Config::windowWidth, 0}, Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        unsigned int points = GameModel::Instance()->getScore();
+        unsigned int highscore = GameModel::Instance()->getHighscore();
+        RenderEngine::Instance()->renderText("Score", {Config::windowWidth, 0},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        RenderEngine::Instance()->renderText(std::to_string(points), {Config::windowWidth, 38},
+                     Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+
+        RenderEngine::Instance()->renderText("Highscore", {Config::windowWidth, 38*2},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        RenderEngine::Instance()->renderText(std::to_string(highscore), {Config::windowWidth, 38*3},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
     }
 
     static Vector2D scalePositionToMapSize(const Vector2D& position) {

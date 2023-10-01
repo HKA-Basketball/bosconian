@@ -25,8 +25,8 @@ class GameModel {
     Player* player;
     Position* playerPosition{new Position(0, 0)};
 
-    unsigned int points{0};
-    unsigned int highScore{0};
+    unsigned int score{0};
+    unsigned int highscore{0};
     unsigned int lives{3};
 
     AlertStatus status{GREEN};
@@ -120,8 +120,12 @@ public:
         return bases;
     }
 
-    unsigned int getPoints() const {
-        return points;
+    unsigned int getScore() const {
+        return score;
+    };
+
+    unsigned int getHighscore() const {
+        return highscore;
     };
 
     void raiseLives() {
@@ -173,7 +177,7 @@ private:
 
         if (entityCollisionDetected) {
             if (!entity->isDefeated()) {
-                points += entity->getPoints();
+                score += entity->getPoints();
                 entity->setDefeated();
             }
         }
