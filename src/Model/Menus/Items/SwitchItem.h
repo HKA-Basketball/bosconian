@@ -61,6 +61,12 @@ public:
         return state;
     }
 
+    void setState(int state) {
+        for (size_t i = 0; i < switches.size(); ++i) {
+            switches[i] = (state & (1 << i)) != 0;
+        }
+    }
+
     std::string getText() const {
         return text;
     }
