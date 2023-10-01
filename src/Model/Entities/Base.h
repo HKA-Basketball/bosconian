@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Cannon.h"
+#include "Spy.h"
 
 struct CannonInfo {
     Vector2D positionOffset;
@@ -14,6 +15,7 @@ struct CannonInfo {
 class Base : public Entity {
 private:
     std::vector<Cannon*>* cannons = new std::vector<Cannon*>();
+    Spy* spy;
 
     const std::vector<CannonInfo> cannonInfos = {
         {{-112, 0}, {180.f}, SpriteInfo::CANON_L_NORM, SpriteInfo::CANON_L},
@@ -39,10 +41,17 @@ public:
             cannons->emplace_back(new Cannon(cannonPos, cannonAngle, playerPositions, cannonInfo.spriteInfo, cannonInfo.explosionSpriteInfo));
         }
 
+        spy = new Spy(position, angle, playerPositions);
+        spy->searchForPlayer();
+
     }
 
     void update(float deltaTime) override {
         Entity::update(deltaTime);
+
+        if (spy->isLoaded()) {
+            spy->update(deltaTime);
+        }
 
         bool allCannonsDefeated = true;
         for (Cannon* cannon : *cannons) {
@@ -61,6 +70,10 @@ public:
 
     std::vector<Cannon*>* getCannons() const {
         return cannons;
+    }
+
+    Spy* getSpy() const {
+        return spy;
     }
 };
 

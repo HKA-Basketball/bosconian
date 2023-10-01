@@ -105,6 +105,10 @@ void GameView::drawHitbox() {
     for (Base* base : *GameModel::Instance()->getBases()) {
         drawEntity(base);
 
+        if (base->getSpy()->isLoaded()) {
+            drawEntity(base->getSpy());
+        }
+
         for (Cannon* cannon : *base->getCannons()) {
             std::optional<Vector2D> renderPosition = Camera::Instance()->IsInView(*cannon);
             if (renderPosition) {
