@@ -30,6 +30,7 @@ class GameModel {
     Position* playerPosition{new Position(0, 0)};
 
     Camera* camera;
+    Background* background;
     World* world;
 
     unsigned int score{0};
@@ -51,6 +52,7 @@ class GameModel {
     GameModel() {
         levelManager = new LevelManager();
         world = new World();
+        background = Background::Instance();
 
         player = new Player({0, 0}, 0);
         camera = Camera::Instance();
@@ -86,7 +88,7 @@ public:
         *playerPosition = player->getPosition();
         camera->centerOn(player->getPosition());
 
-        Background::Instance()->updateStars(deltaTime, camera->getCenter());
+        background->update(deltaTime);
 
         updateProjectiles(player->getProjectiles());
         updateEnemies(deltaTime);

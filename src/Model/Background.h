@@ -57,7 +57,7 @@ public:
         return instance;
     }
 
-    void updateStars(float deltaTime, const Vector2D& cameraCenter) {
+    void update(float deltaTime) {
         elapsedTime += deltaTime * 1000; // Convert deltaTime to milliseconds
         if (elapsedTime > randomizeDelay) {
             int starsSize = stars.size();
