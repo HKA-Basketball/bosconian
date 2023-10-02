@@ -14,6 +14,7 @@ public:
         renderRadar();
         renderLives();
         renderScore();
+        renderRound();
     }
 
 private:
@@ -56,14 +57,24 @@ private:
     static void renderScore() {
         unsigned int points = GameModel::Instance()->getScore();
         unsigned int highscore = GameModel::Instance()->getHighscore();
-        RenderEngine::Instance()->renderText("Score", {Config::windowWidth, 0},
-                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
-        RenderEngine::Instance()->renderText(std::to_string(points), {Config::windowWidth, 38},
-                     Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
 
-        RenderEngine::Instance()->renderText("Highscore", {Config::windowWidth, 38*2},
+        RenderEngine::Instance()->renderText("Hi-score", {Config::windowWidth, 0},
                                              Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
-        RenderEngine::Instance()->renderText(std::to_string(highscore), {Config::windowWidth, 38*3},
+        RenderEngine::Instance()->renderText(std::to_string(highscore), {Config::windowWidth, 38},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+
+        RenderEngine::Instance()->renderText("Score", {Config::windowWidth, 38*2},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        RenderEngine::Instance()->renderText(std::to_string(points), {Config::windowWidth, 38*3},
+                     Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+    }
+
+    static void renderRound() {
+        unsigned int round = GameModel::Instance()->getRound();
+
+        RenderEngine::Instance()->renderText("Round", {Config::screenWidth, Config::windowHeight-38},
+                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::LEFT);
+        RenderEngine::Instance()->renderText(std::to_string(round), {Config::windowWidth, Config::windowHeight-38},
                                              Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
     }
 

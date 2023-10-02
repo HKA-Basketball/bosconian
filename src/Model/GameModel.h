@@ -124,6 +124,10 @@ public:
         status = GREEN;
     }
 
+    unsigned int getRound() const {
+        return round;
+    }
+
     void nextRound() {
         if(round < UINT32_MAX) {
             round++;
