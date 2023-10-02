@@ -1,11 +1,11 @@
 #ifndef BOSCONIAN_BACKGROUND_H
 #define BOSCONIAN_BACKGROUND_H
 
-#include "RenderEngine.h"
-#include "../Model/Camera.h"
+#include "../View/RenderEngine.h"
+#include "Camera.h"
 #include "../Utilities/Math.h"
 #include "../Utilities/Config.h"
-#include <SDL.h>
+#include "SDL.h"
 #include <vector>
 
 class Star {

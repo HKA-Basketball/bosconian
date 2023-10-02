@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_GAMEVIEW_H
 #define BOSCONIAN_GAMEVIEW_H
 
+#include "../Model/GameModel.h"
+
 #include "Entities/EntityRenderer.h"
 #include "Entities/PlayerRenderer.h"
 #include "Entities/BaseRenderer.h"
@@ -10,15 +12,19 @@
 
 class GameView {
     static GameView* instance;
+    RenderEngine* renderEngine;
+    GameModel* gameModel;
 
     EntityRenderer* entityRenderer;
     PlayerRenderer* playerRenderer;
     BaseRenderer* baseRenderer;
 
     GameView() {
-        entityRenderer = new EntityRenderer(RenderEngine::Instance(), Camera::Instance());
-        playerRenderer = new PlayerRenderer(RenderEngine::Instance(), Camera::Instance());
-        baseRenderer = new BaseRenderer(RenderEngine::Instance(), Camera::Instance());
+        renderEngine = RenderEngine::Instance();
+        gameModel = GameModel::Instance();
+        entityRenderer = new EntityRenderer(renderEngine, gameModel->getCamera());
+        playerRenderer = new PlayerRenderer(renderEngine, gameModel->getCamera());
+        baseRenderer = new BaseRenderer(renderEngine, gameModel->getCamera());
     }
     ~GameView() = default;
 

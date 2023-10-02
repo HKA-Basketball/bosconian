@@ -9,7 +9,7 @@
 #include "Entities/Base.h"
 #include "Camera.h"
 #include "World.h"
-#include "../View/Background.h"
+#include "Background.h"
 #include "../Physics/HitboxManager.h"
 
 #include "Level/LevelInfo.h"
@@ -29,9 +29,8 @@ class GameModel {
     Player* player;
     Position* playerPosition{new Position(0, 0)};
 
-    Camera* camera = Camera::Instance();
-
-    World* world{new World()};
+    Camera* camera;
+    World* world;
 
     unsigned int score{0};
     unsigned int highscore{0};
@@ -51,7 +50,10 @@ class GameModel {
 
     GameModel() {
         levelManager = new LevelManager();
+        world = new World();
+
         player = new Player({0, 0}, 0);
+        camera = Camera::Instance();
 
         initLevelInfo();
 
@@ -93,12 +95,16 @@ public:
 
     }
 
+    Player* getPlayer() const {
+        return player;
+    }
+
     World* getWorld() const {
         return world;
     }
 
-    Player* getPlayer() const {
-        return player;
+    Camera* getCamera() const {
+        return camera;
     }
 
     std::vector<Entity*>* getEnemies() {

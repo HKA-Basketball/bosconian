@@ -1,7 +1,5 @@
 #include "GameView.h"
 
-#include "RenderEngine.h"
-#include "Background.h"
 #include "HUD.h"
 
 GameView* GameView::instance = nullptr;
@@ -17,38 +15,40 @@ bool GameView::drawBackground() {
         if (parallaxY < 0) parallaxY += Config::levelHeight * Config::parallaxFactor;
 
         // Draw star with parallax effect
-        RenderEngine::Instance()->renderRectangle({parallaxX, parallaxY}, {star.rect.w, star.rect.h}, star.color, true);
+        renderEngine->renderRectangle({parallaxX, parallaxY}, {star.rect.w, star.rect.h}, star.color, true);
     }
 
     return true;
 }
 
 void GameView::drawChunks() {
-    World* world = GameModel::Instance()->getWorld();
+    World* world = gameModel->getWorld();
+    Camera* camera = gameModel->getCamera();
+
     for (Chunk chunk : world->getUnoccupiedChunks()) {
-        Vector2D position = Camera::Instance()->WorldToScreen({chunk.x, chunk.y});
-        RenderEngine::Instance()->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorGrey);
+        Vector2D position = camera->WorldToScreen({chunk.x, chunk.y});
+        renderEngine->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorGrey);
     }
     for (Chunk chunk : world->getOccupiedChunks()) {
-        Vector2D position = Camera::Instance()->WorldToScreen({chunk.x, chunk.y});
-        RenderEngine::Instance()->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorRed);
+        Vector2D position = camera->WorldToScreen({chunk.x, chunk.y});
+        renderEngine->renderRectangle(position, {chunk.width, chunk.height}, Config::ColorRed);
     }
 }
 
 void GameView::drawEnemies() {
-    for (Entity* enemy : *GameModel::Instance()->getEnemies()) {
+    for (Entity* enemy : *gameModel->getEnemies()) {
         entityRenderer->drawEntity(enemy);
     }
 }
 
 void GameView::drawBases() {
-    for (Base* base : *GameModel::Instance()->getBases()) {
+    for (Base* base : *gameModel->getBases()) {
         baseRenderer->drawBase(base);
     }
 }
 
 void GameView::drawPlayer() {
-    Player* player = GameModel::Instance()->getPlayer();
+    Player* player = gameModel->getPlayer();
     playerRenderer->drawPlayer(player);
 }
 
