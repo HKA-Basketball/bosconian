@@ -43,6 +43,7 @@ private:
     const int numStars = 256;
     Uint64 elapsedTime = 0;
     const Uint64 randomizeDelay = 750; // 0,75 seconds in milliseconds
+    bool starHalfToggle = false;
 
     Background() {
         stars.resize(numStars);
@@ -59,26 +60,19 @@ public:
     void updateStars(float deltaTime, const Vector2D& cameraCenter) {
         elapsedTime += deltaTime * 1000; // Convert deltaTime to milliseconds
         if (elapsedTime > randomizeDelay) {
-            static bool bToggle = false;
-            std::pair<int, int> starsToUpdate;
             int starsSize = stars.size();
+            int starBegin = starHalfToggle ? 0 : starsSize / 2;
+            int starEnd = starHalfToggle ? starsSize / 2 : starsSize;
 
-            if (bToggle) {
-                starsToUpdate.first = 0;
-                starsToUpdate.second = starsSize / 2;
-            } else {
-                starsToUpdate.first = starsSize / 2;
-                starsToUpdate.second = starsSize;
-            }
-
-            for (size_t i = starsToUpdate.first; i < starsToUpdate.second; i++) {
+            for (size_t i = starBegin; i < starEnd; i++) {
                 auto& star = stars.at(i);
 
                 star.randomizePosition();
                 star.randomizeColor();
             }
+
             elapsedTime = 0;
-            bToggle = !bToggle;
+            starHalfToggle = !starHalfToggle;
         }
     }
 
