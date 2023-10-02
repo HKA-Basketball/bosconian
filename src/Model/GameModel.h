@@ -184,7 +184,7 @@ private:
         camera->centerOn(player->getPosition());
 
         for (auto base : *bases) delete base;
-        for (Vector2D basePosition : levelInfo.basePositions) {
+        for (const Vector2D& basePosition : levelInfo.basePositions) {
             bases->push_back(new Base(basePosition, 0, playerPosition));
         }
     }
