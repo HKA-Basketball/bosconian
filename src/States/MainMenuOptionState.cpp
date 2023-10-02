@@ -7,12 +7,22 @@
 #include "../Controller/InputHandler.h"
 #include "../Utilities/Settings.h"
 
-MainMenuOptionState::MainMenuOptionState() {
+void MainMenuOptionState::onEnter() {
     MainMenuOption* obj = MainMenuOption::Instance();
 
     Settings* gameSettings = Settings::Instance();
     obj->getSwitchItems()->at(Menu::Option::SWA).setState(gameSettings->getSWA());
     obj->getSwitchItems()->at(Menu::Option::SWB).setState(gameSettings->getSWB());
+}
+
+void MainMenuOptionState::onExit() {
+    MainMenuOption* obj = MainMenuOption::Instance();
+
+    Settings* gameSettings = Settings::Instance();
+    gameSettings->setSWA(obj->getSwitchItems()->at(Menu::Option::SWA).getState());
+    gameSettings->setSWB(obj->getSwitchItems()->at(Menu::Option::SWB).getState());
+
+    MainMenuOption::Instance()->reset();
 }
 
 void MainMenuOptionState::handleInput(float deltaTime) {
@@ -28,13 +38,6 @@ void MainMenuOptionState::update(float deltaTime) {
     Menu::Option clickedOption = MainMenuOption::Instance()->getClickedOption();
 
     if(clickedOption == Menu::Option::EXIT) {
-        MainMenuOption* obj = MainMenuOption::Instance();
-
-        Settings* gameSettings = Settings::Instance();
-        gameSettings->setSWA(obj->getSwitchItems()->at(Menu::Option::SWA).getState());
-        gameSettings->setSWB(obj->getSwitchItems()->at(Menu::Option::SWB).getState());
-
-        MainMenuOption::Instance()->reset();
         StateMachine::Instance()->changeState(new MainMenuState());
     }
 }

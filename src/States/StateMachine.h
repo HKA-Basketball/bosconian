@@ -27,9 +27,17 @@ public:
         instance = nullptr;
     }
 
-    void changeState(State* state) {
-        delete currentState;
-        currentState = state;
+    void changeState(State* newState) {
+        if (currentState) {
+            currentState->onExit();
+            delete currentState;
+        }
+
+        currentState = newState;
+
+        if (currentState) {
+            currentState->onEnter();
+        }
     }
 
     State* getCurrentState() const { return currentState; }

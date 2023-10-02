@@ -9,6 +9,14 @@
 #include "../View/GameView.h"
 #include "../Controller/InputHandler.h"
 
+void PlayingState::onEnter() {
+
+}
+
+void PlayingState::onExit() {
+
+}
+
 void PlayingState::handleInput(float deltaTime) {
 
     InputHandler* inputHandler = InputHandler::Instance();

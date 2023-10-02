@@ -6,6 +6,14 @@
 #include "../Model/GameModel.h"
 #include "../View/GameView.h"
 
+void RoundStartState::onEnter() {
+
+}
+
+void RoundStartState::onExit() {
+
+}
+
 void RoundStartState::handleInput(float deltaTime) {}
 
 void RoundStartState::update(float deltaTime) {

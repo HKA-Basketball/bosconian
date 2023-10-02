@@ -8,6 +8,13 @@
 #include "../View/GameView.h"
 #include "../Controller/InputHandler.h"
 
+void GameOverState::onEnter() {
+
+}
+
+void GameOverState::onExit() {
+
+}
 
 void GameOverState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
