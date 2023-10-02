@@ -16,7 +16,7 @@
 #include "../Utilities/Config.h"
 #include "../Utilities/Vector2D.h"
 #include "../Utilities/Degree.h"
-#include "../Model/Menus/MenuItem.h"
+#include "../Model/Menus/Items/MenuItem.h"
 #include "../Model/Menus/Items/SwitchItem.h"
 #include "../Graphic/TextAlign.h"
 

@@ -3,10 +3,10 @@
 
 #include <string>
 
-#include <SDL.h>
+#include "SDL.h"
 #include "SDL_ttf.h"
 
-#include "../../Utilities/Vector2D.h"
+#include "../../../Utilities/Vector2D.h"
 
 class MenuItem {
 private:
