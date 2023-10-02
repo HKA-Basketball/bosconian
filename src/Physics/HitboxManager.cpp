@@ -1,84 +1,81 @@
 #include "HitboxManager.h"
-#include <cmath>
+
 #include <vector>
+#include <array>
+
+// Define a Corners type for convenience.
+typedef std::array<Vector2D, 4> Corners;
 
 bool HitboxManager::areColliding(const Hitbox& box1, const Hitbox& box2) {
-    auto position1 = box1.getPosition();
-    auto size1 = box1.getSize();
-    auto position2 = box2.getPosition();
-    auto size2 = box2.getSize();
+    // Calculate the four corners of each hitbox
+    Corners cornersA = getCorners(box1);
+    Corners cornersB = getCorners(box2);
 
-    if (position1.x + size1.x < position2.x ||
-        position2.x + size2.x < position1.x) {
-        return false; // No horizontal overlap
-    }
-
-    if (position1.y + size1.y < position2.y ||
-        position2.y + size2.y < position1.y) {
-        return false; // No vertical overlap
-    }
-
-    return true; // Intersection
-
-    // Retrieve position, size, and angle for both hitboxes
-    //Vector2D position1 = box1.getPosition();
-    //Vector2D size1 = box1.getSize();
-    float angle1 = box1.getAngle().getDegree();
-
-    //Vector2D position2 = box2.getPosition();
-    //Vector2D size2 = box2.getSize();
-    float angle2 = box2.getAngle().getDegree();
-
-    // Compute the four axes (normalized) to test against, for both OBBs
-    std::vector<Vector2D> axes{
-            {std::cos(angle1), std::sin(angle1)},
-            {-std::sin(angle1), std::cos(angle1)},
-            {std::cos(angle2), std::sin(angle2)},
-            {-std::sin(angle2), std::cos(angle2)}
+    // Define the axes based on the edges of the hitboxes. These axes will be used
+    // for the Separating Axis Theorem (SAT) collision detection.
+    Corners axes = {
+        (cornersA[1] - cornersA[0]).normalized(),
+        (cornersA[3] - cornersA[0]).normalized(),
+        (cornersB[1] - cornersB[0]).normalized(),
+        (cornersB[3] - cornersB[0]).normalized()
     };
 
-    // For each axis...
-    for (const auto& axis : axes) {
-        // Project both OBBs onto the axis
-        float proj1 = projectOntoAxis(box1, axis);
-        float proj2 = projectOntoAxis(box2, axis);
+    // Test each axis to see if the hitboxes are separated along that axis.
+    for (const Vector2D& axis : axes) {
+        auto projectionA = projectOntoAxis(cornersA, axis);
+        auto projectionB = projectOntoAxis(cornersB, axis);
 
-        // Check for non-overlapping projections, which means a separation along this axis exists, and thus, no collision
-        if (proj1 < proj2 || proj2 < proj1) {
+        // If projections don't overlap, hitboxes are not colliding on this axis.
+        if (!areIntervalsOverlapping(projectionA.x, projectionA.y, projectionB.x, projectionB.y)) {
             return false;
         }
     }
 
-    // No separating axis found, the OBBs are colliding
+    // All projections overlapped; hitboxes are colliding.
     return true;
 }
 
-float HitboxManager::projectOntoAxis(const Hitbox& box, const Vector2D& axis) {
-    // Retrieve position, size, and angle of the box
-    Vector2D position = box.getPosition();
-    Vector2D size = box.getSize();
-    float angle = box.getAngle().getDegree();
+bool HitboxManager::areIntervalsOverlapping(float minA, float maxA, float minB, float maxB) {
+    // Check if interval [minA, maxA] overlaps with interval [minB, maxB]
+    return minB <= maxA && minA <= maxB;
+}
 
-    // Compute the half extents of the OBB along each of its local axes
-    Vector2D halfExtents = size * 0.5f;
+Corners HitboxManager::getCorners(const Hitbox& box) {
+    // Calculate half dimensions for convenience
+    float halfWidth = box.getSize().x * 0.5f;
+    float halfHeight = box.getSize().y * 0.5f;
 
-    // Calculate the four vertices of the OBB
-    std::vector<Vector2D> vertices {
-            position + Vector2D(cos(angle), sin(angle)) * halfExtents.x + Vector2D(-sin(angle), cos(angle)) * halfExtents.y,
-            position - Vector2D(cos(angle), sin(angle)) * halfExtents.x + Vector2D(-sin(angle), cos(angle)) * halfExtents.y,
-            position - Vector2D(cos(angle), sin(angle)) * halfExtents.x - Vector2D(-sin(angle), cos(angle)) * halfExtents.y,
-            position + Vector2D(cos(angle), sin(angle)) * halfExtents.x + Vector2D(-sin(angle), cos(angle)) * halfExtents.y,
+    // Define the four corners relative to an unrotated hitbox
+    Corners corners = {
+        Vector2D(-halfWidth, -halfHeight),
+        Vector2D(halfWidth, -halfHeight),
+        Vector2D(halfWidth, halfHeight),
+        Vector2D(-halfWidth, halfHeight)
     };
 
-    // Project each vertex onto the axis and find the min and max of those projections
-    float minProj = axis.dot(vertices[0]);
-    float maxProj = minProj;
-    for (const auto& vertex : vertices) {
-        float proj = axis.dot(vertex);
-        minProj = std::min(minProj, proj);
-        maxProj = std::max(maxProj, proj);
+    // Rotate each vertex by the box's rotation angle and then translate it to the box's position
+    float radAngle = box.getAngle().toRadians();
+    for (Vector2D& corner : corners) {
+        corner = corner.rotate(radAngle) + box.getPosition() + Vector2D(halfWidth, halfHeight);
     }
 
-    // Return the minimum projection (or maximum, depending on the requirement, possibly as a pair)
-    return minProj;
+    return corners;
+}
+
+Vector2D HitboxManager::projectOntoAxis(const Corners& corners, const Vector2D& axis) {
+    // Calculate the projection of the first corner on the axis
+    float min = axis.dot(corners[0]);
+    float max = min;
+
+    // Iterate over the remaining corners
+    for (int i = 1; i < 4; ++i) {
+        float projection = axis.dot(corners[i]);
+
+        // Update the min and max values
+        if (projection < min) min = projection;
+        if (projection > max) max = projection;
+    }
+
+    // Return the min and max projection values as a 2D vector
+    return {min, max};
 }
