@@ -45,6 +45,7 @@ class GameModel {
 
     TextAnimation* readyAnimation{new TextAnimation("Ready")};
     TextAnimation* gameOverAnimation{new TextAnimation("Game Over")};
+    TextAnimation* roundClearAnimation{new TextAnimation("Round Clear")};
 
     std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
@@ -158,6 +159,10 @@ public:
 
     TextAnimation* getGameOverAnimation() const {
         return gameOverAnimation;
+    }
+
+    TextAnimation* getRoundClearAnimation() const {
+        return roundClearAnimation;
     }
 
     unsigned int getRound() const {
