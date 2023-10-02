@@ -89,10 +89,12 @@ public:
         Background::Instance()->updateStars(deltaTime, camera->getCenter());
 
         updateProjectiles(player->getProjectiles());
-
         updateEnemies(deltaTime);
         updateBases(deltaTime);
 
+        clearDeadProjectiles(player->getProjectiles());
+        clearDeadEnemies();
+        clearDeadBases();
     }
 
     Player* getPlayer() const {
@@ -225,17 +227,100 @@ private:
         }
     }
 
+    void haveProjectilesHitPlayer(Projectiles* projectiles) {
+        for (Projectile* projectile : *projectiles) {
+            hasProjectileHitEntity(projectile, player);
+        }
+    }
+
+    void hasEntityHitPlayer(Entity* entity) {
+        hasEntityHitEntity(entity, player);
+    }
+
+    void haveProjectilesHitEntity(Projectiles* projectiles, Entity* entity) {
+        for (Projectile* projectile : *projectiles) {
+            hasProjectileHitEntity(projectile, entity);
+        }
+    }
+
+    void hasProjectileHitEntity(Projectile* projectile, Entity* entity) {
+        if (HitboxManager::areColliding(projectile->getHitbox(), entity->getHitbox())) {
+            if (!projectile->isDefeated()) {
+                projectile->setDefeated();
+            }
+            if (!entity->isDefeated()) {
+                entity->setDefeated();
+            }
+        }
+    }
+
+    void hasEntityHitEntity(Entity* entityHitting, Entity* entityHit) {
+        if (HitboxManager::areColliding(entityHit->getHitbox(), entityHitting->getHitbox())) {
+            if (!entityHit->isDefeated()) {
+                entityHit->setDefeated();
+            }
+        }
+    }
+
+    void updateProjectiles(Projectiles* projectiles) {
+        for (Projectile* projectile : *projectiles) {
+            if (!Camera::Instance()->IsInView(*projectile)) {
+                projectile->setDefeated();
+            }
+        }
+    }
+
     void updateEnemies(float deltaTime) {
-        for (auto it = enemies->begin(); it != enemies->end(); ) {
-            Entity* enemy = *it;
+        for (Entity* enemy : *enemies) {
             enemy->update(deltaTime);
-            checkforCollision(enemy, player->getProjectiles());
+            haveProjectilesHitEntity(player->getProjectiles(), enemy);
+            hasEntityHitPlayer(enemy);
 
             if(enemy->isDefeated()) {
                 score += enemy->receivePoints();
             }
+        }
+    }
 
-            if (enemy->isDead()) {
+    void updateBases(float deltaTime) {
+        for (Base* base : *bases) {
+            base->update(deltaTime);
+
+            haveProjectilesHitEntity(player->getProjectiles(), base);
+            hasEntityHitPlayer(base);
+
+            if(base->isDefeated()) {
+                score += base->receivePoints();
+            }
+
+            for (Cannon* cannon : *base->getCannons()) {
+                updateProjectiles(cannon->getProjectiles());
+
+                haveProjectilesHitEntity(player->getProjectiles(), cannon);
+                hasEntityHitPlayer(cannon);
+                haveProjectilesHitPlayer(cannon->getProjectiles());
+
+                if(cannon->isDefeated()) {
+                    score += cannon->receivePoints();
+                }
+            }
+        }
+    }
+
+    void clearDeadProjectiles(Projectiles* projectiles) {
+        for (auto it = projectiles->begin(); it != projectiles->end(); ) {
+            if ((*it)->isDead()) {
+                delete *it;
+                it = projectiles->erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+
+    void clearDeadEnemies() {
+        for (auto it = enemies->begin(); it != enemies->end(); ) {
+            if ((*it)->isDead()) {
                 delete *it;
                 it = enemies->erase(it);
             } else {
@@ -244,66 +329,16 @@ private:
         }
     }
 
-    void updateBases(float deltaTime) {
+    void clearDeadBases() {
         for (auto it = bases->begin(); it != bases->end(); ) {
-            Base* base = *it;
-            base->update(deltaTime);
-            checkforCollision(base, player->getProjectiles());
-
-            if(base->isDefeated()) {
-                score += base->receivePoints();
-            }
-
-            for (Cannon* cannon : *base->getCannons()) {
-                updateProjectiles(cannon->getProjectiles());
-                checkforCollision(cannon, player->getProjectiles());
-
-                if(cannon->isDefeated()) {
-                    score += cannon->receivePoints();
-                }
-            }
-
-            if (base->isDead()) {
+            if ((*it)->isDead()) {
                 delete *it;
                 it = bases->erase(it);
             } else {
+                for (Cannon* cannon : *(*it)->getCannons()) {
+                    clearDeadProjectiles(cannon->getProjectiles());
+                }
                 ++it;
-            }
-        }
-    }
-
-    void updateProjectiles(Projectiles* projectiles) {
-        //auto& projectiles = *p;
-        for (auto it = projectiles->begin(); it != projectiles->end(); /* no increment here */) {
-            Projectile* projectile = *it;
-            if (!Camera::Instance()->IsInView(*projectile)) {
-                it = projectiles->erase(it); // erase returns the iterator pointing to the next element
-            } else {
-                ++it;
-            }
-        }
-    }
-    void checkforCollision(Entity* entity, Projectiles* projectiles) {
-        bool entityCollisionDetected = false;
-        auto projectileIt = projectiles->begin();
-
-        while (projectileIt != projectiles->end()) {
-            if (HitboxManager::areColliding(entity->getHitbox(), (*projectileIt)->getHitbox())) {
-                entityCollisionDetected = true;
-
-                // Free memory if needed, e.g., if using raw pointers
-                delete *projectileIt;
-
-                // Erase the collided projectile and update the iterator
-                projectileIt = projectiles->erase(projectileIt);
-            } else {
-                ++projectileIt;
-            }
-        }
-
-        if (entityCollisionDetected) {
-            if (!entity->isDefeated()) {
-                entity->setDefeated();
             }
         }
     }
