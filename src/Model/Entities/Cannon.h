@@ -70,6 +70,10 @@ public:
     Projectiles *getProjectiles() const {
         return projectiles;
     }
+
+    Position* getPlayerPositions() const {
+        return playerPositions;
+    }
 };
 
 #endif //BOSCONIAN_CANNON_H

@@ -1,13 +1,25 @@
 #ifndef BOSCONIAN_GAMEVIEW_H
 #define BOSCONIAN_GAMEVIEW_H
 
+#include "Entities/EntityRenderer.h"
+#include "Entities/PlayerRenderer.h"
+#include "Entities/BaseRenderer.h"
+
 #include "../Utilities/Vector2D.h"
 #include "../Utilities/Degree.h"
 
 class GameView {
     static GameView* instance;
 
-    GameView() = default;
+    EntityRenderer* entityRenderer;
+    PlayerRenderer* playerRenderer;
+    BaseRenderer* baseRenderer;
+
+    GameView() {
+        entityRenderer = new EntityRenderer(RenderEngine::Instance(), Camera::Instance());
+        playerRenderer = new PlayerRenderer(RenderEngine::Instance(), Camera::Instance());
+        baseRenderer = new BaseRenderer(RenderEngine::Instance(), Camera::Instance());
+    }
     ~GameView() = default;
 
 public:
@@ -19,14 +31,16 @@ public:
         return instance;
     }
 
+    void render(float deltaTime);
 
+private:
     bool drawBackground();
 
-    void drawHitbox();
+    void drawChunks();
 
-    //void drawCannonHitbox();
+    void drawEnemies();
 
-    void render(float deltaTime);
+    void drawBases();
 
     void drawPlayer();
 };
