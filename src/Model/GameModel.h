@@ -57,7 +57,7 @@ class GameModel {
 
         initLevelInfo();
 
-        initEnemies();
+        spawnEnemies();
     }
 
     ~GameModel() {
@@ -189,7 +189,7 @@ private:
         }
     }
 
-    void initEnemies() {
+    void spawnEnemies() {
         world->markOccupied(levelInfo.playerSpawn, {50, 50});
 
         for (Base* base : *bases) {
