@@ -99,43 +99,11 @@ public:
         clearDeadBases();
     }
 
-    Player* getPlayer() const {
-        return player;
-    }
-
-    World* getWorld() const {
-        return world;
-    }
-
-    Camera* getCamera() const {
-        return camera;
-    }
-
-    std::vector<Entity*>* getEnemies() {
-        return enemies;
-    }
-
-    std::vector<Base*>* getBases() {
-        return bases;
-    }
-
-    unsigned int getScore() const {
-        return score;
-    };
-
-    unsigned int getHighscore() const {
-        return highscore;
-    };
-
     void resetRound() {
         player->reset();
         player->setPosition(levelInfo.playerSpawn);
         camera->centerOn(player->getPosition());
         status = GREEN;
-    }
-
-    unsigned int getRound() const {
-        return round;
     }
 
     void nextRound() {
@@ -164,8 +132,24 @@ public:
         }
     }
 
-    unsigned int getLives() const {
-        return lives;
+    Player* getPlayer() const {
+        return player;
+    }
+
+    std::vector<Entity*>* getEnemies() {
+        return enemies;
+    }
+
+    std::vector<Base*>* getBases() {
+        return bases;
+    }
+
+    World* getWorld() const {
+        return world;
+    }
+
+    Camera* getCamera() const {
+        return camera;
     }
 
     TextAnimation* getReadyAnimation() const {
@@ -174,6 +158,22 @@ public:
 
     TextAnimation* getGameOverAnimation() const {
         return gameOverAnimation;
+    }
+
+    unsigned int getRound() const {
+        return round;
+    }
+
+    unsigned int getScore() const {
+        return score;
+    };
+
+    unsigned int getHighscore() const {
+        return highscore;
+    };
+
+    unsigned int getLives() const {
+        return lives;
     }
 
 private:
