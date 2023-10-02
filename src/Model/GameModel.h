@@ -300,6 +300,14 @@ private:
                 score += base->receivePoints();
             }
 
+            Spy* spy = base->getSpy();
+            haveProjectilesHitEntity(player->getProjectiles(), spy);
+            hasEntityHitPlayer(spy);
+
+            if(spy->isDefeated()) {
+                score += base->receivePoints();
+            }
+
             for (Cannon* cannon : *base->getCannons()) {
                 updateProjectiles(cannon->getProjectiles());
 
