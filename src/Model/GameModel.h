@@ -102,6 +102,7 @@ public:
     void resetRound() {
         player->reset();
         player->setPosition(levelInfo.playerSpawn);
+        player->setAngle(0);
         camera->centerOn(player->getPosition());
         condition = Condition::GREEN;
     }
@@ -192,10 +193,7 @@ protected:
 
     void initLevel() {
         levelInfo = levelManager->getLevelInfo(round);
-
-        player->setPosition(levelInfo.playerSpawn);
-        player->setAngle(0);
-        camera->centerOn(player->getPosition());
+        resetRound();
 
         for (auto base : *bases) delete base;
         bases->clear();
