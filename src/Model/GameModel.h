@@ -272,8 +272,8 @@ protected:
         if (HitboxManager::areColliding(projectile->getHitbox(), entity->getHitbox())) {
             if (!projectile->isDefeated()) {
                 projectile->setDefeated();
-                soundEngine->playSoundEffect("sounds/explode.wav");
             }
+
             if (!entity->isDefeated()) {
                 entity->setDefeated();
                 soundEngine->playSoundEffect("sounds/explode.wav");
