@@ -11,7 +11,7 @@ struct LevelInfo {
     Vector2D playerSpawn;
 };
 
-const std::vector<LevelInfo> levelInfoList = {
+const std::vector<LevelInfo> levelInfoListDef = {
         {1,
                 {{1167.63, 3082.39}, {1655.11, 2685.28}, {767.853, 2271.38}},
                 {1500, 3800}},
@@ -56,6 +56,6 @@ const std::vector<LevelInfo> levelInfoList = {
                 {1500.34, 3800.49}}
 };
 
-
+std::vector<LevelInfo> levelInfoList = levelInfoListDef;
 
 #endif //BOSCONIAN_LEVELINFO_H

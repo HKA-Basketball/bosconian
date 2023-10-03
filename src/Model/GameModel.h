@@ -26,6 +26,7 @@ enum AlertStatus {
 class GameModel {
     static GameModel* instance;
 
+protected:
     Player* player;
     Position* playerPosition{new Position(0, 0)};
 
@@ -82,7 +83,7 @@ public:
         return instance;
     }
 
-    void update(float deltaTime) {
+    virtual void update(float deltaTime) {
         player->update(deltaTime);
         *playerPosition = player->getPosition();
         camera->centerOn(player->getPosition());
@@ -179,7 +180,7 @@ public:
         return lives;
     }
 
-private:
+protected:
 
     void initLevel() {
         levelInfo = levelManager->getLevelInfo(round);
@@ -293,7 +294,7 @@ private:
         }
     }
 
-    void updateBases(float deltaTime) {
+    virtual void updateBases(float deltaTime) {
         for (Base* base : *bases) {
             base->update(deltaTime);
 
