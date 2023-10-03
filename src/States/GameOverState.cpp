@@ -9,7 +9,12 @@
 #include "../Controller/InputHandler.h"
 
 void GameOverState::onEnter() {
+    GameModel::Instance()->reduceLives();
 
+    if(GameModel::Instance()->getLives() > 0) {
+        TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
+        gameOverAnimation->start();
+    }
 }
 
 void GameOverState::onExit() {
@@ -22,23 +27,19 @@ void GameOverState::handleInput(float deltaTime) {
 
 void GameOverState::update(float deltaTime) {
     if(GameModel::Instance()->getPlayer()->isDead()) {
-        GameModel::Instance()->reduceLives();
+        TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
 
-        if(GameModel::Instance()->getLives() > 0) {
-            GameModel::Instance()->resetRound();
-            StateMachine::Instance()->changeState(new RoundStartState());
-        } else {
-            TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
+        gameOverAnimation->update(deltaTime);
 
-            if (gameOverAnimation->isDone()) {
-                gameOverAnimation->start();
-            }
+        if (gameOverAnimation->isDone()) {
 
-            gameOverAnimation->update(deltaTime);
-
-            if (gameOverAnimation->isDone()) {
+            if(GameModel::Instance()->getLives() > 0) {
+                GameModel::Instance()->resetRound();
+                StateMachine::Instance()->changeState(new RoundStartState());
+            } else {
                 StateMachine::Instance()->changeState(new MainMenuState());
             }
+
         }
     }
 }

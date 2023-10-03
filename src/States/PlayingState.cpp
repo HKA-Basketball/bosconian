@@ -4,6 +4,7 @@
 
 #include "PauseState.h"
 #include "GameOverState.h"
+#include "RoundClearState.h"
 #include "StateMachine.h"
 #include "../Model/GameModel.h"
 #include "../View/GameView.h"
@@ -62,9 +63,13 @@ void PlayingState::update(float deltaTime) {
     GameModel::Instance()->update(deltaTime);
 
     Player* player = GameModel::Instance()->getPlayer();
+    auto bases = GameModel::Instance()->getBases();
 
     if(player->isDead()) {
         StateMachine::Instance()->changeState(new GameOverState());
+
+    } else if(bases->empty()) {
+        StateMachine::Instance()->changeState(new RoundClearState());
     }
 }
 

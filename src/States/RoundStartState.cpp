@@ -7,7 +7,8 @@
 #include "../View/GameView.h"
 
 void RoundStartState::onEnter() {
-
+    TextAnimation* readyAnimation = GameModel::Instance()->getReadyAnimation();
+    readyAnimation->start();
 }
 
 void RoundStartState::onExit() {
@@ -18,10 +19,6 @@ void RoundStartState::handleInput(float deltaTime) {}
 
 void RoundStartState::update(float deltaTime) {
     TextAnimation* readyAnimation = GameModel::Instance()->getReadyAnimation();
-
-    if (readyAnimation->isDone()) {
-        readyAnimation->start();
-    }
 
     readyAnimation->update(deltaTime);
 
