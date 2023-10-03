@@ -7,7 +7,8 @@
 
 void PauseState::handleInput(float deltaTime) {
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PlayingState(renderEngine, soundEngine, inputHandler));
+        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView,
+                       renderEngine, soundEngine, inputHandler));
     }
 
     menuModel->handleHover(inputHandler->getMousePosition());
