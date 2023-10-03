@@ -3,29 +3,24 @@
 #include "StateMachine.h"
 #include "RoundStartState.h"
 
-#include "../Controller/InputHandler.h"
-#include "../Model/GameModel.h"
-#include "../View/GameView.h"
-
 void RoundClearState::onEnter() {
-    TextAnimation* roundClearAnimation = GameModel::Instance()->getRoundClearAnimation();
-    roundClearAnimation->start();
+    gameModel->getRoundClearAnimation()->start();
 }
 
 void RoundClearState::update(float deltaTime) {
     // Update GameState
 
-    TextAnimation* roundClearAnimation = GameModel::Instance()->getRoundClearAnimation();
+    TextAnimation* roundClearAnimation = gameModel->getRoundClearAnimation();
 
     roundClearAnimation->update(deltaTime);
 
     if (roundClearAnimation->isDone()) {
-        GameModel::Instance()->nextRound();
-        StateMachine::Instance()->changeState(new RoundStartState());
+        gameModel->nextRound();
+        StateMachine::Instance()->changeState(new RoundStartState(gameModel, gameView));
     }
 }
 
 void RoundClearState::render() {
     // Render GameStateState
-    GameView::Instance()->render(0);
+    gameView->render(0);
 }

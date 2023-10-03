@@ -3,11 +3,21 @@
 
 #include "State.h"
 
+#include "../Model/GameModel.h"
+#include "../View/GameView.h"
+#include "../Controller/InputHandler.h"
+
 class GameOverState : public State {
+    GameModel* gameModel;
+    GameView* gameView;
+
 public:
+    GameOverState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+
+    ~GameOverState() {}
+
     void onEnter() override;
 
-    void handleInput(float deltaTime) override;
     void update(float deltaTime) override;
     void render() override;
 };

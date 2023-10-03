@@ -5,10 +5,8 @@
 #include "PauseState.h"
 #include "GameOverState.h"
 #include "RoundClearState.h"
+
 #include "StateMachine.h"
-#include "../Model/GameModel.h"
-#include "../View/GameView.h"
-#include "../Controller/InputHandler.h"
 
 void PlayingState::handleInput(float deltaTime) {
 
@@ -34,38 +32,35 @@ void PlayingState::handleInput(float deltaTime) {
     }
 
     if (angle != -1) {
-        GameModel::Instance()->getPlayer()->setAngle(angle);
+        gameModel->getPlayer()->setAngle(angle);
     }
 
     if (inputHandler->isKeyPressed(SDLK_LCTRL)) {
-        GameModel::Instance()->getPlayer()->shoot(deltaTime);
+        gameModel->getPlayer()->shoot(deltaTime);
     }
 
     if (inputHandler->isKeyPressed(SDLK_k)) {
-        GameModel::Instance()->getPlayer()->setDefeated();
+        gameModel->getPlayer()->setDefeated();
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PauseState());
+        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView));
     }
 }
 
 void PlayingState::update(float deltaTime) {
     // Update GameState
-    GameModel::Instance()->update(deltaTime);
+    gameModel->update(deltaTime);
 
-    Player* player = GameModel::Instance()->getPlayer();
-    auto bases = GameModel::Instance()->getBases();
+    if(gameModel->getPlayer()->isDead()) {
+        StateMachine::Instance()->changeState(new GameOverState(gameModel, gameView));
 
-    if(player->isDead()) {
-        StateMachine::Instance()->changeState(new GameOverState());
-
-    } else if(bases->empty()) {
-        StateMachine::Instance()->changeState(new RoundClearState());
+    } else if(gameModel->getBases()->empty()) {
+        StateMachine::Instance()->changeState(new RoundClearState(gameModel, gameView));
     }
 }
 
 void PlayingState::render() {
     // Render GameStateState
-    GameView::Instance()->render(0);
+    gameView->render(0);
 }

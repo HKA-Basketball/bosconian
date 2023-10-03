@@ -3,8 +3,24 @@
 
 #include "State.h"
 
+#include "../Model/Menus/MainMenuOption.h"
+#include "../View/Menus/MainMenuOptionView.h"
+#include "../Controller/InputHandler.h"
+
 class MainMenuOptionState : public State {
+    MainMenuOption* menuModel;
+    MainMenuOptionView* menuView;
+
 public:
+    explicit MainMenuOptionState() {
+        menuModel = MainMenuOption::Instance();
+        menuView = new MainMenuOptionView(RenderEngine::Instance(), menuModel);
+    }
+
+    ~MainMenuOptionState() {
+        delete menuView;
+    }
+
     void onEnter() override;
     void onExit() override;
 

@@ -3,39 +3,32 @@
 #include "StateMachine.h"
 #include "MainMenuState.h"
 
-#include "../View/MenuView.h"
-#include "../Controller/InputHandler.h"
 #include "../Utilities/Settings.h"
 
 void MainMenuOptionState::onEnter() {
-    MainMenuOption* obj = MainMenuOption::Instance();
-
     Settings* gameSettings = Settings::Instance();
-    obj->getSwitchItems()->at(Menu::Option::SWA).setState(gameSettings->getSWA());
-    obj->getSwitchItems()->at(Menu::Option::SWB).setState(gameSettings->getSWB());
+    menuModel->getSwitchItems()->at(Menu::Option::SWA).setState(gameSettings->getSWA());
+    menuModel->getSwitchItems()->at(Menu::Option::SWB).setState(gameSettings->getSWB());
 }
 
 void MainMenuOptionState::onExit() {
-    MainMenuOption* obj = MainMenuOption::Instance();
-
     Settings* gameSettings = Settings::Instance();
-    gameSettings->setSWA(obj->getSwitchItems()->at(Menu::Option::SWA).getState());
-    gameSettings->setSWB(obj->getSwitchItems()->at(Menu::Option::SWB).getState());
-
-    MainMenuOption::Instance()->reset();
+    gameSettings->setSWA(menuModel->getSwitchItems()->at(Menu::Option::SWA).getState());
+    gameSettings->setSWB(menuModel->getSwitchItems()->at(Menu::Option::SWB).getState());
+    menuModel->reset();
 }
 
 void MainMenuOptionState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
 
-    MainMenuOption::Instance()->handleHover(inputHandler->getMousePosition());
-    MainMenuOption::Instance()->handleClick(inputHandler->isMouseButtonPressedAndErase());
+    menuModel->handleHover(inputHandler->getMousePosition());
+    menuModel->handleClick(inputHandler->isMouseButtonPressedAndErase());
 }
 
 void MainMenuOptionState::update(float deltaTime) {
-    MainMenuOption::Instance()->update();
+    menuModel->update();
 
-    Menu::Option clickedOption = MainMenuOption::Instance()->getClickedOption();
+    Menu::Option clickedOption = menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::EXIT) {
         StateMachine::Instance()->changeState(new MainMenuState());
@@ -43,5 +36,5 @@ void MainMenuOptionState::update(float deltaTime) {
 }
 
 void MainMenuOptionState::render() {
-    MenuView::Instance()->renderMainOption();
+    menuView->render();
 }

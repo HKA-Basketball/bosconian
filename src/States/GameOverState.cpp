@@ -4,34 +4,25 @@
 #include "RoundStartState.h"
 #include "MainMenuState.h"
 
-#include "../Model/GameModel.h"
-#include "../View/GameView.h"
-#include "../Controller/InputHandler.h"
-
 void GameOverState::onEnter() {
-    GameModel::Instance()->reduceLives();
+    gameModel->reduceLives();
 
-    if(GameModel::Instance()->getLives() == 0) {
-        TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
-        gameOverAnimation->start();
+    if(gameModel->getLives() == 0) {
+        gameModel->getGameOverAnimation()->start();
     }
 }
 
-void GameOverState::handleInput(float deltaTime) {
-    InputHandler* inputHandler = InputHandler::Instance();
-}
-
 void GameOverState::update(float deltaTime) {
-    if(GameModel::Instance()->getPlayer()->isDead()) {
-        TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
+    if(gameModel->getPlayer()->isDead()) {
+        TextAnimation* gameOverAnimation = gameModel->getGameOverAnimation();
 
         gameOverAnimation->update(deltaTime);
 
         if (gameOverAnimation->isDone()) {
 
-            if(GameModel::Instance()->getLives() > 0) {
-                GameModel::Instance()->resetRound();
-                StateMachine::Instance()->changeState(new RoundStartState());
+            if(gameModel->getLives() > 0) {
+                gameModel->resetRound();
+                StateMachine::Instance()->changeState(new RoundStartState(gameModel, gameView));
             } else {
                 StateMachine::Instance()->changeState(new MainMenuState());
             }
@@ -41,5 +32,5 @@ void GameOverState::update(float deltaTime) {
 }
 
 void GameOverState::render() {
-    GameView::Instance()->render(0);
+    gameView->render(0);
 }

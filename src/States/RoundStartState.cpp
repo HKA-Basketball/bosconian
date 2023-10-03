@@ -3,24 +3,20 @@
 #include "StateMachine.h"
 #include "PlayingState.h"
 
-#include "../Model/GameModel.h"
-#include "../View/GameView.h"
-
 void RoundStartState::onEnter() {
-    TextAnimation* readyAnimation = GameModel::Instance()->getReadyAnimation();
-    readyAnimation->start();
+    gameModel->getReadyAnimation()->start();
 }
 
 void RoundStartState::update(float deltaTime) {
-    TextAnimation* readyAnimation = GameModel::Instance()->getReadyAnimation();
+    TextAnimation* readyAnimation = gameModel->getReadyAnimation();
 
     readyAnimation->update(deltaTime);
 
     if (readyAnimation->isDone()) {
-        StateMachine::Instance()->changeState(new PlayingState());
+        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView));
     }
 }
 
 void RoundStartState::render() {
-    GameView::Instance()->render(0);
+    gameView->render(0);
 }

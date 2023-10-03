@@ -3,8 +3,19 @@
 
 #include "State.h"
 
+#include "../Controller/InputHandler.h"
+#include "../Model/GameModel.h"
+#include "../View/GameView.h"
+
 class RoundClearState : public State {
+    GameModel* gameModel;
+    GameView* gameView;
+
 public:
+    RoundClearState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+
+    ~RoundClearState() {}
+
     void onEnter() override;
 
     void update(float deltaTime) override;

@@ -3,8 +3,21 @@
 
 #include "State.h"
 
+#include "../Model/GameModel.h"
+#include "../View/GameView.h"
+#include "../Controller/InputHandler.h"
+
 class PlayingState : public State {
+    GameModel* gameModel;
+    GameView* gameView;
+
 public:
+    PlayingState() : PlayingState(GameModel::Instance(), GameView::Instance()) {};
+
+    PlayingState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+
+    ~PlayingState() {}
+
     void handleInput(float deltaTime) override;
     void update(float deltaTime) override;
     void render() override;

@@ -5,11 +5,6 @@
 #include "PauseOptionState.h"
 #include "MainMenuState.h"
 
-#include "../Model/Menus/PauseMenu.h"
-#include "../View/GameView.h"
-#include "../Controller/InputHandler.h"
-#include "../View/MenuView.h"
-
 void PauseState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
 
@@ -17,30 +12,27 @@ void PauseState::handleInput(float deltaTime) {
         StateMachine::Instance()->changeState(new PlayingState());
     }
 
-    PauseMenu::Instance()->handleHover(inputHandler->getMousePosition());
-    PauseMenu::Instance()->handleClick(inputHandler->isMouseButtonPressed());
+    menuModel->handleHover(inputHandler->getMousePosition());
+    menuModel->handleClick(inputHandler->isMouseButtonPressed());
 }
 
 void PauseState::update(float deltaTime) {
-    PauseMenu::Instance()->update();
+    menuModel->update();
 
-    PauseMenu::Option clickedOption =  PauseMenu::Instance()->getClickedOption();
+    PauseMenu::Option clickedOption =  menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::CONTINUE) {
-        PauseMenu::Instance()->reset();
-        StateMachine::Instance()->changeState(new PlayingState());
+        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView));
 
     } else if(clickedOption == Menu::Option::OPTIONS) {
-        PauseMenu::Instance()->reset();
-        StateMachine::Instance()->changeState(new PauseOptionState());
+        //StateMachine::Instance()->changeState(new PauseOptionState(gameModel, gameView));
 
-        } else if(clickedOption == Menu::Option::EXIT) {
-        PauseMenu::Instance()->reset();
+    } else if(clickedOption == Menu::Option::EXIT) {
         StateMachine::Instance()->changeState(new MainMenuState());
     }
 }
 
 void PauseState::render() {
-    GameView::Instance()->render(0);
-    MenuView::Instance()->renderPause();
+    gameView->render(0);
+    menuView->render();
 }
