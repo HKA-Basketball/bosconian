@@ -24,8 +24,8 @@ class GameView {
 
 public:
 
-    explicit GameView(GameModel* gameModel) : gameModel(gameModel) {
-        renderEngine = RenderEngine::Instance();
+    explicit GameView(RenderEngine* renderEngine, GameModel* gameModel)
+    : renderEngine(renderEngine), gameModel(gameModel) {
         entityRenderer = new EntityRenderer(renderEngine, gameModel->getCamera());
         playerRenderer = new PlayerRenderer(renderEngine, gameModel->getCamera());
         baseRenderer = new BaseRenderer(renderEngine, gameModel->getCamera());

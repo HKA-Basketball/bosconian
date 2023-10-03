@@ -1,9 +1,5 @@
 #include "InputHandler.h"
 
-// Initialize the static instance pointer to nullptr
-InputHandler* InputHandler::instance = nullptr;
-
-
 void InputHandler::update() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {

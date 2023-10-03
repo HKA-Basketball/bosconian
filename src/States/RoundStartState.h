@@ -5,18 +5,22 @@
 
 #include "../Model/GameModel.h"
 #include "../View/GameView.h"
+#include "../Controller/InputHandler.h"
 
 class RoundStartState : public State {
     GameModel* gameModel;
     GameView* gameView;
 
 public:
-    RoundStartState() {
+    RoundStartState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+    : State(renderEngine, soundEngine, inputHandler) {
         gameModel = new GameModel();
-        gameView = new GameView(gameModel);
+        gameView = new GameView(renderEngine, gameModel);
     };
 
-    RoundStartState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+    RoundStartState(GameModel* gameModel, GameView* gameView,
+            RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+            : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {};
 
     ~RoundStartState() {}
 

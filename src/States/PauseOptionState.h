@@ -19,9 +19,11 @@ class PauseOptionState : public State {
     GameView* gameView;
 
 public:
-    PauseOptionState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {
+    PauseOptionState(GameModel* gameModel, GameView* gameView,
+     RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+    : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {
         menuModel = new PauseMenuOption();
-        menuView = new PauseMenuOptionView(RenderEngine::Instance(), menuModel);
+        menuView = new PauseMenuOptionView(renderEngine, menuModel);
     };
 
     ~PauseOptionState() {

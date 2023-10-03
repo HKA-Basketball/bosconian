@@ -22,7 +22,6 @@
 
 class RenderEngine {
 private:
-    static RenderEngine* instance;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* spritesheet;
@@ -40,29 +39,21 @@ private:
     void loadFonts();
     void unloadFonts();
 
-    // Private constructor and destructor to prevent instantiation
+    // Private copy constructor and assignment operator to prevent copying
+    //RenderEngine(const RenderEngine&) = delete;
+    //RenderEngine& operator=(const RenderEngine&) = delete;
+
+public:
     RenderEngine() {
         InitializeSDL();
         loadSpritesheet();
         loadFonts();
     }
+
     ~RenderEngine() {
         unloadSpritesheet();
         unloadFonts();
         CleanupSDL();
-    }
-
-    // Private copy constructor and assignment operator to prevent copying
-    RenderEngine(const RenderEngine&) = delete;
-    RenderEngine& operator=(const RenderEngine&) = delete;
-
-public:
-    static RenderEngine* Instance() {
-        if (!instance) {
-            instance = new RenderEngine();
-            return instance;
-        }
-        return instance;
     }
 
     void beginScene() {

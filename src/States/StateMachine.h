@@ -5,20 +5,31 @@
 #include "State.h"
 #include "MainMenuState.h"
 #include "PlayingState.h"
+#include "../Sound/SoundEngine.h"
 
 class StateMachine {
 private:
     static StateMachine* instance;
     State* currentState;
 
-    StateMachine() : currentState(new MainMenuState()) {}
-    ~StateMachine() { delete currentState; }
+    StateMachine(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler) {
+        currentState = new MainMenuState(renderEngine, soundEngine, inputHandler);
+    }
+
+    ~StateMachine() {
+        delete currentState;
+    }
 
 public:
-    static StateMachine* Instance() {
+
+    static StateMachine* InitInstance(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler) {
         if (!instance) {
-            instance = new StateMachine();
+            instance = new StateMachine(renderEngine, soundEngine, inputHandler);
         }
+        return instance;
+    }
+
+    static StateMachine* Instance() {
         return instance;
     }
 

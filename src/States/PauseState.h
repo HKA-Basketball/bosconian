@@ -17,9 +17,11 @@ class PauseState : public State {
     GameView* gameView;
 
 public:
-    PauseState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {
+    PauseState(GameModel* gameModel, GameView* gameView,
+     RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+    : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {
         menuModel = PauseMenu::Instance();
-        menuView = new PauseMenuView(RenderEngine::Instance(), menuModel);
+        menuView = new PauseMenuView(renderEngine, menuModel);
     };
 
     ~PauseState() {

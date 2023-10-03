@@ -19,8 +19,6 @@ void MainMenuOptionState::onExit() {
 }
 
 void MainMenuOptionState::handleInput(float deltaTime) {
-    InputHandler* inputHandler = InputHandler::Instance();
-
     menuModel->handleHover(inputHandler->getMousePosition());
     menuModel->handleClick(inputHandler->isMouseButtonPressedAndErase());
 }
@@ -31,7 +29,7 @@ void MainMenuOptionState::update(float deltaTime) {
     Menu::Option clickedOption = menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::EXIT) {
-        StateMachine::Instance()->changeState(new MainMenuState());
+        StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
     }
 }
 

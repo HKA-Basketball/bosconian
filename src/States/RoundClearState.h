@@ -12,7 +12,9 @@ class RoundClearState : public State {
     GameView* gameView;
 
 public:
-    RoundClearState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+    RoundClearState(GameModel* gameModel, GameView* gameView,
+             RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+            : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {};
 
     ~RoundClearState() {}
 

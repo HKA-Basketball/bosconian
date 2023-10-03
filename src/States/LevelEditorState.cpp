@@ -7,8 +7,6 @@
 
 void LevelEditorState::handleInput(float deltaTime) {
 
-    InputHandler* inputHandler = InputHandler::Instance();
-
     float angle = -1; // Initialize to an invalid angle
     if (inputHandler->isKeyPressed(SDLK_w) && inputHandler->isKeyPressed(SDLK_a)) {
         angle = 315; // up-left

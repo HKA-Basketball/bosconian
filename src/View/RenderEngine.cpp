@@ -3,10 +3,6 @@
 
 #include <cstdio>
 
-
-// Initialize the static instance pointer to nullptr
-RenderEngine* RenderEngine::instance = nullptr;
-
 void RenderEngine::InitializeSDL() {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2"); // needed?
 

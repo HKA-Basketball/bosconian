@@ -12,9 +12,10 @@ class MainMenuState : public State {
     MainMenuView* menuView;
 
 public:
-    MainMenuState() {
+    MainMenuState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+    : State(renderEngine, soundEngine, inputHandler) {
         menuModel = MainMenu::Instance();
-        menuView = new MainMenuView(RenderEngine::Instance(), menuModel);
+        menuView = new MainMenuView(renderEngine, menuModel);
     };
 
     ~MainMenuState() {

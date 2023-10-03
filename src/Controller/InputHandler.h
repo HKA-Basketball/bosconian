@@ -8,34 +8,14 @@
 
 class InputHandler {
 private:
-    static InputHandler* instance;
-
     std::unordered_set<SDL_Keycode> keysPressed;
     Vector2D mousePosition;
     bool mouseButtonPressed;
 
-    // Private constructor and destructor to prevent instantiation
-    InputHandler() = default;
-    ~InputHandler() = default;
-
-    // Private copy constructor and assignment operator to prevent copying
-    InputHandler(const InputHandler&) = delete;
-    InputHandler& operator=(const InputHandler&) = delete;
-
 
 public:
-    // Public method to get the singleton instance
-    static InputHandler* Instance() {
-        if (!instance) {
-            instance = new InputHandler();
-        }
-        return instance;
-    }
-
-    static void DestroyInstance() {
-        delete instance;
-        instance = nullptr;
-    }
+    InputHandler() = default;
+    ~InputHandler() = default;
 
     void update();
     bool isKeyPressed(SDL_Keycode key) const;

@@ -13,9 +13,10 @@ class LevelEditorState : public State {
 
 public:
 
-    LevelEditorState() {
+    LevelEditorState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+    : State(renderEngine, soundEngine, inputHandler) {
         gameModel = new LevelEditorModel();
-        gameView = new GameView(gameModel);
+        gameView = new GameView(renderEngine, gameModel);
     }
 
     void handleInput(float deltaTime) override;

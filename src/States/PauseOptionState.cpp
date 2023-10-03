@@ -5,10 +5,8 @@
 #include "PlayingState.h"
 
 void PauseOptionState::handleInput(float deltaTime) {
-    InputHandler* inputHandler = InputHandler::Instance();
-
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PlayingState());
+        StateMachine::Instance()->changeState(new PlayingState(renderEngine, soundEngine, inputHandler));
     }
 
     //menuModel->handleHover(inputHandler->getMousePosition());
@@ -21,7 +19,8 @@ void PauseOptionState::update(float deltaTime) {
     //PauseMenu::Option clickedOption =  menuModel->getClickedOption();
 
     /*if(clickedOption == Menu::Option::EXIT) {
-        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView));
+        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView,
+                        renderEngine, soundEngine, inputHandler));
     }*/
 }
 

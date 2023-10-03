@@ -5,8 +5,6 @@
 #include "MainMenuOptionState.h"
 
 void MainMenuState::handleInput(float deltaTime) {
-    InputHandler* inputHandler = InputHandler::Instance();
-
     menuModel->handleHover(inputHandler->getMousePosition());
     menuModel->handleClick(inputHandler->isMouseButtonPressed());
 }
@@ -18,10 +16,10 @@ void MainMenuState::update(float deltaTime) {
 
     if(clickedOption == Menu::Option::START) {
         menuModel->reset();
-        StateMachine::Instance()->changeState(new RoundStartState());
+        StateMachine::Instance()->changeState(new RoundStartState(renderEngine, soundEngine, inputHandler));
     } else if(clickedOption == Menu::Option::OPTIONS) {
         menuModel->reset();
-        StateMachine::Instance()->changeState(new MainMenuOptionState());
+        StateMachine::Instance()->changeState(new MainMenuOptionState(renderEngine, soundEngine, inputHandler));
     }
 }
 

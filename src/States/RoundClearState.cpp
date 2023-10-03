@@ -16,7 +16,8 @@ void RoundClearState::update(float deltaTime) {
 
     if (roundClearAnimation->isDone()) {
         gameModel->nextRound();
-        StateMachine::Instance()->changeState(new RoundStartState(gameModel, gameView));
+        StateMachine::Instance()->changeState(new RoundStartState(gameModel, gameView,
+                      renderEngine, soundEngine, inputHandler));
     }
 }
 

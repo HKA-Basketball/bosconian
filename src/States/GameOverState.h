@@ -12,7 +12,9 @@ class GameOverState : public State {
     GameView* gameView;
 
 public:
-    GameOverState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
+    GameOverState(GameModel* gameModel, GameView* gameView,
+          RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
+          : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {};
 
     ~GameOverState() {}
 

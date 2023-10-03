@@ -9,9 +9,6 @@
 #include "StateMachine.h"
 
 void PlayingState::handleInput(float deltaTime) {
-
-    InputHandler* inputHandler = InputHandler::Instance();
-
     float angle = -1; // Initialize to an invalid angle
     if (inputHandler->isKeyPressed(SDLK_w) && inputHandler->isKeyPressed(SDLK_a)) {
         angle = 315; // up-left
@@ -44,7 +41,8 @@ void PlayingState::handleInput(float deltaTime) {
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView));
+        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView,
+                     renderEngine, soundEngine, inputHandler));
     }
 }
 
@@ -53,10 +51,12 @@ void PlayingState::update(float deltaTime) {
     gameModel->update(deltaTime);
 
     if(gameModel->getPlayer()->isDead()) {
-        StateMachine::Instance()->changeState(new GameOverState(gameModel, gameView));
+        StateMachine::Instance()->changeState(new GameOverState(gameModel, gameView,
+                    renderEngine, soundEngine, inputHandler));
 
     } else if(gameModel->getBases()->empty()) {
-        StateMachine::Instance()->changeState(new RoundClearState(gameModel, gameView));
+        StateMachine::Instance()->changeState(new RoundClearState(gameModel, gameView,
+                      renderEngine, soundEngine, inputHandler));
     }
 }
 
