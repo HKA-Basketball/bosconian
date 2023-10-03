@@ -40,6 +40,7 @@ namespace Config {
     const SDL_Color ColorRed = { 255, 0, 0, 255 };
     const SDL_Color ColorGreen = { 0, 255, 0, 255 };
     const SDL_Color ColorBlue = { 0, 0, 255, 255 };
+    const SDL_Color ColorYellow = { 255, 255, 0, 255 };
     const SDL_Color ColorViolet = {150, 0, 222, 255};
 
 }

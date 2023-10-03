@@ -16,9 +16,10 @@ public:
 
     void render() {
         renderBackground();
+        renderScore();
+        renderCondition();
         renderRadar();
         renderLives();
-        renderScore();
         renderRound();
     }
 
@@ -30,6 +31,41 @@ private:
                 {Config::HUDWidth, Config::screenHeight},
                 Config::ColorBlack,
                 true);
+    }
+
+    void renderScore() {
+        unsigned int points = gameModel->getScore();
+        unsigned int highscore = gameModel->getHighscore();
+
+        renderEngine->renderText("Hi-score", {Config::windowWidth, 0},
+                                 Config::ColorRed, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        renderEngine->renderText(std::to_string(highscore), {Config::windowWidth, 38},
+                                 Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+
+        renderEngine->renderText("Score", {Config::windowWidth, 38*2},
+                                 Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+        renderEngine->renderText(std::to_string(points), {Config::windowWidth, 38*3},
+                                 Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
+    }
+
+    void renderCondition() {
+        auto conditionColor = Config::ColorGreen;
+        std::string conditionText = "Green";
+
+        if(gameModel->getCondition() == Condition::YELLOW) {
+            conditionColor = Config::ColorYellow;
+            conditionText = "Yellow";
+
+        } else if (gameModel->getCondition() == Condition::RED) {
+            conditionColor = Config::ColorRed;
+            conditionText = "Red !!";
+        }
+
+        renderEngine->renderRectangle({Config::screenWidth, 38*4+1}, {Config::HUDWidth, 100},
+                                      conditionColor, true);
+
+        renderEngine->renderText(conditionText, {Config::screenWidth + (Config::HUDWidth/2), 38*4+1+50},
+                                 Config::ColorBlack, Font::JOYSTIX_38PX, TextAlign::CENTER);
     }
 
     void renderRadar() {
@@ -57,21 +93,6 @@ private:
             playerSprite.setSize({Config::liveSpriteWidth, Config::liveSpriteHeight});
             renderEngine->renderSprite(playerSprite, 0);
         }
-    }
-
-    void renderScore() {
-        unsigned int points = gameModel->getScore();
-        unsigned int highscore = gameModel->getHighscore();
-
-        renderEngine->renderText("Hi-score", {Config::windowWidth, 0},
-                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
-        renderEngine->renderText(std::to_string(highscore), {Config::windowWidth, 38},
-                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
-
-        renderEngine->renderText("Score", {Config::windowWidth, 38*2},
-                                             Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
-        renderEngine->renderText(std::to_string(points), {Config::windowWidth, 38*3},
-                     Config::ColorWhite, Font::JOYSTIX_38PX, TextAlign::RIGHT);
     }
 
     void renderRound() {
