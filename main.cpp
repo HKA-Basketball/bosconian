@@ -6,8 +6,13 @@
 #include "src/States/StateMachine.h"
 #include "src/Graphic/Fonts.h"
 #include "src/Utilities/FrameTimer.h"
+#include "src/Sound/SoundEngine.h"
 
 int main(int argc, char* args[]) {
+
+    auto* soundEngine = new SoundEngine();
+    soundEngine->startBackgroundMusic("sounds/loop.wav");
+
     auto frameTimer = FrameTimer(60);
 
     while(true) {
@@ -27,6 +32,9 @@ int main(int argc, char* args[]) {
 
         frameTimer.delayFrame();
     }
+
+    soundEngine->stopBackgroundMusic();
+    delete soundEngine;
 
     return 0;
 }
