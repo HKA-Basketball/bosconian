@@ -49,6 +49,10 @@ private:
     void drawBases();
 
     void drawPlayer();
+
+    void drawTextAnimations();
+
+    void drawTextAnimation(TextAnimation *textAnimation);
 };
 
 #endif //BOSCONIAN_GAMEVIEW_H

@@ -58,5 +58,31 @@ void GameView::render(float deltaTime) {
     drawEnemies();
     drawBases();
     drawPlayer();
+    drawTextAnimations();
     HUD::render();
+}
+
+void GameView::drawTextAnimation(TextAnimation* textAnimation) {
+    renderEngine->renderText(textAnimation->getText(), {Config::screenCenterX, Config::screenCenterY/2},
+                             Config::ColorWhite, Font::JOYSTIX_64PX, TextAlign::CENTER);
+}
+
+void GameView::drawTextAnimations() {
+    auto* readyAnimation = gameModel->getReadyAnimation();
+
+    if(!readyAnimation->isDone()) {
+        drawTextAnimation(readyAnimation);
+    }
+
+    auto* roundClearAnimation = gameModel->getRoundClearAnimation();
+
+    if(!roundClearAnimation->isDone()) {
+        drawTextAnimation(roundClearAnimation);
+    }
+
+    auto* gameOverAnimation = gameModel->getGameOverAnimation();
+
+    if(!gameOverAnimation->isDone()) {
+        drawTextAnimation(gameOverAnimation);
+    }
 }
