@@ -6,19 +6,12 @@
 #include "../Utilities/IniLike.h"
 
 class LevelEditorModel : public GameModel {
-    static LevelEditorModel* instance;
     IniLike levelConfig;
+
+public:
 
     explicit LevelEditorModel(const std::string& configFile = ".\\cfg\\level.ini") : GameModel(), levelConfig(configFile) {
         levelConfig.add_item("Levels", "levels", levelInfoList);
-    }
-public:
-    static LevelEditorModel* Instance() {
-        if (!instance) {
-            instance = new LevelEditorModel();
-            return instance;
-        }
-        return instance;
     }
 
     void update(float deltaTime) override {

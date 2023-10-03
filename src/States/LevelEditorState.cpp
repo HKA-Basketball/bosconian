@@ -29,8 +29,8 @@ void LevelEditorState::handleInput(float deltaTime) {
     }
 
     if (angle != -1) {
-        LevelEditorModel::Instance()->getPlayer()->setAngle(angle);
-        LevelEditorModel::Instance()->getPlayer()->update(deltaTime);
+        gameModel->getPlayer()->setAngle(angle);
+        gameModel->getPlayer()->update(deltaTime);
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
@@ -39,33 +39,33 @@ void LevelEditorState::handleInput(float deltaTime) {
 
 
     if (inputHandler->isKeyPressed(SDLK_b))
-        LevelEditorModel::Instance()->placeBase(LevelEditorModel::Instance()->getCurrentLevel(),
-                                                LevelEditorModel::Instance()->getPlayer()->getPosition());
+        gameModel->placeBase(gameModel->getCurrentLevel(),
+                             gameModel->getPlayer()->getPosition());
 
     if (inputHandler->isKeyPressed(SDLK_p)) {
-        LevelEditorModel::Instance()->setPlayerSpawnPos(LevelEditorModel::Instance()->getCurrentLevel(),
-                                                LevelEditorModel::Instance()->getPlayer()->getPosition());
+        gameModel->setPlayerSpawnPos(gameModel->getCurrentLevel(),
+                                     gameModel->getPlayer()->getPosition());
     }
     if (inputHandler->isKeyPressed(SDLK_u)) {
-        LevelEditorModel::Instance()->undoBase(LevelEditorModel::Instance()->getCurrentLevel());
+        gameModel->undoBase(gameModel->getCurrentLevel());
     }
     if (inputHandler->isKeyPressed(SDLK_k)) {
-        LevelEditorModel::Instance()->saveLevels();
+        gameModel->saveLevels();
     }
     if (inputHandler->isKeyPressed(SDLK_c)) {
-        LevelEditorModel::Instance()->readLevels();
+        gameModel->readLevels();
     }
     if (inputHandler->isKeyPressed(SDLK_m)) {
-        LevelEditorModel::Instance()->increaseLevel();
+        gameModel->increaseLevel();
     }
     if (inputHandler->isKeyPressed(SDLK_n)) {
-        LevelEditorModel::Instance()->decreaseLevel();
+        gameModel->decreaseLevel();
     }
 }
 
 void LevelEditorState::update(float deltaTime) {
     // Update GameState
-    LevelEditorModel::Instance()->update(deltaTime);
+    gameModel->update(deltaTime);
 }
 
 void LevelEditorState::render() {

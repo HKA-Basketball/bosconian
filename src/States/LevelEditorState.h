@@ -14,7 +14,7 @@ class LevelEditorState : public State {
 public:
 
     LevelEditorState() {
-        gameModel = LevelEditorModel::Instance();
+        gameModel = new LevelEditorModel();
         gameView = new GameView(gameModel);
     }
 
