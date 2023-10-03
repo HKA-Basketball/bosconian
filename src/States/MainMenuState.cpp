@@ -8,14 +8,6 @@
 #include "../View/MenuView.h"
 #include "../Controller/InputHandler.h"
 
-void MainMenuState::onEnter() {
-
-}
-
-void MainMenuState::onExit() {
-
-}
-
 void MainMenuState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
 

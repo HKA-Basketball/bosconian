@@ -12,14 +12,6 @@ void RoundClearState::onEnter() {
     roundClearAnimation->start();
 }
 
-void RoundClearState::onExit() {
-
-}
-
-void RoundClearState::handleInput(float deltaTime) {
-    InputHandler* inputHandler = InputHandler::Instance();
-}
-
 void RoundClearState::update(float deltaTime) {
     // Update GameState
 

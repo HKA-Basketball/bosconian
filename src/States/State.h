@@ -7,12 +7,12 @@ class State {
 public:
     virtual ~State() = default;
 
-    virtual void onEnter() = 0;
-    virtual void onExit() = 0;
+    virtual void onEnter() {};
+    virtual void onExit() {};
 
-    virtual void handleInput(float deltaTime) = 0;
-    virtual void update(float deltaTime) = 0;
-    virtual void render() = 0;
+    virtual void handleInput(float deltaTime) {};
+    virtual void update(float deltaTime) {};
+    virtual void render() {};
 };
 
 #endif //BOSCONIAN_STATE_H

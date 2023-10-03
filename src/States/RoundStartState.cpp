@@ -11,12 +11,6 @@ void RoundStartState::onEnter() {
     readyAnimation->start();
 }
 
-void RoundStartState::onExit() {
-
-}
-
-void RoundStartState::handleInput(float deltaTime) {}
-
 void RoundStartState::update(float deltaTime) {
     TextAnimation* readyAnimation = GameModel::Instance()->getReadyAnimation();
 

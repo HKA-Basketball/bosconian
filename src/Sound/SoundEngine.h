@@ -9,7 +9,7 @@ class SoundEngine {
 private:
     Mix_Music* backgroundMusic{nullptr};     // Pointer to background music track
     Mix_Chunk* soundEffect{nullptr};         // Pointer to a sound effect
-    int volume{5};                           // Represents the volume level (range [0, MIX_MAX_VOLUME])
+    int volume{1};                           // Represents the volume level (range [0, MIX_MAX_VOLUME])
 
 public:
     SoundEngine();

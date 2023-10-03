@@ -9,14 +9,6 @@
 #include "../Controller/InputHandler.h"
 #include "../View/MenuView.h"
 
-void PauseOptionState::onEnter() {
-
-}
-
-void PauseOptionState::onExit() {
-
-}
-
 void PauseOptionState::handleInput(float deltaTime) {
     InputHandler* inputHandler = InputHandler::Instance();
 
