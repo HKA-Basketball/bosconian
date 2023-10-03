@@ -204,8 +204,10 @@ protected:
             bases->push_back(new Base(basePosition, baseAngle, playerPosition));
         }
 
-        activeSpy = bases->at(Math::randomInt(0, bases->size() - 1))->getSpy();
-        activeSpy->searchForPlayer();
+        if (bases->size() > 0) {
+            activeSpy = bases->at(Math::randomInt(0, bases->size() - 1))->getSpy();
+            activeSpy->searchForPlayer();
+        }
 
         spawnEnemies();
     }
