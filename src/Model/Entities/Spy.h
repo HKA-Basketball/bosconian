@@ -29,6 +29,7 @@ public:
 
     void update(float deltaTime) override {
         if(!loaded || defeated) {
+            Entity::update(deltaTime);
             return;
         }
 
