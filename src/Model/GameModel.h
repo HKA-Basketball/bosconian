@@ -58,9 +58,7 @@ class GameModel {
         player = new Player({0, 0}, 0);
         camera = Camera::Instance();
 
-        initLevelInfo();
-
-        spawnEnemies();
+        initLevel();
     }
 
     ~GameModel() {
@@ -111,14 +109,14 @@ public:
         if(round < UINT32_MAX) {
             round++;
         }
-        initLevelInfo();
+        initLevel();
     }
 
     void previousRound() {
         if(round > 1) {
             round--;
         }
-        initLevelInfo();
+        initLevel();
     }
 
     void raiseLives() {
@@ -183,7 +181,7 @@ public:
 
 private:
 
-    void initLevelInfo() {
+    void initLevel() {
         levelInfo = levelManager->getLevelInfo(round);
 
         player->setPosition(levelInfo.playerSpawn);
@@ -191,9 +189,12 @@ private:
         camera->centerOn(player->getPosition());
 
         for (auto base : *bases) delete base;
+        bases->clear();
         for (const Vector2D& basePosition : levelInfo.basePositions) {
             bases->push_back(new Base(basePosition, 0, playerPosition));
         }
+
+        spawnEnemies();
     }
 
     void spawnEnemies() {
@@ -210,6 +211,9 @@ private:
         for (const auto& posSet : predefinedPositions) {
             totalPositions += posSet.size();
         }
+
+        for (auto enemy : *enemies) delete enemy;
+        enemies->clear();
         enemies->reserve(enemies->size() + totalPositions);
 
         int totalUnoccupiedChunks = world->getUnoccupiedChunks().size();
