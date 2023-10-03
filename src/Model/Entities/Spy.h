@@ -21,8 +21,6 @@ class Spy : public Entity {
 public:
     explicit Spy(const Vector2D &position, const Degree angle, Position* playerPositions)
             : Entity(position, angle), startPosition(position), playerPositions(playerPositions) {
-
-        points = 123; /* TODO Random Value */
         speed = 155.0f;
         spriteInfo = SpriteInfo::SPY;
     }
@@ -73,8 +71,18 @@ public:
         Entity::update(deltaTime);
     }
 
+    unsigned int receivePoints() override {
+        if(!receivedPoints) {
+            points = Random::getRandomOne(50, 60, 70);
+        }
+
+        return Entity::receivePoints();
+    }
+
+
     void searchForPlayer() {
         loaded = true;
+        receivedPoints = false;
     }
 
     bool returnedToBasePlayer() {

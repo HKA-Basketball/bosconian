@@ -80,7 +80,7 @@ public:
     SpriteInfo getSpriteInfo() const { return spriteInfo; }
     void setSpriteInfo(const SpriteInfo& newSpriteInfo) { spriteInfo = newSpriteInfo; }
 
-    unsigned int receivePoints() {
+    virtual unsigned int receivePoints() {
         if(receivedPoints) {
             return 0;
         }
