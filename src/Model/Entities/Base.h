@@ -75,6 +75,15 @@ public:
         return cannons;
     }
 
+    void resetProjectiles() const {
+        for (Cannon* cannon : *cannons) {
+            for (Projectile* projectile : *cannon->getProjectiles()) {
+                delete projectile;
+            }
+            cannon->getProjectiles()->clear();
+        }
+    }
+
     Spy* getSpy() const {
         return spy;
     }

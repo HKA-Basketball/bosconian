@@ -105,6 +105,7 @@ public:
         player->setAngle(0);
         camera->centerOn(player->getPosition());
         condition = Condition::GREEN;
+        for (Base* base : *bases) base->resetProjectiles();
     }
 
     void nextRound() {

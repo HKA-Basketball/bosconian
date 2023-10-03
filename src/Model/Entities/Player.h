@@ -54,6 +54,9 @@ public:
 
         speed = 200.0f;
         spriteInfo = SpriteInfo::PLAYER;
+
+        for (auto projectile : *projectiles) delete projectile;
+        projectiles->clear();
     }
 
     Projectiles* getProjectiles() const { return projectiles; }
