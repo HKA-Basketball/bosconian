@@ -21,7 +21,7 @@ void SoundEngine::playSoundEffect(const std::string &soundFilePath) {
         SDL_Log("Failed to load sound effect! SDL_mixer Error: %s", Mix_GetError());
         return;
     }
-    Mix_VolumeMusic(volume);
+    Mix_VolumeChunk(soundEffect, volume);
     Mix_PlayChannel(-1, soundEffect, 0);  // Play on the first free unreserved channel
 }
 

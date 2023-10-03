@@ -33,7 +33,10 @@ void PlayingState::handleInput(float deltaTime) {
     }
 
     if (inputHandler->isKeyPressed(SDLK_LCTRL)) {
-        gameModel->getPlayer()->shoot(deltaTime);
+        bool hasShooted = gameModel->getPlayer()->shoot(deltaTime);
+        if(hasShooted) {
+            soundEngine->playSoundEffect("sounds/shoot.wav");
+        }
     }
 
     if (inputHandler->isKeyPressed(SDLK_k)) {
