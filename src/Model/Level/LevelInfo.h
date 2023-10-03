@@ -56,6 +56,6 @@ const std::vector<LevelInfo> levelInfoListDef = {
                 {1500.34, 3800.49}}
 };
 
-std::vector<LevelInfo> levelInfoList = levelInfoListDef;
+static std::vector<LevelInfo> levelInfoList = levelInfoListDef;
 
 #endif //BOSCONIAN_LEVELINFO_H

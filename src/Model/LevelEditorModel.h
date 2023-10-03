@@ -1,23 +1,34 @@
 #ifndef BOSCONIAN_LEVELEDITORMODEL_H
 #define BOSCONIAN_LEVELEDITORMODEL_H
 
+#include "Level/LevelInfo.h"
 #include "GameModel.h"
 #include "../Utilities/IniLike.h"
 
 class LevelEditorModel : public GameModel {
+    static LevelEditorModel* instance;
     IniLike levelConfig;
 
-public:
     explicit LevelEditorModel(const std::string& configFile = ".\\cfg\\level.ini") : GameModel(), levelConfig(configFile) {
         levelConfig.add_item("Levels", "levels", levelInfoList);
     }
+public:
+    static LevelEditorModel* Instance() {
+        if (!instance) {
+            instance = new LevelEditorModel();
+            return instance;
+        }
+        return instance;
+    }
 
     void update(float deltaTime) override {
-        player->update(deltaTime);
         *playerPosition = player->getPosition();
         camera->centerOn(player->getPosition());
 
         background->update(deltaTime);
+
+        updateBases(deltaTime);
+        clearDeadBases();
     }
 
     void saveLevels() {
