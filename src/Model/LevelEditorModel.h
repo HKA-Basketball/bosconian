@@ -10,7 +10,8 @@ class LevelEditorModel : public GameModel {
 
 public:
 
-    explicit LevelEditorModel(const std::string& configFile = ".\\cfg\\level.ini") : GameModel(), levelConfig(configFile) {
+    explicit LevelEditorModel(SoundEngine* soundEngine, const std::string& configFile = ".\\cfg\\level.ini")
+    : GameModel(soundEngine), levelConfig(configFile) {
         levelConfig.add_item("Levels", "levels", levelInfoList);
     }
 

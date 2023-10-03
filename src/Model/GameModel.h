@@ -3,17 +3,20 @@
 
 #include <vector>
 
+#include "../Physics/HitboxManager.h"
+#include "../Sound/SoundEngine.h"
+
+#include "Camera.h"
+#include "World.h"
+#include "Background.h"
+#include "Level/LevelInfo.h"
+#include "Level/LevelManager.h"
+
 #include "Entities/Player.h"
 #include "Entities/Obstacle.h"
 #include "Entities/Ship.h"
 #include "Entities/Base.h"
-#include "Camera.h"
-#include "World.h"
-#include "Background.h"
-#include "../Physics/HitboxManager.h"
 
-#include "Level/LevelInfo.h"
-#include "Level/LevelManager.h"
 #include "Animations/TextAnimation.h"
 
 enum AlertStatus {
@@ -25,6 +28,8 @@ enum AlertStatus {
 
 class GameModel {
 protected:
+    SoundEngine* soundEngine;
+
     Player* player;
     Position* playerPosition{new Position(0, 0)};
 
@@ -50,7 +55,9 @@ protected:
     std::vector<Base*>* bases = new std::vector<Base*>();
 
 public:
-    GameModel() {
+    GameModel(SoundEngine* soundEngine) {
+        this->soundEngine = soundEngine;
+
         levelManager = new LevelManager();
         world = new World();
         background = Background::Instance();
@@ -248,9 +255,11 @@ protected:
         if (HitboxManager::areColliding(projectile->getHitbox(), entity->getHitbox())) {
             if (!projectile->isDefeated()) {
                 projectile->setDefeated();
+                soundEngine->playSoundEffect("sounds/explode.wav");
             }
             if (!entity->isDefeated()) {
                 entity->setDefeated();
+                soundEngine->playSoundEffect("sounds/explode.wav");
             }
         }
     }
@@ -259,6 +268,7 @@ protected:
         if (HitboxManager::areColliding(entityHit->getHitbox(), entityHitting->getHitbox())) {
             if (!entityHit->isDefeated()) {
                 entityHit->setDefeated();
+                soundEngine->playSoundEffect("sounds/explode.wav");
             }
         }
     }

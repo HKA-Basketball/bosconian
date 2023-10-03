@@ -15,7 +15,7 @@ public:
 
     LevelEditorState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
     : State(renderEngine, soundEngine, inputHandler) {
-        gameModel = new LevelEditorModel();
+        gameModel = new LevelEditorModel(soundEngine);
         gameView = new GameView(renderEngine, gameModel);
     }
 
