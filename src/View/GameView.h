@@ -7,11 +7,12 @@
 #include "Entities/PlayerRenderer.h"
 #include "Entities/BaseRenderer.h"
 
+#include "HUD.h"
+
 #include "../Utilities/Vector2D.h"
 #include "../Utilities/Degree.h"
 
 class GameView {
-    static GameView* instance;
     RenderEngine* renderEngine;
     GameModel* gameModel;
 
@@ -19,23 +20,19 @@ class GameView {
     PlayerRenderer* playerRenderer;
     BaseRenderer* baseRenderer;
 
-    GameView() {
+    HUD* hud;
+
+public:
+
+    explicit GameView(GameModel* gameModel) : gameModel(gameModel) {
         renderEngine = RenderEngine::Instance();
-        gameModel = GameModel::Instance();
         entityRenderer = new EntityRenderer(renderEngine, gameModel->getCamera());
         playerRenderer = new PlayerRenderer(renderEngine, gameModel->getCamera());
         baseRenderer = new BaseRenderer(renderEngine, gameModel->getCamera());
+        hud = new HUD(renderEngine, gameModel);
     }
-    ~GameView() = default;
 
-public:
-    static GameView* Instance() {
-        if (!instance) {
-            instance = new GameView();
-            return instance;
-        }
-        return instance;
-    }
+    ~GameView() = default;
 
     void render(float deltaTime);
 

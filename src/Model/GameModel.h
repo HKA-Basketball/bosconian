@@ -24,8 +24,6 @@ enum AlertStatus {
 };
 
 class GameModel {
-    static GameModel* instance;
-
 protected:
     Player* player;
     Position* playerPosition{new Position(0, 0)};
@@ -51,6 +49,7 @@ protected:
     std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
 
+public:
     GameModel() {
         levelManager = new LevelManager();
         world = new World();
@@ -71,16 +70,6 @@ protected:
         for (auto base : *bases) delete base;
         delete enemies;
         delete bases;
-    }
-
-
-public:
-    static GameModel* Instance() {
-        if (!instance) {
-            instance = new GameModel();
-            return instance;
-        }
-        return instance;
     }
 
     virtual void update(float deltaTime) {

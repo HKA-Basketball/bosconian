@@ -12,7 +12,10 @@ class PlayingState : public State {
     GameView* gameView;
 
 public:
-    PlayingState() : PlayingState(GameModel::Instance(), GameView::Instance()) {};
+    PlayingState() {
+        gameModel = new GameModel();
+        gameView = new GameView(gameModel);
+    };
 
     PlayingState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
 

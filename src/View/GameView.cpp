@@ -1,9 +1,5 @@
 #include "GameView.h"
 
-#include "HUD.h"
-
-GameView* GameView::instance = nullptr;
-
 bool GameView::drawBackground() {
     Vector2D cameraCenter = Camera::Instance()->getCenter();
     for (const auto& star : Background::Instance()->getStars()) {
@@ -59,7 +55,7 @@ void GameView::render(float deltaTime) {
     drawBases();
     drawPlayer();
     drawTextAnimations();
-    HUD::render();
+    hud->render();
 }
 
 void GameView::drawTextAnimation(TextAnimation* textAnimation) {

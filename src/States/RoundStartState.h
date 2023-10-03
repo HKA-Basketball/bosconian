@@ -11,7 +11,10 @@ class RoundStartState : public State {
     GameView* gameView;
 
 public:
-    RoundStartState() : RoundStartState(GameModel::Instance(), GameView::Instance()) {};
+    RoundStartState() {
+        gameModel = new GameModel();
+        gameView = new GameView(gameModel);
+    };
 
     RoundStartState(GameModel* gameModel, GameView* gameView) : gameModel(gameModel), gameView(gameView) {};
 
