@@ -24,6 +24,13 @@ public:
         int repeatRound = (round - 12) % repeatSequence.size();
         return levels[repeatSequence[repeatRound] - 1]; // Adjusting for 0-based indexing
     }
+
+    const LevelInfo& getLevelInfoByLevel(int level) const {
+        if(level >= 1 && level <= 14) {
+            return levels[level - 1]; // Adjusting for 0-based indexing
+        }
+        return levels[0];
+    }
 };
 
 // Usage:

@@ -39,6 +39,31 @@ void LevelEditorState::handleInput(float deltaTime) {
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
         StateMachine::Instance()->changeState(new PauseState());
     }
+
+
+    if (inputHandler->isKeyPressed(SDLK_b))
+        LevelEditorModel::Instance()->placeBase(LevelEditorModel::Instance()->getCurrentLevel(),
+                                                LevelEditorModel::Instance()->getPlayer()->getPosition());
+
+    if (inputHandler->isKeyPressed(SDLK_p)) {
+        LevelEditorModel::Instance()->setPlayerSpawnPos(LevelEditorModel::Instance()->getCurrentLevel(),
+                                                LevelEditorModel::Instance()->getPlayer()->getPosition());
+    }
+    if (inputHandler->isKeyPressed(SDLK_u)) {
+        LevelEditorModel::Instance()->undoBase(LevelEditorModel::Instance()->getCurrentLevel());
+    }
+    if (inputHandler->isKeyPressed(SDLK_k)) {
+        LevelEditorModel::Instance()->saveLevels();
+    }
+    if (inputHandler->isKeyPressed(SDLK_c)) {
+        LevelEditorModel::Instance()->readLevels();
+    }
+    if (inputHandler->isKeyPressed(SDLK_m)) {
+        LevelEditorModel::Instance()->increaseLevel();
+    }
+    if (inputHandler->isKeyPressed(SDLK_n)) {
+        LevelEditorModel::Instance()->decreaseLevel();
+    }
 }
 
 void LevelEditorState::update(float deltaTime) {

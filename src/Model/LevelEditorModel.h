@@ -31,6 +31,18 @@ public:
         clearDeadBases();
     }
 
+    int getCurrentLevel() {
+        return levelInfo.levelNumber;
+    }
+
+    void increaseLevel() {
+        levelManager->getLevelInfoByLevel(levelInfo.levelNumber + 1);
+    }
+
+    void decreaseLevel() {
+        levelManager->getLevelInfoByLevel(levelInfo.levelNumber - 1);
+    }
+
     void saveLevels() {
         levelConfig.write();
         levelConfig.read();
@@ -40,7 +52,7 @@ public:
         levelConfig.read();
     }
 
-    static void placeBase(int lvl, const Vector2D& pos) {
+    void placeBase(int lvl, const Vector2D& pos) {
         for (auto& l : levelInfoList) {
             if (l.levelNumber == lvl) {
                 l.basePositions.push_back(pos);
@@ -49,7 +61,7 @@ public:
         }
     }
 
-    static void setPlayerSpawnPos(int lvl, const Vector2D& pos) {
+    void setPlayerSpawnPos(int lvl, const Vector2D& pos) {
         for (auto& l : levelInfoList) {
             if (l.levelNumber == lvl) {
                 l.playerSpawn = pos;
@@ -58,7 +70,7 @@ public:
         }
     }
 
-    static void undoBase(int lvl) {
+    void undoBase(int lvl) {
         for (auto& l : levelInfoList) {
             if (l.levelNumber == lvl) {
                 l.basePositions.pop_back();
