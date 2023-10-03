@@ -74,6 +74,8 @@ public:
     Degree getAngle() const { return angle; }
     void setAngle(const Degree newAngle) { angle = newAngle; }
 
+    void setSpeed(const float newSpeed) { speed = newSpeed; }
+
     Hitbox getHitbox() const { return hitbox; }
     void setHitbox(const Hitbox& newHitbox) { hitbox = newHitbox; }
 
