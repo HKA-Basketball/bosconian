@@ -60,6 +60,12 @@ public:
         }
     }
 
+    void renderPauseOption() {
+        RenderEngine::Instance()->renderRectangle({325, 325}, {500, 500}, Config::ColorBlack, true);
+        RenderEngine::Instance()->renderRectangle({325, 325}, {500, 500}, Config::ColorWhite);
+
+    }
+
 };
 
 #endif //BOSCONIAN_MENUVIEW_H
