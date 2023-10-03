@@ -4,9 +4,6 @@
 
 #include "PauseState.h"
 #include "StateMachine.h"
-#include "../Model/LevelEditorModel.h"
-#include "../View/GameView.h"
-#include "../Controller/InputHandler.h"
 
 void LevelEditorState::handleInput(float deltaTime) {
 
@@ -37,7 +34,7 @@ void LevelEditorState::handleInput(float deltaTime) {
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PauseState());
+        //StateMachine::Instance()->changeState(new PauseState());
     }
 
 
@@ -73,5 +70,5 @@ void LevelEditorState::update(float deltaTime) {
 
 void LevelEditorState::render() {
     // Render GameStateState
-    GameView::Instance()->render(0);
+    gameView->render(0);
 }
