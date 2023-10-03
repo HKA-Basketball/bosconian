@@ -19,11 +19,11 @@
 
 #include "Animations/TextAnimation.h"
 
-enum AlertStatus {
+enum Condition {
     GREEN,
     YELLOW,
-    RED
-    //FORMATION_ATTACK
+    RED,
+    FORMATION_ATTACK
 };
 
 class GameModel {
@@ -41,7 +41,7 @@ protected:
     unsigned int highscore{0};
     unsigned int lives{3};
 
-    AlertStatus status{GREEN};
+    Condition condition{Condition::GREEN};
 
     unsigned int round{1};
     LevelInfo levelInfo;
@@ -53,6 +53,8 @@ protected:
 
     std::vector<Entity*>* enemies = new std::vector<Entity*>();
     std::vector<Base*>* bases = new std::vector<Base*>();
+
+    Spy* activeSpy;
 
 public:
     GameModel(SoundEngine* soundEngine) {
@@ -90,6 +92,8 @@ public:
         updateEnemies(deltaTime);
         updateBases(deltaTime);
 
+        updateCondition();
+
         clearDeadProjectiles(player->getProjectiles());
         clearDeadEnemies();
         clearDeadBases();
@@ -99,7 +103,7 @@ public:
         player->reset();
         player->setPosition(levelInfo.playerSpawn);
         camera->centerOn(player->getPosition());
-        status = GREEN;
+        condition = Condition::GREEN;
     }
 
     void nextRound() {
@@ -140,6 +144,10 @@ public:
         return bases;
     }
 
+    Spy* getSpy() {
+        return activeSpy;
+    }
+
     World* getWorld() const {
         return world;
     }
@@ -162,6 +170,10 @@ public:
 
     unsigned int getRound() const {
         return round;
+    }
+
+    Condition getCondition() const {
+        return condition;
     }
 
     unsigned int getScore() const {
@@ -191,6 +203,9 @@ protected:
             Degree baseAngle = Random::getRandomOne(0, 90);
             bases->push_back(new Base(basePosition, baseAngle, playerPosition));
         }
+
+        activeSpy = bases->at(Math::randomInt(0, bases->size() - 1))->getSpy();
+        activeSpy->searchForPlayer();
 
         spawnEnemies();
     }
@@ -305,25 +320,51 @@ protected:
                 score += base->receivePoints();
             }
 
-            Spy* spy = base->getSpy();
-            haveProjectilesHitEntity(player->getProjectiles(), spy);
-            hasEntityHitPlayer(spy);
-
-            if(spy->isDefeated()) {
-                score += base->receivePoints();
-            }
+            updateSpy(base->getSpy());
 
             for (Cannon* cannon : *base->getCannons()) {
-                updateProjectiles(cannon->getProjectiles());
-
-                haveProjectilesHitEntity(player->getProjectiles(), cannon);
-                hasEntityHitPlayer(cannon);
-                haveProjectilesHitPlayer(cannon->getProjectiles());
-
-                if(cannon->isDefeated()) {
-                    score += cannon->receivePoints();
-                }
+                updateCannon(cannon);
             }
+        }
+    }
+
+    void updateCannon(Cannon* cannon) {
+        updateProjectiles(cannon->getProjectiles());
+
+        haveProjectilesHitEntity(player->getProjectiles(), cannon);
+        hasEntityHitPlayer(cannon);
+        haveProjectilesHitPlayer(cannon->getProjectiles());
+
+        if(cannon->isDefeated()) {
+            score += cannon->receivePoints();
+        }
+    }
+
+    void updateSpy(Spy* spy) {
+        const float elapsedTime{0.f};
+        const float length{3.f};
+
+        haveProjectilesHitEntity(player->getProjectiles(), spy);
+        hasEntityHitPlayer(spy);
+
+        if(activeSpy->isDefeated()) {
+            score = activeSpy->receivePoints();
+        }
+    }
+
+    void updateCondition() {
+        auto defeated = activeSpy->isDefeated();
+        auto returning = activeSpy->isReturningToBase();
+        auto returned = activeSpy->returnedToBase();
+
+        if(defeated) {
+            condition = Condition::GREEN;
+
+        } else if (returning) {
+            condition = Condition::YELLOW;
+
+        } else if (returned) {
+            condition = Condition::RED;
         }
     }
 

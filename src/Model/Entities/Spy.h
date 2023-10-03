@@ -21,7 +21,7 @@ class Spy : public Entity {
 public:
     explicit Spy(const Vector2D &position, const Degree angle, Position* playerPositions)
             : Entity(position, angle), startPosition(position), playerPositions(playerPositions) {
-        speed = 155.0f;
+        speed = 0.f;
         spriteInfo = SpriteInfo::SPY;
     }
 
@@ -29,6 +29,8 @@ public:
         position = startPosition;
         angle = 0.f;
         spriteInfo = SpriteInfo::SPY;
+        defeated = false;
+        dead = false;
     }
 
     void update(float deltaTime) override {
@@ -89,10 +91,15 @@ public:
     void searchForPlayer() {
         loaded = true;
         receivedPoints = false;
+        speed = 155.0f;
     }
 
-    bool returnedToBasePlayer() {
+    bool returnedToBase() {
         return !loaded;
+    }
+
+    bool isReturningToBase() const {
+        return returningToBase;
     }
 
     bool isLoaded() const {

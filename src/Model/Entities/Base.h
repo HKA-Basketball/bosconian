@@ -32,6 +32,8 @@ public:
         hitbox = {{0, 0}, {30, 45}};
         points = 1500;
 
+        spy = new Spy(position, angle, playerPositions);
+
         for (const auto& cannonInfo : cannonInfos) {
             Vector2D cannonPos = position + cannonInfo.positionOffset.rotate(angle.toRadians());
             float radians = angle.toRadians() - M_PI_2;
@@ -40,10 +42,6 @@ public:
             Degree cannonAngle = angle + cannonInfo.angleOffset;
             cannons->emplace_back(new Cannon(cannonPos, cannonAngle, playerPositions, cannonInfo.spriteInfo, cannonInfo.explosionSpriteInfo));
         }
-
-        spy = new Spy(position, angle, playerPositions);
-        spy->searchForPlayer();
-
     }
 
     void update(float deltaTime) override {
