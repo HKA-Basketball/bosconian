@@ -188,7 +188,8 @@ protected:
         for (auto base : *bases) delete base;
         bases->clear();
         for (const Vector2D& basePosition : levelInfo.basePositions) {
-            bases->push_back(new Base(basePosition, 0, playerPosition));
+            Degree baseAngle = Random::getRandomOne(0, 90);
+            bases->push_back(new Base(basePosition, baseAngle, playerPosition));
         }
 
         spawnEnemies();
