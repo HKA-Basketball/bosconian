@@ -25,6 +25,12 @@ public:
         spriteInfo = SpriteInfo::SPY;
     }
 
+    void reset() {
+        position = startPosition;
+        angle = 0.f;
+        spriteInfo = SpriteInfo::SPY;
+    }
+
     void update(float deltaTime) override {
         if(!loaded || defeated) {
             Entity::update(deltaTime);

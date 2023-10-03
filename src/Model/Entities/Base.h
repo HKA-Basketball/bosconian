@@ -52,8 +52,10 @@ public:
         if (spy->isLoaded()) {
             spy->update(deltaTime);
 
-        } else if (spy->isDead()) {
-            spy->setPosition(position.getCenterPosition());
+        }
+
+        if (spy->isDead() || !spy->isLoaded()) {
+            spy->reset();
         }
 
         bool allCannonsDefeated = true;
