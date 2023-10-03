@@ -11,7 +11,7 @@
 void GameOverState::onEnter() {
     GameModel::Instance()->reduceLives();
 
-    if(GameModel::Instance()->getLives() > 0) {
+    if(GameModel::Instance()->getLives() == 0) {
         TextAnimation* gameOverAnimation = GameModel::Instance()->getGameOverAnimation();
         gameOverAnimation->start();
     }

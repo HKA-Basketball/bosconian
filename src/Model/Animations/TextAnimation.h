@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#include <utility>
+
 #include "Animation.h"
 
 class TextAnimation : public Animation {
@@ -11,7 +13,7 @@ class TextAnimation : public Animation {
     float length{3.f};
 
 public:
-    TextAnimation(std::string text) : Animation(), text(text) {}
+    explicit TextAnimation(std::string text) : Animation(), text(std::move(text)) {}
 
     void start() override {
         elapsedTime = 0;
