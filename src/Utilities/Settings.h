@@ -74,7 +74,7 @@ enum class Cabinet {
 
 struct PlayOptions {
     // Gameplay settings
-    Coinage conage = Coinage::One_One;
+    Coinage coinage = Coinage::One_One;
     BonusFighter bonusFighter = BonusFighter::Opt0_3;
     Lives lives = Lives::Three;
     Difficulty difficulty = Difficulty::Medium;
@@ -108,8 +108,8 @@ public:
         // Update lives based on swa_6 and swa_7
         playOptions.lives = GetLivesFromBits((state >> 6) & 0x03);
 
-        // Update conage based on swa_0, swa_1, and swa_2
-        playOptions.conage = static_cast<Coinage>((state >> 0) & 0x07);
+        // Update coinage based on swa_0, swa_1, and swa_2
+        playOptions.coinage = static_cast<Coinage>((state >> 0) & 0x07);
 
         // Update bonusFighter based on swa_3 to swa_5 and lives
         if (playOptions.lives != Lives::Five) {
@@ -134,8 +134,8 @@ public:
         // Get lives as bits from playOptions.lives
         state |= GetBitsFromLives(playOptions.lives) << 6;
 
-        // Get conage as bits from playOptions.conage
-        state |= (static_cast<int>(playOptions.conage) & 0x07) << 0;
+        // Get coinage as bits from playOptions.coinage
+        state |= (static_cast<int>(playOptions.coinage) & 0x07) << 0;
 
         // Get bonusFighter as bits based on playOptions.lives
         if (playOptions.lives != Lives::Five) {
