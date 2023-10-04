@@ -4,6 +4,7 @@
 #include "Level/LevelInfo.h"
 #include "GameModel.h"
 #include "../Utilities/IniLike.h"
+#include <algorithm>
 
 class LevelEditorModel : public GameModel {
     IniLike levelConfig;
@@ -50,6 +51,14 @@ public:
     void placeBase(int lvl, const Vector2D& pos) {
         for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
+                for (Base* base : *bases) {
+                    Hitbox currentHitbox(base->getPosition()-(base->getTotalSize()/2), base->getTotalSize());
+                    Hitbox newHitbox(pos-(base->getTotalSize()/2), base->getTotalSize());
+                    if (HitboxManager::areColliding(currentHitbox, newHitbox)) {
+                        return;
+                    }
+                }
+
                 l.basePositions.push_back(pos);
                 return;
             }
@@ -68,9 +77,16 @@ public:
     void undoBase(int lvl) {
         for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
-                if (!l.basePositions.empty())
-                    l.basePositions.pop_back();
-                return;
+                for (Base* base : *bases) {
+                    Hitbox currentHitbox(base->getPosition()-(base->getTotalSize()/2), base->getTotalSize());
+                    if (HitboxManager::areColliding(currentHitbox, player->getHitbox())) {
+                        auto it = std::find(l.basePositions.begin(), l.basePositions.end(), base->getPosition());
+                        if (it != l.basePositions.end()) {
+                            l.basePositions.erase(it);
+                            return;
+                        }
+                    }
+                }
             }
         }
     }
