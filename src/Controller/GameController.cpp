@@ -65,73 +65,81 @@ void GameController::loop() {
 }
 
 void GameController::updateState() {
-    switch (stateMachine->getCurrentState()->stateChanged()) {
+    States newState = stateMachine->getCurrentState()->stateChanged();
+
+    if (newState == States::PLAYING && levelEditor) {
+        newState = States::LEVEL_EDITOR;
+    }
+
+    switch (newState) {
         case States::NONE: default: break;
 
         case States::MAIN_MENU:
-            delete gameModel;
             delete gameView;
+            delete gameModel;
+
             gameModel = nullptr;
             gameView = nullptr;
-
-            delete levelEditorModel;
-            delete levelEditorView;
             levelEditorModel = nullptr;
             levelEditorView = nullptr;
 
             stateMachine->changeState(
-                    new MainMenuState(renderEngine, soundEngine, inputHandler)
+                new MainMenuState(renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::MAIN_MENU_OPTION:
             stateMachine->changeState(
-                    new MainMenuOptionState(renderEngine, soundEngine, inputHandler)
+                new MainMenuOptionState(renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::PAUSE_MENU:
             stateMachine->changeState(
-                    new PauseState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new PauseState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::PAUSE_MENU_OPTION:
             stateMachine->changeState(
-                    new PauseOptionState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new PauseOptionState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::ROUND_START:
+            levelEditor = false;
+
             if (gameModel == nullptr || gameView == nullptr) {
                 gameModel = new GameModel(soundEngine);
                 gameView = new GameView(renderEngine, gameModel);
             }
 
             stateMachine->changeState(
-                    new RoundStartState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new RoundStartState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::ROUND_CLEAR:
             stateMachine->changeState(
-                    new RoundClearState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new RoundClearState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::GAME_OVER:
             stateMachine->changeState(
-                    new GameOverState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new GameOverState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::PLAYING:
             stateMachine->changeState(
-                    new PlayingState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
+                new PlayingState(gameModel, gameView, renderEngine, soundEngine, inputHandler)
             );
             break;
 
         case States::LEVEL_EDITOR:
+            levelEditor = true;
+
             if (levelEditorModel == nullptr || levelEditorView == nullptr) {
                 levelEditorModel = new LevelEditorModel(soundEngine);
                 levelEditorView = new LevelEditorView(renderEngine, levelEditorModel);
@@ -139,7 +147,7 @@ void GameController::updateState() {
                 gameView = levelEditorView;
             }
             stateMachine->changeState(
-                    new LevelEditorState(levelEditorModel, levelEditorView, renderEngine, soundEngine, inputHandler)
+                new LevelEditorState(levelEditorModel, levelEditorView, renderEngine, soundEngine, inputHandler)
             );
             break;
     }

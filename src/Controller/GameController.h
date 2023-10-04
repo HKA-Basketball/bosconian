@@ -21,6 +21,8 @@ class GameController {
 
     FrameTimer* frameTimer;
 
+    bool levelEditor{false};
+
     GameModel* gameModel{nullptr};
     GameView* gameView{nullptr};
 
