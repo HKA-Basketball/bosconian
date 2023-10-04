@@ -99,6 +99,11 @@ public:
         return instance;
     }
 
+    static void DestroyInstance() {
+        delete instance;
+        instance = nullptr;
+    }
+
     void setSWA(int state) {
         // Update lives based on swa_6 and swa_7
         playOptions.lives = GetLivesFromBits((state >> 6) & 0x03);

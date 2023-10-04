@@ -35,6 +35,7 @@ public:
     ~GameController() {
         soundEngine->stopBackgroundMusic();
         StateMachine::DestroyInstance();
+        Settings::DestroyInstance();
 
         delete renderEngine;
         delete soundEngine;
