@@ -11,6 +11,7 @@ public:
         NONE,
         START,
         CONTINUE,
+        MAIN_MENU,
 
         OPTIONS,
         SWA,
@@ -64,7 +65,9 @@ public:
     }
 
     Option getClickedOption() {
-        return clickedOption;
+        Option currentClickedOption = clickedOption;
+        clickedOption = NONE;
+        return currentClickedOption;
     }
 
 };

@@ -28,8 +28,11 @@ void PauseState::update(float deltaTime) {
         //StateMachine::Instance()->changeState(new PauseOptionState(gameModel, gameView,
         //              renderEngine, soundEngine, inputHandler));
 
-    } else if(clickedOption == Menu::Option::EXIT) {
+    } else if(clickedOption == Menu::Option::MAIN_MENU) {
         StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
+
+    } else if(clickedOption == Menu::Option::EXIT) {
+        inputHandler->setQuit();
     }
 }
 
