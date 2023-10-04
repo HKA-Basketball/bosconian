@@ -100,6 +100,23 @@ public:
     }
 
     /**
+     * Rotates the vector around a given point by a specified angle (in radians).
+     * \param center The point to rotate around.
+     * \param angle The angle to rotate by (in radians).
+     * \return The rotated vector.
+     */
+    Vector2D rotateAround(const Vector2D& center, float angle) const {
+        // Translate vector to origin
+        Vector2D translated = *this - center;
+
+        // Rotate the translated vector
+        Vector2D rotated = translated.rotate(angle);
+
+        // Translate the rotated vector back
+        return rotated + center;
+    }
+
+    /**
      * Returns a normalized copy of the vector.
      * \return The normalized vector.
      */
