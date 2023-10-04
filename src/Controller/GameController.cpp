@@ -141,11 +141,10 @@ void GameController::updateState() {
             levelEditor = true;
 
             if (levelEditorModel == nullptr || levelEditorView == nullptr) {
-                levelEditorModel = new LevelEditorModel(soundEngine);
-                levelEditorView = new LevelEditorView(renderEngine, levelEditorModel);
-                gameModel = levelEditorModel;
-                gameView = levelEditorView;
+                gameModel = levelEditorModel = new LevelEditorModel(soundEngine);
+                gameView = levelEditorView = new LevelEditorView(renderEngine, levelEditorModel);
             }
+
             stateMachine->changeState(
                 new LevelEditorState(levelEditorModel, levelEditorView, renderEngine, soundEngine, inputHandler)
             );
