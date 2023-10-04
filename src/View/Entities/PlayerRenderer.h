@@ -3,6 +3,7 @@
 
 #include "EntityRenderer.h"
 #include "../../Model/Entities/Player.h"
+#include "../../Utilities/Settings.h"
 
 class PlayerRenderer : public EntityRenderer {
 public:

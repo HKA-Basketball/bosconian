@@ -6,6 +6,7 @@
 #include "../Controller/InputHandler.h"
 #include "../States/StateMachine.h"
 #include "../Utilities/FrameTimer.h"
+#include "../Utilities/Settings.h"
 #include "../Sound/SoundEngine.h"
 
 class GameController {

@@ -66,7 +66,7 @@ public:
         camera = new Camera();
 
         player = new Player({0, 0}, 0);
-        camera = Camera::Instance();
+        camera = new Camera();
 
         initLevel();
     }
@@ -201,7 +201,7 @@ public:
 
 protected:
 
-    void initLevel() {
+    virtual void initLevel() {
         levelInfo = levelManager->getLevelInfo(round);
         resetRound();
 
@@ -301,7 +301,7 @@ protected:
 
     void updateProjectiles(Projectiles* projectiles) {
         for (Projectile* projectile : *projectiles) {
-            if (!Camera::Instance()->IsInView(*projectile)) {
+            if (!camera->IsInView(*projectile)) {
                 projectile->setDefeated();
             }
         }

@@ -5,6 +5,7 @@
 #include "../../Model/Camera.h"
 #include "../../Model/Entities/Entity.h"
 #include "../../Model/Entities/Base.h"
+#include "../../Utilities/Settings.h"
 
 class EntityRenderer {
 protected:
