@@ -32,7 +32,7 @@ void MainMenuOptionState::update(float deltaTime) {
     Menu::Option clickedOption = menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::EXIT) {
-        StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
+        changedState = States::MAIN_MENU;
     }
 }
 

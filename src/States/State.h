@@ -1,6 +1,8 @@
 #ifndef BOSCONIAN_STATE_H
 #define BOSCONIAN_STATE_H
 
+#include "States.h"
+
 #include "../Sound/SoundEngine.h"
 #include "../View/RenderEngine.h"
 #include "../Controller/InputHandler.h"
@@ -10,6 +12,8 @@ protected:
     RenderEngine* renderEngine;
     SoundEngine* soundEngine;
     InputHandler* inputHandler;
+
+    States changedState{States::NONE};
 
 public:
     State(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
@@ -24,6 +28,10 @@ public:
     virtual void handleInput(float deltaTime) {};
     virtual void update(float deltaTime) {};
     virtual void render() {};
+
+    States stateChanged() {
+        return changedState;
+    }
 };
 
 #endif //BOSCONIAN_STATE_H

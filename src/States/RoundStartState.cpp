@@ -13,8 +13,7 @@ void RoundStartState::update(float deltaTime) {
     readyAnimation->update(deltaTime);
 
     if (readyAnimation->isDone()) {
-        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView,
-                       renderEngine, soundEngine, inputHandler));
+        changedState = States::PLAYING;
     }
 }
 

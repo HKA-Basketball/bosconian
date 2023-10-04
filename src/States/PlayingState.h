@@ -12,11 +12,6 @@ class PlayingState : public State {
     GameView* gameView;
 
 public:
-    PlayingState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
-    : State(renderEngine, soundEngine, inputHandler) {
-        gameModel = new GameModel(soundEngine);
-        gameView = new GameView(renderEngine, gameModel);
-    };
 
     PlayingState(GameModel* gameModel, GameView* gameView,
      RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)

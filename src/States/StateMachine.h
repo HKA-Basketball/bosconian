@@ -9,8 +9,9 @@
 
 class StateMachine {
 private:
-    static StateMachine* instance;
     State* currentState;
+
+public:
 
     StateMachine(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler) {
         currentState = new MainMenuState(renderEngine, soundEngine, inputHandler);
@@ -18,24 +19,6 @@ private:
 
     ~StateMachine() {
         delete currentState;
-    }
-
-public:
-
-    static StateMachine* InitInstance(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler) {
-        if (!instance) {
-            instance = new StateMachine(renderEngine, soundEngine, inputHandler);
-        }
-        return instance;
-    }
-
-    static StateMachine* Instance() {
-        return instance;
-    }
-
-    static void DestroyInstance() {
-        delete instance;
-        instance = nullptr;
     }
 
     void changeState(State* newState) {

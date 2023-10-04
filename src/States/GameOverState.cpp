@@ -22,10 +22,9 @@ void GameOverState::update(float deltaTime) {
 
             if(gameModel->getLives() > 0) {
                 gameModel->resetRound();
-                StateMachine::Instance()->changeState(new RoundStartState(gameModel, gameView,
-                              renderEngine, soundEngine, inputHandler));
+                changedState = States::ROUND_START;
             } else {
-                StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
+                changedState = States::MAIN_MENU;
             }
 
         }

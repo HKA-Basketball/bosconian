@@ -16,13 +16,13 @@ void MainMenuState::update(float deltaTime) {
     Menu::Option clickedOption =  menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::START) {
-        StateMachine::Instance()->changeState(new RoundStartState(renderEngine, soundEngine, inputHandler));
+        changedState = States::ROUND_START;
 
     } else if(clickedOption == Menu::Option::LEVEL_EDITOR) {
-        StateMachine::Instance()->changeState(new LevelEditorState(renderEngine, soundEngine, inputHandler));
+        changedState = States::LEVEL_EDITOR;
 
     } else if(clickedOption == Menu::Option::OPTIONS) {
-        StateMachine::Instance()->changeState(new MainMenuOptionState(renderEngine, soundEngine, inputHandler));
+        changedState = States::MAIN_MENU_OPTION;
 
     } else if(clickedOption == Menu::Option::EXIT) {
         inputHandler->setQuit();

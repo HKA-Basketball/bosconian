@@ -7,8 +7,7 @@
 
 void PauseState::handleInput(float deltaTime) {
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView,
-                       renderEngine, soundEngine, inputHandler));
+        changedState = States::PLAYING;
     }
 
     menuModel->handleHover(inputHandler->getMousePosition());
@@ -21,15 +20,13 @@ void PauseState::update(float deltaTime) {
     PauseMenu::Option clickedOption =  menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::CONTINUE) {
-        StateMachine::Instance()->changeState(new PlayingState(gameModel, gameView,
-                       renderEngine, soundEngine, inputHandler));
+        changedState = States::PLAYING;
 
     } else if(clickedOption == Menu::Option::OPTIONS) {
-        StateMachine::Instance()->changeState(new PauseOptionState(gameModel, gameView,
-                      renderEngine, soundEngine, inputHandler));
+        changedState = States::PAUSE_MENU_OPTION;
 
     } else if(clickedOption == Menu::Option::MAIN_MENU) {
-        StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
+        changedState = States::MAIN_MENU;
 
     } else if(clickedOption == Menu::Option::EXIT) {
         inputHandler->setQuit();

@@ -12,11 +12,6 @@ class RoundStartState : public State {
     GameView* gameView;
 
 public:
-    RoundStartState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
-    : State(renderEngine, soundEngine, inputHandler) {
-        gameModel = new GameModel(soundEngine);
-        gameView = new GameView(renderEngine, gameModel);
-    };
 
     RoundStartState(GameModel* gameModel, GameView* gameView,
             RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)

@@ -44,8 +44,7 @@ void PlayingState::handleInput(float deltaTime) {
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PauseState(gameModel, gameView,
-                     renderEngine, soundEngine, inputHandler));
+        changedState = States::PAUSE_MENU;
     }
 }
 
@@ -54,12 +53,10 @@ void PlayingState::update(float deltaTime) {
     gameModel->update(deltaTime);
 
     if(gameModel->getPlayer()->isDead()) {
-        StateMachine::Instance()->changeState(new GameOverState(gameModel, gameView,
-                    renderEngine, soundEngine, inputHandler));
+        changedState = States::GAME_OVER;
 
     } else if(gameModel->getBases()->empty()) {
-        StateMachine::Instance()->changeState(new RoundClearState(gameModel, gameView,
-                      renderEngine, soundEngine, inputHandler));
+        changedState = States::ROUND_CLEAR;
     }
 }
 

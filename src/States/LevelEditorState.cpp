@@ -32,8 +32,7 @@ void LevelEditorState::handleInput(float deltaTime) {
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        StateMachine::Instance()->changeState(new PauseState(levelEditorModel, levelEditorView,
-                                                             renderEngine, soundEngine, inputHandler));
+        changedState = States::PAUSE_MENU;
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_b)) {
