@@ -7,12 +7,16 @@
 
 class LevelManager {
 private:
-    const std::vector<LevelInfo> levels;
+    std::vector<LevelInfo> levels;
     const std::vector<int> repeatSequence = {3, 4, 12, 13, 5, 14};
 
 public:
     LevelManager() : LevelManager(levelInfoList) {}
     LevelManager(const std::vector<LevelInfo>& levels) : levels(levels) {}
+
+    void updateLevels(const std::vector<LevelInfo>& levels) {
+        this->levels = levels;
+    }
 
     const LevelInfo& getLevelInfo(int round) const {
         // If round is between 1 and 11, return corresponding level

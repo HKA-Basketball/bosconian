@@ -7,12 +7,13 @@
 
 class LevelEditorModel : public GameModel {
     IniLike levelConfig;
+    std::vector<LevelInfo> levelInfos;
 
 public:
 
     explicit LevelEditorModel(SoundEngine* soundEngine, const std::string& configFile = ".\\cfg\\level.ini")
-    : GameModel(soundEngine), levelConfig(configFile) {
-        levelConfig.add_item("Levels", "levels", levelInfoList);
+    : GameModel(soundEngine), levelConfig(configFile), levelInfos(levelInfoList) {
+        levelConfig.add_item("Levels", "levels", levelInfos);
     }
 
     void update(float deltaTime) override {
@@ -20,9 +21,10 @@ public:
         camera->centerOn(player->getPosition());
 
         background->update(deltaTime);
+    }
 
-        updateBases(deltaTime);
-        clearDeadBases();
+    void updateLevel() {
+        initLevel();
     }
 
     int getCurrentLevel() {
@@ -30,11 +32,11 @@ public:
     }
 
     void increaseLevel() {
-        levelManager->getLevelInfoByLevel(levelInfo.levelNumber + 1);
+        levelInfo = levelManager->getLevelInfoByLevel(getCurrentLevel() + 1);
     }
 
     void decreaseLevel() {
-        levelManager->getLevelInfoByLevel(levelInfo.levelNumber - 1);
+        levelInfo = levelManager->getLevelInfoByLevel(getCurrentLevel() - 1);
     }
 
     void saveLevels() {
@@ -47,7 +49,7 @@ public:
     }
 
     void placeBase(int lvl, const Vector2D& pos) {
-        for (auto& l : levelInfoList) {
+        for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
                 l.basePositions.push_back(pos);
                 return;
@@ -56,7 +58,7 @@ public:
     }
 
     void setPlayerSpawnPos(int lvl, const Vector2D& pos) {
-        for (auto& l : levelInfoList) {
+        for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
                 l.playerSpawn = pos;
                 return;
@@ -65,7 +67,7 @@ public:
     }
 
     void undoBase(int lvl) {
-        for (auto& l : levelInfoList) {
+        for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
                 l.basePositions.pop_back();
                 return;
@@ -80,6 +82,17 @@ private:
         }
     }
 
+    void initLevel() override {
+        levelManager->updateLevels(levelInfos);
+        levelInfo = levelManager->getLevelInfoByLevel(levelInfo.levelNumber);
+
+        for (auto base : *bases) delete base;
+        bases->clear();
+        for (const Vector2D& basePosition : levelInfo.basePositions) {
+            Degree baseAngle = Random::getRandomOne(0, 90);
+            bases->push_back(new Base(basePosition, baseAngle, playerPosition));
+        }
+    }
 };
 
 
