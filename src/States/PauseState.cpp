@@ -11,7 +11,7 @@ void PauseState::handleInput(float deltaTime) {
     }
 
     menuModel->handleHover(inputHandler->getMousePosition());
-    menuModel->handleClick(inputHandler->isMouseButtonPressed());
+    menuModel->handleClick(inputHandler->isMouseButtonPressedAndErase());
 }
 
 void PauseState::update(float deltaTime) {

@@ -7,7 +7,7 @@
 
 void MainMenuState::handleInput(float deltaTime) {
     menuModel->handleHover(inputHandler->getMousePosition());
-    menuModel->handleClick(inputHandler->isMouseButtonPressed());
+    menuModel->handleClick(inputHandler->isMouseButtonPressedAndErase());
 }
 
 void MainMenuState::update(float deltaTime) {
