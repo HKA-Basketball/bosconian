@@ -49,7 +49,7 @@ private:
     }
 
     void drawCannonView(Cannon* cannon, const Vector2D& position) {
-        Vector2D playerPosition = Camera::Instance()->WorldToScreen(cannon->getPlayerPositions()->getCenterPosition());
+        Vector2D playerPosition = camera->WorldToScreen(cannon->getPlayerPositions()->getCenterPosition());
 
         // Calculate the start and end angles of the view cone
         float startAngle = Math::normalizeAngle360(cannon->getAngle().getDegree() - (cannon->getViewAngle() / 2.0f));

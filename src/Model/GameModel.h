@@ -62,7 +62,8 @@ public:
 
         levelManager = new LevelManager();
         world = new World();
-        background = Background::Instance();
+        background = new Background();
+        camera = new Camera();
 
         player = new Player({0, 0}, 0);
         camera = Camera::Instance();
@@ -71,7 +72,11 @@ public:
     }
 
     ~GameModel() {
+        delete levelManager;
+        delete world;
+        delete background;
         delete player;
+        delete camera;
         delete playerPosition;
         delete readyAnimation;
         delete gameOverAnimation;
@@ -156,6 +161,10 @@ public:
 
     Camera* getCamera() const {
         return camera;
+    }
+
+    Background* getBackground() const {
+        return background;
     }
 
     TextAnimation* getReadyAnimation() const {

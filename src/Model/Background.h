@@ -38,23 +38,16 @@ public:
 
 class Background {
 private:
-    static Background* instance;
     std::vector<Star> stars;
     const int numStars = 256;
     Uint64 elapsedTime = 0;
     const Uint64 randomizeDelay = 750; // 0,75 seconds in milliseconds
     bool starHalfToggle = false;
 
-    Background() {
-        stars.resize(numStars);
-    }
 
 public:
-    static Background* Instance() {
-        if (!instance) {
-            instance = new Background();
-        }
-        return instance;
+    Background() {
+        stars.resize(numStars);
     }
 
     void update(float deltaTime) {

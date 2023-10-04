@@ -1,8 +1,8 @@
 #include "GameView.h"
 
 bool GameView::drawBackground() {
-    Vector2D cameraCenter = Camera::Instance()->getCenter();
-    for (const auto& star : Background::Instance()->getStars()) {
+    Vector2D cameraCenter = gameModel->getCamera()->getCenter();
+    for (const auto& star : gameModel->getBackground()->getStars()) {
         // Calculate parallax effect for each star
         float parallaxX = fmod(star.rect.x - Config::parallaxFactor * cameraCenter.x, Config::levelWidth * Config::parallaxFactor);
         if (parallaxX < 0) parallaxX += Config::levelWidth * Config::parallaxFactor;

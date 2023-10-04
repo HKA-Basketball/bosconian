@@ -13,20 +13,9 @@ private:
     Vector2D center{0, 0}; // Center of the camera
     Vector2D size{Config::screenWidth, Config::screenHeight}; // Screen size
 
-
-    Camera() {}
-    ~Camera() {}
-
 public:
-    //Camera(const Vector2D& size) : size(size) {}
-
-    static Camera* Instance() {
-        if (!instance) {
-            instance = new Camera();
-            return instance;
-        }
-        return instance;
-    }
+    Camera() = default;
+    ~Camera() = default;
 
     void centerOn(const Vector2D& newCenter);
 
