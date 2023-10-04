@@ -25,8 +25,8 @@ void PauseState::update(float deltaTime) {
                        renderEngine, soundEngine, inputHandler));
 
     } else if(clickedOption == Menu::Option::OPTIONS) {
-        //StateMachine::Instance()->changeState(new PauseOptionState(gameModel, gameView,
-        //              renderEngine, soundEngine, inputHandler));
+        StateMachine::Instance()->changeState(new PauseOptionState(gameModel, gameView,
+                      renderEngine, soundEngine, inputHandler));
 
     } else if(clickedOption == Menu::Option::MAIN_MENU) {
         StateMachine::Instance()->changeState(new MainMenuState(renderEngine, soundEngine, inputHandler));
