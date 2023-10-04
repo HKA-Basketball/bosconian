@@ -27,52 +27,53 @@ void LevelEditorState::handleInput(float deltaTime) {
     }
 
     if (angle != -1) {
-        gameModel->getPlayer()->setAngle(angle);
-        gameModel->getPlayer()->update(deltaTime);
+        levelEditorModel->getPlayer()->setAngle(angle);
+        levelEditorModel->getPlayer()->update(deltaTime);
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
-        //StateMachine::Instance()->changeState(new PauseState());
+        StateMachine::Instance()->changeState(new PauseState(levelEditorModel, levelEditorView,
+                                                             renderEngine, soundEngine, inputHandler));
     }
 
     if (inputHandler->isKeyPressedAndErase(SDLK_b)) {
-        gameModel->placeBase(gameModel->getCurrentLevel(),
-                             gameModel->getPlayer()->getPosition());
-        gameModel->updateLevel();
+        levelEditorModel->placeBase(levelEditorModel->getCurrentLevel(),
+                             levelEditorModel->getPlayer()->getPosition());
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_p)) {
-        gameModel->setPlayerSpawnPos(gameModel->getCurrentLevel(),
-                                     gameModel->getPlayer()->getPosition());
-        gameModel->updateLevel();
+        levelEditorModel->setPlayerSpawnPos(levelEditorModel->getCurrentLevel(),
+                                            levelEditorModel->getPlayer()->getPosition());
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_u)) {
-        gameModel->undoBase(gameModel->getCurrentLevel());
-        gameModel->updateLevel();
+        levelEditorModel->undoBase(levelEditorModel->getCurrentLevel());
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_k)) {
-        gameModel->saveLevels();
-        gameModel->updateLevel();
+        levelEditorModel->saveLevels();
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_c)) {
-        gameModel->readLevels();
-        gameModel->updateLevel();
+        levelEditorModel->readLevels();
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_m)) {
-        gameModel->increaseLevel();
-        gameModel->updateLevel();
+        levelEditorModel->increaseLevel();
+        levelEditorModel->updateLevel();
     }
     if (inputHandler->isKeyPressedAndErase(SDLK_n)) {
-        gameModel->decreaseLevel();
-        gameModel->updateLevel();
+        levelEditorModel->decreaseLevel();
+        levelEditorModel->updateLevel();
     }
 }
 
 void LevelEditorState::update(float deltaTime) {
     // Update GameState
-    gameModel->update(deltaTime);
+    levelEditorModel->update(deltaTime);
 }
 
 void LevelEditorState::render() {
     // Render GameStateState
-    gameView->render(0);
+    levelEditorView->render(0);
 }

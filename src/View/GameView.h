@@ -13,6 +13,7 @@
 #include "../Utilities/Degree.h"
 
 class GameView {
+protected:
     RenderEngine* renderEngine;
     GameModel* gameModel;
 
@@ -34,9 +35,9 @@ public:
 
     ~GameView() = default;
 
-    void render(float deltaTime);
+    virtual void render(float deltaTime);
 
-private:
+protected:
     bool drawBackground();
 
     void drawChunks();

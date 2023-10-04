@@ -6,17 +6,18 @@
 #include "../Model/LevelEditorModel.h"
 #include "../View/GameView.h"
 #include "../Controller/InputHandler.h"
+#include "../View/LevelEditorView.h"
 
 class LevelEditorState : public State {
-    LevelEditorModel* gameModel;
-    GameView* gameView;
+    LevelEditorModel* levelEditorModel;
+    LevelEditorView* levelEditorView;
 
 public:
 
     LevelEditorState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
     : State(renderEngine, soundEngine, inputHandler) {
-        gameModel = new LevelEditorModel(soundEngine);
-        gameView = new GameView(renderEngine, gameModel);
+        levelEditorModel = new LevelEditorModel(soundEngine);
+        levelEditorView = new LevelEditorView(renderEngine, levelEditorModel);
     }
 
     void handleInput(float deltaTime) override;
