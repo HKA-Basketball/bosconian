@@ -5,8 +5,7 @@ void InputHandler::update() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_QUIT:
-                // Handle quit event (e.g., set a flag to exit the game loop)
-                SDL_Quit();
+                quit = true;
                 break;
             case SDL_KEYDOWN:
                 keysPressed.insert(event.key.keysym.sym);
@@ -30,6 +29,14 @@ void InputHandler::update() {
                 break;
         }
     }
+}
+
+bool InputHandler::hasQuit() const {
+    return quit;
+}
+
+void InputHandler::setQuit() {
+    quit = true;
 }
 
 bool InputHandler::isKeyPressed(SDL_Keycode key) const {

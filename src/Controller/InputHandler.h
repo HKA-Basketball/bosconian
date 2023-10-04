@@ -8,6 +8,7 @@
 
 class InputHandler {
 private:
+    bool quit{false};
     std::unordered_set<SDL_Keycode> keysPressed;
     Vector2D mousePosition;
     bool mouseButtonPressed;
@@ -18,6 +19,8 @@ public:
     ~InputHandler() = default;
 
     void update();
+    bool hasQuit() const;
+    void setQuit();
     bool isKeyPressed(SDL_Keycode key) const;
     bool isKeyPressedAndErase(SDL_Keycode key);
     Vector2D getMousePosition() const;

@@ -42,8 +42,8 @@ public:
         delete frameTimer;
     }
 
-    [[noreturn]] void start() {
-        while(true) loop();
+    void start() {
+        while(!inputHandler->hasQuit()) loop();
     }
 
 private:

@@ -10,7 +10,9 @@
 
 int main(int argc, char* args[]) {
 
-    GameController* controller = new GameController();
+    auto* controller = new GameController();
     controller->start();
     delete controller;
+
+    return 0;
 }

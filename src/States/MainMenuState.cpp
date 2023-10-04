@@ -20,6 +20,9 @@ void MainMenuState::update(float deltaTime) {
     } else if(clickedOption == Menu::Option::OPTIONS) {
         menuModel->reset();
         StateMachine::Instance()->changeState(new MainMenuOptionState(renderEngine, soundEngine, inputHandler));
+
+    } else if(clickedOption == Menu::Option::EXIT) {
+        inputHandler->setQuit();
     }
 }
 
