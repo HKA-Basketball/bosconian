@@ -10,10 +10,10 @@ class PauseMenu : public Menu {
 public:
     PauseMenu() {
         menuItems = {
-                {CONTINUE, {"Continue", {Config::titlePositionX, 350}, {250, 30}, true}},
-                {OPTIONS, {"Options", {Config::titlePositionX, 400}, {220, 30}, true}},
-                {MAIN_MENU, {"Main Menu", {Config::titlePositionX, 450}, {280, 30}, true}},
-                {EXIT, {"Exit", {Config::titlePositionX, 500}, {140, 30}, true}}
+                {CONTINUE, {"Continue", {Config::pausePositionX, 400}, {250, 30}, true}},
+                {OPTIONS, {"Options", {Config::pausePositionX, 450}, {220, 30}, true}},
+                {MAIN_MENU, {"Main Menu", {Config::pausePositionX, 500}, {280, 30}, true}},
+                {EXIT, {"Exit", {Config::pausePositionX, 550}, {140, 30}, true}}
         };
     };
 

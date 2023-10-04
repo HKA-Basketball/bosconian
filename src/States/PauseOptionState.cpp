@@ -9,11 +9,6 @@ void PauseOptionState::onEnter() {
     menuModel->getSwitchItems()->at(Menu::Option::DEBUG).setState(gameSettings->getDebugMode());
 }
 
-void PauseOptionState::onExit() {
-    Settings* gameSettings = Settings::Instance();
-    gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
-}
-
 void PauseOptionState::handleInput(float deltaTime) {
     if (inputHandler->isKeyPressedAndErase(SDLK_ESCAPE)) {
         StateMachine::Instance()->changeState(new PlayingState(renderEngine, soundEngine, inputHandler));
@@ -25,6 +20,9 @@ void PauseOptionState::handleInput(float deltaTime) {
 
 void PauseOptionState::update(float deltaTime) {
     menuModel->update();
+
+    Settings* gameSettings = Settings::Instance();
+    gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
 
     PauseMenu::Option clickedOption =  menuModel->getClickedOption();
 

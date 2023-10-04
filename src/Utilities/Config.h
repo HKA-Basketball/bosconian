@@ -34,9 +34,24 @@ namespace Config {
     const float titlePositionX = windowCenterX;
     const float titlePositionY = 150.f;
 
+    const float pauseBoxPositionX = screenCenterX/2;
+    const float pauseBoxPositionY = 250.f;
+    const float pauseBoxWidth = screenCenterX;
+    const float pauseBoxHeight = 375.f;
+
+    const float pausePositionX = screenCenterX;
+    const float pausePositionY = 300.f;
+
+    const float pauseOptionBoxPositionX = pauseBoxPositionX/2;
+    const float pauseOptionBoxPositionY = 200.f;
+    const float pauseOptionBoxWidth = screenCenterX + pauseBoxPositionX;
+    const float pauseOptionBoxHeight = 550.f;
+
     const SDL_Color ColorBlack = {0, 0, 0, 255};
     const SDL_Color ColorWhite = {255, 255, 255, 255};
+    const SDL_Color ColorDarkGrey = {32, 32, 32, 255};
     const SDL_Color ColorGrey = {128, 128, 128, 255};
+    const SDL_Color ColorLightGrey = {194, 194, 194, 255};
     const SDL_Color ColorRed = { 255, 0, 0, 255 };
     const SDL_Color ColorGreen = { 0, 255, 0, 255 };
     const SDL_Color ColorBlue = { 0, 0, 255, 255 };

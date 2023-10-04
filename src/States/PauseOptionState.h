@@ -32,7 +32,6 @@ public:
     }
 
     void onEnter() override;
-    void onExit() override;
 
     void handleInput(float deltaTime) override;
     void update(float deltaTime) override;

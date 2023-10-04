@@ -11,12 +11,12 @@ public:
     PauseMenuOption() {
         // Initialize the two SwitchItems with appropriate parameters
         switchItems = new std::map<Option, SwitchItem>{
-                {DEBUG, {1, {290, 275}, {60, 60}, "DEBUG MODE"}},
+                {DEBUG, {1, {275, 350}, {50, 50}, "DEBUG MODE"}},
         };
 
         // Initialize the exit MenuItem and add it to the menuItems map
         menuItems = {
-                {EXIT, {"Exit", {1000, 800}, {150, 50}, true}}
+                {EXIT, {"Exit", {675, 675}, {150, 50}, true}}
         };
     }
 
