@@ -18,6 +18,8 @@
 #include "Entities/Base.h"
 
 #include "Animations/TextAnimation.h"
+#include "../Utilities/Settings.h"
+#include "../Utilities/IniLike.h"
 
 enum Condition {
     GREEN,
@@ -61,6 +63,16 @@ public:
         this->soundEngine = soundEngine;
 
         levelManager = new LevelManager();
+        if (Settings::Instance()->getCustomLevelMode()) {
+            IniLike levelConfig(".\\cfg\\level.ini");
+            std::vector<LevelInfo> tmpLevelInfoList;
+            levelConfig.add_item("Levels", "levels", tmpLevelInfoList);
+            levelConfig.read();
+            levelManager->updateLevels(tmpLevelInfoList);
+        } else {
+            levelManager->updateLevels(levelInfoListDef);
+        }
+
         world = new World();
         background = new Background();
         camera = new Camera();

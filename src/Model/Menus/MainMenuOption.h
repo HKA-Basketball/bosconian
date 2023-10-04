@@ -12,10 +12,10 @@ public:
     MainMenuOption() {
         // Initialize the two SwitchItems with appropriate parameters
         switchItems = new std::map<Option, SwitchItem>{
-                {SWA, {8, {130, 100}, {45, 35}, "SWA"}},
-                {SWB, {8, {630, 100}, {45, 35}, "SWB"}},
-                {DEBUG, {1, {290, 275}, {60, 60}, "DEBUG MODE"}},
-                {CUSTOMLEVELS, {1, {790, 275}, {60, 60}, "CUSTOM LEVELS"}},
+                {SWA,           {8, {130, 100}, {45, 35}, "SWA"}},
+                {SWB,           {8, {630, 100}, {45, 35}, "SWB"}},
+                {DEBUG,         {1, {290, 275}, {60, 60}, "DEBUG MODE"}},
+                {CUSTOM_LEVELS, {1, {790, 275}, {60, 60}, "CUSTOM LEVELS"}},
         };
 
         // Initialize the exit MenuItem and add it to the menuItems map

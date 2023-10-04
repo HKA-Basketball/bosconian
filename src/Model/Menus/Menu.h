@@ -17,7 +17,7 @@ public:
         SWA,
         SWB,
         DEBUG,
-        CUSTOMLEVELS,
+        CUSTOM_LEVELS,
 
         EXIT
     };

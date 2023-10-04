@@ -10,7 +10,7 @@ void MainMenuOptionState::onEnter() {
     menuModel->getSwitchItems()->at(Menu::Option::SWA).setState(gameSettings->getSWA());
     menuModel->getSwitchItems()->at(Menu::Option::SWB).setState(gameSettings->getSWB());
     menuModel->getSwitchItems()->at(Menu::Option::DEBUG).setState(gameSettings->getDebugMode());
-    menuModel->getSwitchItems()->at(Menu::Option::CUSTOMLEVELS).setState(gameSettings->getCustomLevelMode());
+    menuModel->getSwitchItems()->at(Menu::Option::CUSTOM_LEVELS).setState(gameSettings->getCustomLevelMode());
 }
 
 void MainMenuOptionState::onExit() {
@@ -18,7 +18,7 @@ void MainMenuOptionState::onExit() {
     gameSettings->setSWA(menuModel->getSwitchItems()->at(Menu::Option::SWA).getState());
     gameSettings->setSWB(menuModel->getSwitchItems()->at(Menu::Option::SWB).getState());
     gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
-    gameSettings->setCustomLevelMode(menuModel->getSwitchItems()->at(Menu::Option::CUSTOMLEVELS).getState());
+    gameSettings->setCustomLevelMode(menuModel->getSwitchItems()->at(Menu::Option::CUSTOM_LEVELS).getState());
 }
 
 void MainMenuOptionState::handleInput(float deltaTime) {
