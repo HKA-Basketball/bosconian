@@ -6,11 +6,9 @@
 #include "../../Utilities/Config.h"
 
 class MainMenuOption : public Menu {
-private:
-    static MainMenuOption* instance;
-
     std::map<Option, SwitchItem>* switchItems;
 
+public:
     MainMenuOption() {
         // Initialize the two SwitchItems with appropriate parameters
         switchItems = new std::map<Option, SwitchItem>{
@@ -25,16 +23,9 @@ private:
         };
     }
 
-    ~MainMenuOption() = default;
-
-public:
-    static MainMenuOption* Instance() {
-        if (!instance) {
-            instance = new MainMenuOption();
-            return instance;
-        }
-        return instance;
-    }
+    ~MainMenuOption() {
+        delete switchItems;
+    };
 
     // Override the update method to handle SwitchItems
     void update() override {

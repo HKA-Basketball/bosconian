@@ -20,11 +20,12 @@ public:
     PauseState(GameModel* gameModel, GameView* gameView,
      RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
     : State(renderEngine, soundEngine, inputHandler), gameModel(gameModel), gameView(gameView) {
-        menuModel = PauseMenu::Instance();
+        menuModel = new PauseMenu();
         menuView = new PauseMenuView(renderEngine, menuModel);
     };
 
     ~PauseState() {
+        delete menuModel;
         delete menuView;
     }
 public:

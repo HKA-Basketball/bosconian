@@ -7,9 +7,7 @@
 #include "../../Utilities/Vector2D.h"
 
 class PauseMenu : public Menu {
-private:
-    static PauseMenu* instance;
-
+public:
     PauseMenu() {
         menuItems = {
                 {CONTINUE, {"Continue", {Config::titlePositionX, 350}, {250, 30}, true}},
@@ -19,15 +17,6 @@ private:
     };
 
     ~PauseMenu() = default;
-
-public:
-    static PauseMenu* Instance() {
-        if (!instance) {
-            instance = new PauseMenu();
-            return instance;
-        }
-        return instance;
-    }
 };
 
 

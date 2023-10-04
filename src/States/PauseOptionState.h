@@ -27,6 +27,7 @@ public:
     };
 
     ~PauseOptionState() {
+        delete menuModel;
         delete menuView;
     }
 

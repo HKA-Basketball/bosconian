@@ -14,11 +14,12 @@ class MainMenuState : public State {
 public:
     MainMenuState(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler)
     : State(renderEngine, soundEngine, inputHandler) {
-        menuModel = MainMenu::Instance();
+        menuModel = new MainMenu();
         menuView = new MainMenuView(renderEngine, menuModel);
     };
 
     ~MainMenuState() {
+        delete menuModel;
         delete menuView;
     }
 
