@@ -49,8 +49,10 @@ private:
     }
 
     void renderCondition() {
+
         auto conditionColor = Config::ColorGreen;
         std::string conditionText = "Green";
+        auto textSize = Font::JOYSTIX_38PX;
 
         if(gameModel->getCondition() == Condition::YELLOW) {
             conditionColor = Config::ColorYellow;
@@ -59,13 +61,18 @@ private:
         } else if (gameModel->getCondition() == Condition::RED) {
             conditionColor = Config::ColorRed;
             conditionText = "Red !!";
+
+        } else if (gameModel->getCondition() == Condition::FORMATION_ATTACK) {
+            conditionColor = Config::ColorRed;
+            conditionText = "Formation Attack";
+            textSize = Font::JOYSTIX_24PX;
         }
 
         renderEngine->renderRectangle({Config::screenWidth, 38*4+1}, {Config::HUDWidth, 100},
                                       conditionColor, true);
 
         renderEngine->renderText(conditionText, {Config::screenWidth + (Config::HUDWidth/2), 38*4+1+50},
-                                 Config::ColorBlack, Font::JOYSTIX_38PX, TextAlign::CENTER);
+                                 Config::ColorBlack, textSize, TextAlign::CENTER);
     }
 
     void renderRadar() {
