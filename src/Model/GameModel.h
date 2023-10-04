@@ -66,7 +66,6 @@ public:
         camera = new Camera();
 
         player = new Player({0, 0}, 0);
-        camera = new Camera();
 
         initLevel();
     }

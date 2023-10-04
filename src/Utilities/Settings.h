@@ -171,9 +171,18 @@ public:
         debugMode = isDebugModeOn;
     }
 
+    bool getCustomLevelMode() {
+        return customLevel;
+    }
+
+    void setCustomLevelMode(bool isCustomLevelOn) {
+        customLevel = isCustomLevelOn;
+    }
+
 private:
     PlayOptions playOptions;
     bool debugMode = false;
+    bool customLevel = false;
 
     Lives GetLivesFromBits(int bits) {
         switch (bits) {
