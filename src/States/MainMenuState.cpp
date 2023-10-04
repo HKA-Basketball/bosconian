@@ -3,6 +3,7 @@
 #include "StateMachine.h"
 #include "RoundStartState.h"
 #include "MainMenuOptionState.h"
+#include "LevelEditorState.h"
 
 void MainMenuState::handleInput(float deltaTime) {
     menuModel->handleHover(inputHandler->getMousePosition());
@@ -16,6 +17,10 @@ void MainMenuState::update(float deltaTime) {
 
     if(clickedOption == Menu::Option::START) {
         StateMachine::Instance()->changeState(new RoundStartState(renderEngine, soundEngine, inputHandler));
+
+    } else if(clickedOption == Menu::Option::LEVEL_EDITOR) {
+        StateMachine::Instance()->changeState(new LevelEditorState(renderEngine, soundEngine, inputHandler));
+
     } else if(clickedOption == Menu::Option::OPTIONS) {
         StateMachine::Instance()->changeState(new MainMenuOptionState(renderEngine, soundEngine, inputHandler));
 

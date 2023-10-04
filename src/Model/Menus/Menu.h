@@ -10,6 +10,7 @@ public:
     enum Option {
         NONE,
         START,
+        LEVEL_EDITOR,
         CONTINUE,
         MAIN_MENU,
 
