@@ -50,7 +50,11 @@ void GameView::drawPlayer() {
 
 void GameView::render(float deltaTime) {
     drawBackground();
-    drawChunks();
+
+    if (Settings::Instance()->getDebugMode()) {
+        drawChunks();
+    }
+
     drawEnemies();
     drawBases();
     drawPlayer();

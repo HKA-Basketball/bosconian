@@ -22,9 +22,10 @@ public:
             Sprite entitySprite(entity->getSpriteInfo(), position);
             renderEngine->renderSprite(entitySprite, entity->getAngle().getDegree(), true);
 
-            // TODO: Config
-            Hitbox hitbox = entity->getHitbox();
-            renderEngine->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
+            if (Settings::Instance()->getDebugMode()) {
+                Hitbox hitbox = entity->getHitbox();
+                renderEngine->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
+            }
         }
     }
 };

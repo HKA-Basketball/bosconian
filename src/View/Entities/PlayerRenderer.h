@@ -14,8 +14,11 @@ public:
         Sprite entitySprite(player->getSpriteInfo(), position);
         renderEngine->renderSprite(entitySprite, player->getAngle().getDegree(), true);
 
-        Hitbox hitbox = player->getHitbox();
-        renderEngine->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
+        if (Settings::Instance()->getDebugMode()) {
+            Hitbox hitbox = player->getHitbox();
+            renderEngine->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(),
+                                                 Config::ColorGreen);
+        }
 
         for (Projectile* projectile : *player->getProjectiles()) {
             drawEntity(projectile);

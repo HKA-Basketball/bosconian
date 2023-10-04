@@ -163,8 +163,17 @@ public:
         return state;
     }
 
+    bool getDebugMode() {
+        return debugMode;
+    }
+
+    void setDebugMode(bool isDebugModeOn) {
+        debugMode = isDebugModeOn;
+    }
+
 private:
     PlayOptions playOptions;
+    bool debugMode = false;
 
     Lives GetLivesFromBits(int bits) {
         switch (bits) {

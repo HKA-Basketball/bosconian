@@ -9,12 +9,14 @@ void MainMenuOptionState::onEnter() {
     Settings* gameSettings = Settings::Instance();
     menuModel->getSwitchItems()->at(Menu::Option::SWA).setState(gameSettings->getSWA());
     menuModel->getSwitchItems()->at(Menu::Option::SWB).setState(gameSettings->getSWB());
+    menuModel->getSwitchItems()->at(Menu::Option::DEBUG).setState(gameSettings->getDebugMode());
 }
 
 void MainMenuOptionState::onExit() {
     Settings* gameSettings = Settings::Instance();
     gameSettings->setSWA(menuModel->getSwitchItems()->at(Menu::Option::SWA).getState());
     gameSettings->setSWB(menuModel->getSwitchItems()->at(Menu::Option::SWB).getState());
+    gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
     menuModel->reset();
 }
 

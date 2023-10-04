@@ -28,10 +28,12 @@ public:
                 Sprite entitySprite(cannon->getSpriteInfo(), position);
                 renderEngine->renderSprite(entitySprite, base->getAngle().getDegree(), true);
 
-                drawCannonHitbox(cannon, position);
+                if (Settings::Instance()->getDebugMode()) {
+                    drawCannonHitbox(cannon, position);
 
-                if (!cannon->isDefeated()) {
-                    drawCannonView(cannon, position);
+                    if (!cannon->isDefeated()) {
+                        drawCannonView(cannon, position);
+                    }
                 }
             }
 
