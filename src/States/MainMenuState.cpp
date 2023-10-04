@@ -15,10 +15,8 @@ void MainMenuState::update(float deltaTime) {
     Menu::Option clickedOption =  menuModel->getClickedOption();
 
     if(clickedOption == Menu::Option::START) {
-        menuModel->reset();
         StateMachine::Instance()->changeState(new RoundStartState(renderEngine, soundEngine, inputHandler));
     } else if(clickedOption == Menu::Option::OPTIONS) {
-        menuModel->reset();
         StateMachine::Instance()->changeState(new MainMenuOptionState(renderEngine, soundEngine, inputHandler));
 
     } else if(clickedOption == Menu::Option::EXIT) {

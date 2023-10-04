@@ -17,7 +17,6 @@ void MainMenuOptionState::onExit() {
     gameSettings->setSWA(menuModel->getSwitchItems()->at(Menu::Option::SWA).getState());
     gameSettings->setSWB(menuModel->getSwitchItems()->at(Menu::Option::SWB).getState());
     gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
-    menuModel->reset();
 }
 
 void MainMenuOptionState::handleInput(float deltaTime) {

@@ -12,7 +12,6 @@ void PauseOptionState::onEnter() {
 void PauseOptionState::onExit() {
     Settings* gameSettings = Settings::Instance();
     gameSettings->setDebugMode(menuModel->getSwitchItems()->at(Menu::Option::DEBUG).getState());
-    menuModel->reset();
 }
 
 void PauseOptionState::handleInput(float deltaTime) {

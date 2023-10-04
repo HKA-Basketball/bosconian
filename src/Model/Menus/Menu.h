@@ -33,11 +33,6 @@ protected:
     ~Menu() = default;
 
 public:
-    void reset() {
-        clickedOption = NONE;
-        isMouseButtonPressed = false;
-    }
-
     virtual void update() {
         clickedOption = NONE;
 
