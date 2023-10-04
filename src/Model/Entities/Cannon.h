@@ -52,7 +52,7 @@ public:
         if (playerInViewArea && playerWithinDistance && elapsedTimeSinceLastShot >= SHOT_COOLDOWN_DURATION && !defeated) {
             elapsedTimeSinceLastShot = 0;
             auto newProjectile = new Projectile(position.getCenterPosition(), targetAngle);
-            newProjectile->setSpeed(650.f);
+            newProjectile->setSpeed(350.f);
             projectiles->push_back(newProjectile);
         }
 
