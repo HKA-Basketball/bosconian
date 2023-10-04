@@ -10,7 +10,6 @@ class LevelEditorModel : public GameModel {
     std::vector<LevelInfo> levelInfos;
 
 public:
-
     explicit LevelEditorModel(SoundEngine* soundEngine, const std::string& configFile = ".\\cfg\\level.ini")
     : GameModel(soundEngine), levelConfig(configFile), levelInfos(levelInfoList) {
         levelConfig.add_item("Levels", "levels", levelInfos);
@@ -69,7 +68,8 @@ public:
     void undoBase(int lvl) {
         for (auto& l : levelInfos) {
             if (l.levelNumber == lvl) {
-                l.basePositions.pop_back();
+                if (!l.basePositions.empty())
+                    l.basePositions.pop_back();
                 return;
             }
         }
