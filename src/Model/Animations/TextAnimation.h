@@ -1,39 +1,55 @@
 #ifndef BOSCONIAN_TEXTANIMATION_H
 #define BOSCONIAN_TEXTANIMATION_H
 
+#include "Animation.h"
+
 #include <string>
 #include <iostream>
 #include <utility>
 
-#include "Animation.h"
-
+/**
+ * @class TextAnimation
+ * @brief Derived class representing a timed text-based animation.
+ *
+ * This class extends the base Animation class to handle animations
+ * based on displaying text for a specific duration.
+ */
 class TextAnimation : public Animation {
-    std::string text;
-    float elapsedTime{0.f};
-    float length{3.f};
+private:
+    std::string text;       ///< Text to be displayed in the animation.
+    float elapsedTime{0.f}; ///< Time passed since the start of the animation.
+    float length{3.f};      ///< Duration the text should be shown (in seconds).
 
 public:
-    explicit TextAnimation(std::string text) : Animation(), text(std::move(text)) {}
+    /**
+     * @brief Constructor that initializes the text animation with given text.
+     *
+     * @param text The text string to be displayed during the animation.
+     */
+    explicit TextAnimation(std::string text);
 
-    void start() override {
-        elapsedTime = 0;
-        Animation::start();
-    }
+    /**
+     * @brief Start the text animation.
+     *
+     * Resets the elapsed time to zero and starts the animation.
+     */
+    void start() override;
 
-    void update(float deltaTime) override {
-        if (!isPlaying) {
-            return;
-        }
+    /**
+     * @brief Update the animation based on the elapsed time.
+     *
+     * Stops the animation once the elapsed time surpasses the defined length.
+     *
+     * @param deltaTime Time elapsed since the last update.
+     */
+    void update(float deltaTime) override;
 
-        elapsedTime += deltaTime;
-        if (elapsedTime >= length) {
-            isPlaying = false;
-        }
-    }
-
-    std::string getText() const {
-        return text;
-    }
+    /**
+     * @brief Get the text associated with this animation.
+     *
+     * @return The text string of the animation.
+     */
+    std::string getText() const;
 
 };
 
