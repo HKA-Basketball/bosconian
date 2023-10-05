@@ -42,7 +42,7 @@ protected:
 
     unsigned int score{0};
     unsigned int highscore{0};
-    unsigned int lives{3};
+    unsigned int lives{Settings::Instance()->getStartLives()};
 
     Condition condition{Condition::GREEN};
 

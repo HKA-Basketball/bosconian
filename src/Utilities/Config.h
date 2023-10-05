@@ -13,7 +13,7 @@ namespace Config {
     const int HUDVerticalOffset = 320;
 
     const int livesVerticalOffset = HUDHeight + HUDVerticalOffset;
-    const int liveSpriteWidth = (HUDWidth / 5) - 16;
+    const int liveSpriteWidth = (HUDWidth / 4) - 16;
     const int liveSpriteHeight = liveSpriteWidth;
 
     const int windowWidth = screenWidth + HUDWidth;

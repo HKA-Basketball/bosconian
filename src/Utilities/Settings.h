@@ -4,10 +4,10 @@
 // Coinage options for gameplay
 enum class Coinage {
     One_One = 0, // Norm
-    One_Tow,
+    One_Two,
     One_Three,
-    Tow_One,
-    Tow_Three,
+    Two_One,
+    Two_Three,
     Three_One,
     Four_One,
     Free_Play
@@ -51,10 +51,10 @@ enum class BonusFighter {
 };
 
 // Starting lives options
-enum class Lives {
-    On = 1,
-    Tow,
-    Three, // Norm
+enum class Lives : unsigned int {
+    One = 1,
+    Two = 2,
+    Three = 3, // Norm
     Five = 5
 };
 
@@ -87,6 +87,10 @@ struct PlayOptions {
 class Settings {
     static Settings* instance;
 
+    PlayOptions playOptions;
+    bool debugMode = false;
+    bool customLevel = false;
+
     Settings() {}
     ~Settings() {}
 
@@ -107,64 +111,13 @@ public:
         instance = nullptr;
     }
 
-    void setSWA(int state) {
-        // Update lives based on swa_6 and swa_7
-        playOptions.lives = GetLivesFromBits((state >> 6) & 0x03);
+    void setSWA(int state);
 
-        // Update coinage based on swa_0, swa_1, and swa_2
-        playOptions.coinage = static_cast<Coinage>((state >> 0) & 0x07);
+    void setSWB(int state);
 
-        // Update bonusFighter based on swa_3 to swa_5 and lives
-        if (playOptions.lives != Lives::Five) {
-            playOptions.bonusFighter = static_cast<BonusFighter>((state >> 3) & 0x07);
-        } else {
-            playOptions.bonusFighter = static_cast<BonusFighter>(8 + ((state >> 3) & 0x07));
-        }
-    }
+    int getSWA() const;
 
-    void setSWB(int state) {
-        playOptions.difficulty = static_cast<Difficulty>((state >> 1) & 0x01 | state & 0x01);
-
-        playOptions.allowContinue = (state >> 2) & 0x01;
-        playOptions.demoSound = (state >> 3) & 0x01;
-        playOptions.freeze = (state >> 4) & 0x01;
-        playOptions.cabinet = static_cast<Cabinet>((state >> 7) & 0x01);
-    }
-
-    int getSWA() const {
-        int state = 0;
-
-        // Get lives as bits from playOptions.lives
-        state |= GetBitsFromLives(playOptions.lives) << 6;
-
-        // Get coinage as bits from playOptions.coinage
-        state |= (static_cast<int>(playOptions.coinage) & 0x07) << 0;
-
-        // Get bonusFighter as bits based on playOptions.lives
-        if (playOptions.lives != Lives::Five) {
-            state |= (static_cast<int>(playOptions.bonusFighter) & 0x07) << 3;
-        } else {
-            state |= ((static_cast<int>(playOptions.bonusFighter) - 8) & 0x07) << 3;
-        }
-
-        return state;
-    }
-
-    int getSWB() const {
-        int state = 0;
-
-        // Get difficulty and state bits from playOptions.difficulty
-        state |= (static_cast<int>(playOptions.difficulty) & 0x01) << 1;
-        state |= (static_cast<int>(playOptions.difficulty) & 0x01) << 0;
-
-        // Get other state bits from playOptions
-        state |= (static_cast<int>(playOptions.allowContinue) & 0x01) << 2;
-        state |= (static_cast<int>(playOptions.demoSound) & 0x01) << 3;
-        state |= (static_cast<int>(playOptions.freeze) & 0x01) << 4;
-        state |= (static_cast<int>(playOptions.cabinet) & 0x01) << 7;
-
-        return state;
-    }
+    int getSWB() const;
 
     bool getDebugMode() {
         return debugMode;
@@ -182,30 +135,13 @@ public:
         customLevel = isCustomLevelOn;
     }
 
+    unsigned int getStartLives() {
+        return static_cast<unsigned int>(playOptions.lives);
+    }
+
 private:
-    PlayOptions playOptions;
-    bool debugMode = false;
-    bool customLevel = false;
-
-    Lives GetLivesFromBits(int bits) {
-        switch (bits) {
-            case 0b00: return Lives::Five;
-            case 0b11: return Lives::On;
-            case 0b10: return Lives::Tow;
-            case 0b01: return Lives::Three;
-            default: return Lives::Three; // Default to Three
-        }
-    }
-
-    int GetBitsFromLives(Lives lives) const {
-        switch (lives) {
-            case Lives::Five: return 0b00;
-            case Lives::On: return 0b11;
-            case Lives::Tow: return 0b10;
-            case Lives::Three: return 0b01;
-            default: return 0b01; // Default to Three
-        }
-    }
+    Lives getLivesFromBits(int bits);
+    int getBitsFromLives(Lives lives) const;
 };
 
 
