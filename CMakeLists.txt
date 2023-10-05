@@ -50,7 +50,7 @@ add_subdirectory(Google_tests)
 #find_package(SDL2 REQUIRED)
 #include_directories(${SDL2_INCLUDE_DIR})
 
-add_executable(bosconian main.cpp includes.h ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(bosconian main.cpp ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 SDL2_image SDL2_mixer SDL2_ttf) #d3d11 dxgi d3dcompiler
 #target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARY})

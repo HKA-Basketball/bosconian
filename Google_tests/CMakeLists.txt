@@ -30,7 +30,7 @@ link_directories(${SDL2_TTF_LIB_DIR})
 
 # 'Google_Tests_run' is the target name
 # 'test1.cpp are source files with tests
-add_executable(Google_Tests_run test1.cpp ../src/Utilities/GlobalVars.cpp ../src/Utilities/GlobalVars.h)
+add_executable(Google_Tests_run test1.cpp)
 
 # Link Google Test libraries and SDL2 libraries
 target_link_libraries(Google_Tests_run gtest gtest_main)
