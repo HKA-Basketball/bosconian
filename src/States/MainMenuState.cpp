@@ -5,6 +5,17 @@
 #include "MainMenuOptionState.h"
 #include "LevelEditorState.h"
 
+void MainMenuState::onEnter() {
+    soundEngine->startBackgroundMusic("sounds/loop.wav");
+}
+
+void MainMenuState::onExit() {
+    if(changedState == States::ROUND_START) {
+        soundEngine->stopBackgroundMusic();
+        soundEngine->playSoundEffect("sounds/round_start.mp3");
+    }
+}
+
 void MainMenuState::handleInput(float deltaTime) {
     menuModel->handleHover(inputHandler->getMousePosition());
     menuModel->handleClick(inputHandler->isMouseButtonPressedAndErase());

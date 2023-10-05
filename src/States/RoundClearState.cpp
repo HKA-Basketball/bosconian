@@ -4,6 +4,7 @@
 #include "RoundStartState.h"
 
 void RoundClearState::onEnter() {
+    soundEngine->playSoundEffect("sounds/round_clear.mp3");
     gameModel->getRoundClearAnimation()->start();
 }
 

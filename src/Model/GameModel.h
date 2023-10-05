@@ -382,7 +382,13 @@ protected:
     }
 
     void hasEntityHitPlayer(Entity* entity) {
-        hasEntityHitEntity(entity, player);
+        if (HitboxManager::areColliding(entity->getHitbox(), player->getHitbox())) {
+            if (!player->isDefeated()) {
+                player->setDefeated();
+                soundEngine->playSoundEffect("sounds/explode.wav");
+                soundEngine->playSoundEffect("sounds/game_over.wav");
+            }
+        }
     }
 
     void haveProjectilesHitEntity(Projectiles* projectiles, Entity* entity) {

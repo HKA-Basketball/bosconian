@@ -18,7 +18,7 @@ class TextAnimation : public Animation {
 private:
     std::string text;       ///< Text to be displayed in the animation.
     float elapsedTime{0.f}; ///< Time passed since the start of the animation.
-    float length{3.f};      ///< Duration the text should be shown (in seconds).
+    float length{6.f};      ///< Duration the text should be shown (in seconds).
 
 public:
     /**

@@ -14,7 +14,6 @@ GameController::GameController() {
     renderEngine = new RenderEngine();
 
     soundEngine = new SoundEngine();
-    soundEngine->startBackgroundMusic("sounds/loop.wav");
 
     inputHandler = new InputHandler();
 

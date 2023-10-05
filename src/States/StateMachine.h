@@ -15,6 +15,7 @@ public:
 
     StateMachine(RenderEngine* renderEngine, SoundEngine* soundEngine, InputHandler* inputHandler) {
         currentState = new MainMenuState(renderEngine, soundEngine, inputHandler);
+        currentState->onEnter();
     }
 
     ~StateMachine() {
