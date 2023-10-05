@@ -1,10 +1,32 @@
 #include "RenderEngine.h"
-#include "../Utilities/Math.h"
 
 #include <cstdio>
 
+#include "../Utilities/Math.h"
+
+RenderEngine::RenderEngine() {
+    InitializeSDL();
+    loadSpritesheet();
+    loadFonts();
+}
+
+RenderEngine::~RenderEngine() {
+    unloadSpritesheet();
+    unloadFonts();
+    CleanupSDL();
+}
+
+void RenderEngine::beginScene() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+}
+
+void RenderEngine::endScene() {
+    SDL_RenderPresent(renderer);
+}
+
 void RenderEngine::InitializeSDL() {
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2"); // needed?
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         // Handle the error, for now just print to stderr
@@ -63,7 +85,7 @@ void RenderEngine::loadFonts() {
     // Check for errors in loading fonts
     for (auto font : fonts) {
         if (!font) {
-            // Handle error
+            fprintf(stderr, "Font could not be initialized! TTF_Error: %s\n", TTF_GetError());
         }
     }
 }
