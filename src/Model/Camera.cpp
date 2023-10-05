@@ -1,8 +1,5 @@
 #include "Camera.h"
 
-// Define the instance pointer
-Camera* Camera::instance = nullptr;
-
 void Camera::centerOn(const Vector2D& newCenter) {
     this->center = newCenter;
 }
@@ -13,7 +10,7 @@ Vector2D Camera::WorldToScreen(const Vector2D& worldPosition) const {
 
 std::optional<Vector2D> Camera::IsInView(const Entity& entity) const {
     // Get the radius for camera and entity
-    float cameraRadius = std::max(size.x, size.y) / 1.25f;
+    float cameraRadius = std::fmax(size.x, size.y) / 1.25f;
 
     SpriteInfo spriteInfo = entity.getSpriteInfo();
     SDL_Rect rect = spriteMap.at(spriteInfo);
