@@ -165,9 +165,20 @@ void RenderEngine::renderRotatedRectangle(const Vector2D &position, const Vector
     SDL_RenderDrawLinesF(renderer, points, 5);
 }
 
-void RenderEngine::renderSprite(Sprite& sprite, float angle, bool centered, SDL_FPoint* center, SDL_RendererFlip flip) const {
+void RenderEngine::renderSprite(Sprite& sprite, float angle, bool centered, float scale, SDL_FPoint* center, SDL_RendererFlip flip) const {
     SDL_Rect srcRect = sprite.getSourceRectangle();
     SDL_FRect destRect = sprite.getDestinationRectangle(centered);
+
+    // Scale the destination rectangle's width and height
+    destRect.w *= scale;
+    destRect.h *= scale;
+
+    // If the sprite is centered, adjust the x and y coordinates
+    if(centered) {
+        destRect.x -= (destRect.w - destRect.w / scale) / 2.0f;
+        destRect.y -= (destRect.h - destRect.h / scale) / 2.0f;
+    }
+
     SDL_RenderCopyExF(renderer, spritesheet, &srcRect, &destRect, angle, center, flip);
 }
 

@@ -9,21 +9,29 @@ public:
     BaseRenderer(RenderEngine* renderEngine, Camera* camera) : EntityRenderer(renderEngine, camera) {}
 
     void drawBase(Base* base) {
-        drawEntity(base);
-
-        /*std::optional<Vector2D> renderPosition = camera->IsInView(*base);
-        if (renderPosition) {
+        std::optional<Vector2D> renderPosition = camera->IsInView(*base);
+        if (renderPosition.has_value()) {
             Vector2D position = camera->WorldToScreen(renderPosition.value());
-            renderEngine->renderRotatedRectangle(position, base->getTotalSize(), base->getHitbox().getAngle(), Config::ColorGrey);
-        }*/
+
+            Sprite entitySprite(base->getSpriteInfo(), position);
+
+            float scale = base->getSpriteInfo() == SpriteInfo::CORE ? 1.f : 5.f;
+            renderEngine->renderSprite(entitySprite, base->getAngle().getDegree(), true, scale);
+
+            if (Settings::Instance()->getDebugMode()) {
+                Hitbox hitbox = base->getHitbox();
+                renderEngine->renderRotatedRectangle(position, hitbox.getSize(), hitbox.getAngle(), Config::ColorGreen);
+                renderEngine->renderRotatedRectangle(position, base->getTotalSize(), base->getHitbox().getAngle(), Config::ColorGrey);
+            }
+        }
 
         if (base->getSpy()->isLoaded()) {
             drawEntity(base->getSpy());
         }
 
         for (Cannon* cannon : *base->getCannons()) {
-            std::optional<Vector2D> renderPosition = camera->IsInView(*cannon);
-            if (renderPosition.has_value()) {
+            renderPosition = camera->IsInView(*cannon);
+            if (renderPosition.has_value() && !base->isDefeated()) {
                 Vector2D position = camera->WorldToScreen(renderPosition.value());
                 Sprite entitySprite(cannon->getSpriteInfo(), position);
                 renderEngine->renderSprite(entitySprite, base->getAngle().getDegree(), true);

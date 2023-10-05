@@ -123,10 +123,11 @@ public:
      * @param sprite Reference to the sprite to be rendered.
      * @param angle Rotation angle for the sprite.
      * @param centered If true, the sprite will be rendered based on its center.
+     * @param centered How much the sprite should be scaled.
      * @param center Custom center point for the sprite rotation (if provided).
      * @param flip Flip configuration for the sprite.
      */
-    void renderSprite(Sprite& sprite, float angle = 0.0, bool centered = false, SDL_FPoint* center = nullptr,
+    void renderSprite(Sprite& sprite, float angle = 0.0, bool centered = false, float scale = 1.0f, SDL_FPoint* center = nullptr,
                       SDL_RendererFlip flip = SDL_FLIP_NONE) const;
 
     /**
