@@ -90,6 +90,9 @@ class Settings {
     Settings() {}
     ~Settings() {}
 
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
+
 public:
     static Settings* Instance() {
         if (!instance) {
