@@ -84,9 +84,19 @@ public:
 
         initLevel();
         initBonusFighter();
+
+        // Get Highscore
+        IniLike levelConfig(".\\cfg\\score.ini");
+        levelConfig.add_item("HallOfFame", "hi-score", highscore);
+        levelConfig.read();
     }
 
     ~GameModel() {
+        // Set Highscore
+        IniLike levelConfig(".\\cfg\\score.ini");
+        levelConfig.add_item("HallOfFame", "hi-score", highscore);
+        levelConfig.write();
+
         delete levelManager;
         delete world;
         delete background;
@@ -102,6 +112,10 @@ public:
     }
 
     virtual void update(float deltaTime) {
+        if (score > highscore) {
+            highscore = score;
+        }
+
         player->update(deltaTime);
         *playerPosition = player->getPosition();
         camera->centerOn(player->getPosition());
