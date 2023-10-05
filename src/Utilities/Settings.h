@@ -139,6 +139,10 @@ public:
         return static_cast<unsigned int>(playOptions.lives);
     }
 
+    BonusFighter getBonusFighter() {
+        return playOptions.bonusFighter;
+    }
+
 private:
     Lives getLivesFromBits(int bits);
     int getBitsFromLives(Lives lives) const;

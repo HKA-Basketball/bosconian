@@ -42,6 +42,8 @@ protected:
 
     unsigned int score{0};
     unsigned int highscore{0};
+
+    unsigned int nextLive{0};
     unsigned int lives{Settings::Instance()->getStartLives()};
 
     Condition condition{Condition::GREEN};
@@ -81,6 +83,7 @@ public:
         player = new Player({0, 0}, 0);
 
         initLevel();
+        initBonusFighter();
     }
 
     ~GameModel() {
@@ -110,6 +113,7 @@ public:
         updateBases(deltaTime);
 
         updateCondition();
+        updateBonusFighter();
 
         clearDeadProjectiles(player->getProjectiles());
         clearDeadEnemies();
@@ -271,6 +275,104 @@ protected:
                 }
             }
         }
+    }
+    void initBonusFighter() {
+        BonusFighter bonusFighter = Settings::Instance()->getBonusFighter();
+
+        switch (bonusFighter) {
+            default:
+                break;
+            case BonusFighter::Opt0_0:
+                nextLive = 10000;
+                break;
+            case BonusFighter::Opt0_1:
+            case BonusFighter::Opt0_2:
+            case BonusFighter::Opt0_3:
+            case BonusFighter::Opt1_0:
+                nextLive = 15000;
+                break;
+            case BonusFighter::Opt0_4:
+            case BonusFighter::Opt0_5:
+            case BonusFighter::Opt1_1:
+            case BonusFighter::Opt1_2:
+                nextLive = 20000;
+                break;
+            case BonusFighter::Opt0_6:
+            case BonusFighter::Opt1_3:
+            case BonusFighter::Opt1_4:
+            case BonusFighter::Opt1_5:
+            case BonusFighter::Opt1_6:
+                nextLive = 30000;
+                break;
+        }
+    }
+
+    void updateBonusFighter() {
+        BonusFighter bonusFighter = Settings::Instance()->getBonusFighter();
+
+        if (score < nextLive || bonusFighter == BonusFighter::None || nextLive == UINT32_MAX) {
+            return;
+
+        } else {
+            raiseLives();
+        }
+
+        switch (bonusFighter) {
+            default:
+                break;
+            case BonusFighter::Opt0_0:
+                nextLive = nextLive == 10000 ? 50000 : nextLive;
+                nextLive = nextLive >= 50000 ? nextLive + 50000 : nextLive;
+                break;
+            case BonusFighter::Opt0_1:
+                nextLive = nextLive == 15000 ? 50000 : nextLive;
+                nextLive = nextLive == 50000 ? UINT32_MAX : nextLive;
+            case BonusFighter::Opt0_2:
+                nextLive = nextLive == 15000 ? 50000 : nextLive;
+                nextLive = nextLive >= 50000 ? nextLive + 50000 : nextLive;
+            case BonusFighter::Opt0_3:
+                nextLive = nextLive == 15000 ? 70000 : nextLive;
+                nextLive = nextLive >= 70000 ? nextLive + 70000 : nextLive;
+            case BonusFighter::Opt0_4:
+                nextLive = nextLive == 20000 ? 70000 : nextLive;
+                nextLive = nextLive == 70000 ? UINT32_MAX : nextLive;
+            case BonusFighter::Opt0_5:
+                nextLive = nextLive == 20000 ? 70000 : nextLive;
+                nextLive = nextLive >= 70000 ? nextLive + 70000 : nextLive;
+            case BonusFighter::Opt0_6:
+                nextLive = nextLive == 30000 ? 100000 : nextLive;
+                nextLive = nextLive >= 100000 ? nextLive + 100000 : nextLive;
+                break;
+            case BonusFighter::Opt1_0:
+                nextLive = nextLive == 15000 ? 70000 : nextLive;
+                nextLive = nextLive == 70000 ? UINT32_MAX : nextLive;
+                break;
+            case BonusFighter::Opt1_1:
+                nextLive = nextLive == 20000 ? 100000 : nextLive;
+                nextLive = nextLive == 100000 ? UINT32_MAX : nextLive;
+                break;
+            case BonusFighter::Opt1_2:
+                nextLive = nextLive == 20000 ? 70000 : nextLive;
+                nextLive = nextLive == 70000 ? UINT32_MAX : nextLive;
+                break;
+            case BonusFighter::Opt1_3:
+                nextLive = nextLive == 30000 ? 120000 : nextLive;
+                nextLive = nextLive == 120000 ? UINT32_MAX : nextLive;
+                break;
+            case BonusFighter::Opt1_4:
+                nextLive = nextLive == 30000 ? 100000 : nextLive;
+                nextLive = nextLive >= 100000 ? nextLive + 100000 : nextLive;
+                break;
+            case BonusFighter::Opt1_5:
+                nextLive = nextLive == 30000 ? 120000 : nextLive;
+                nextLive = nextLive >= 120000 ? nextLive + 120000 : nextLive;
+                break;
+            case BonusFighter::Opt1_6:
+                nextLive = nextLive == 30000 ? 80000 : nextLive;
+                nextLive = nextLive >= 80000 ? nextLive + 80000 : nextLive;
+                break;
+        }
+
     }
 
     void haveProjectilesHitPlayer(Projectiles* projectiles) {
