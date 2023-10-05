@@ -4,7 +4,6 @@
 #include <random>
 #include <vector>
 
-
 namespace Random {
 
     /**
@@ -23,14 +22,33 @@ namespace Random {
      */
     float randomFloat(float min, float max);
 
+    /**
+     * @brief Returns a randomly-selected value from the provided arguments.
+     *
+     * This function accepts a variable number of arguments of type `T` and
+     * returns one of them selected at random.
+     *
+     * @tparam T The type of the values to be considered.
+     * @tparam Args Variadic template type for the values.
+     * @param first The first value.
+     * @param args Additional values.
+     * @return A randomly-selected value from the provided arguments.
+     *
+     * @example
+     * int randomVal = getRandomOne(1, 2, 3, 4, 5); // could return any value between 1 and 5
+     */
     template <typename T, typename... Args>
     T getRandomOne(T first, Args... args) {
         std::vector<T> values = {first, args...};
 
+        // Initialize the random engine
         std::random_device rd;
         std::mt19937 gen(rd());
+
+        // Initialize the distribution
         std::uniform_int_distribution<size_t> dist(0, values.size() - 1);
 
+        // Generate a random element
         return values[dist(gen)];
     }
 
