@@ -30,9 +30,6 @@ set(SDL2_MIXER_LIB_DIR lib/SDL2_mixer-2.6.3/lib/x64)
 set(SDL2_TTF_INCLUDE_DIR lib/SDL2_ttf-2.20.2/include)
 set(SDL2_TTF_LIB_DIR lib/SDL2_ttf-2.20.2/lib/x64)
 
-#set(D3D_INCLUDE_DIR lib/Direct3D/Include)
-#set(D3D_LIB_DIR lib/Direct3D/Lib/x64)
-
 include_directories(${SDL2_INCLUDE_DIR})
 link_directories(${SDL2_LIB_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
@@ -41,11 +38,9 @@ include_directories(${SDL2_MIXER_INCLUDE_DIR})
 link_directories(${SDL2_MIXER_LIB_DIR})
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 link_directories(${SDL2_TTF_LIB_DIR})
-#include_directories(${D3D_INCLUDE_DIR})
-#link_directories(${D3D_LIB_DIR})
 
 # Add Google Tests
-add_subdirectory(Google_tests)
+add_subdirectory(tests)
 
 #find_package(SDL2 REQUIRED)
 #include_directories(${SDL2_INCLUDE_DIR})

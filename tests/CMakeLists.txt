@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.24)
+
 # 'Google_test' is the subproject name
 project(Google_tests)
 
@@ -30,7 +32,19 @@ link_directories(${SDL2_TTF_LIB_DIR})
 
 # 'Google_Tests_run' is the target name
 # 'test1.cpp are source files with tests
-add_executable(Google_Tests_run test1.cpp)
+add_executable(Google_Tests_run main.cpp utilities_test.cpp physics_test.cpp
+
+        ../src/Utilities/Math.cpp ../src/Utilities/Math.h
+        ../src/Utilities/Random.cpp ../src/Utilities/Random.h
+        ../src/Utilities/Vector2D.h
+        ../src/Utilities/Degree.cpp ../src/Utilities/Degree.h
+        ../src/Utilities/Config.h
+        ../src/Model/World.h
+
+        # For physics test
+        ../src/Physics/Hitbox.cpp ../src/Physics/Hitbox.h
+        ../src/Physics/HitboxManager.cpp ../src/Physics/HitboxManager.h
+)
 
 # Link Google Test libraries and SDL2 libraries
 target_link_libraries(Google_Tests_run gtest gtest_main)
