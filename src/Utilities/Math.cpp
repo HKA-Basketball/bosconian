@@ -1,6 +1,6 @@
 #include "Math.h"
 
-float Math::randomInt(const int min, const int max) {
+int Math::randomInt(const int min, const int max) {
     // Initialize the random engine
     std::random_device rd;
     std::mt19937 gen(rd());
