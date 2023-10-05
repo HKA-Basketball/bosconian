@@ -127,6 +127,7 @@ public:
         camera->centerOn(player->getPosition());
         condition = Condition::GREEN;
         for (Base* base : *bases) base->resetProjectiles();
+        spawnEnemies();
     }
 
     void nextRound() {
