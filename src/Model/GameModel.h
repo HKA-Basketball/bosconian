@@ -18,6 +18,7 @@
 #include "Entities/Base.h"
 
 #include "Animations/TextAnimation.h"
+#include "../Utilities/Random.h"
 #include "../Utilities/Settings.h"
 #include "../Utilities/IniLike.h"
 
@@ -224,7 +225,7 @@ protected:
         }
 
         if (bases->size() > 0) {
-            activeSpy = bases->at(Math::randomInt(0, bases->size() - 1))->getSpy();
+            activeSpy = bases->at(Random::randomInt(0, bases->size() - 1))->getSpy();
             activeSpy->searchForPlayer();
         }
 
@@ -255,17 +256,17 @@ protected:
         int shipsPerChunk = shipsToSpawn / totalUnoccupiedChunks; // evenly distribute ships among chunks
 
         for (const Chunk& chunk : world->getUnoccupiedChunks()) {
-            std::vector<Vector2D> positions = predefinedPositions.at(Math::randomInt(0, predefinedPositions.size() - 1));
+            std::vector<Vector2D> positions = predefinedPositions.at(Random::randomInt(0, predefinedPositions.size() - 1));
 
             int shipsInThisChunk = 0;
             for (Vector2D& position : positions) {
                 position.x += chunk.x;
                 position.y += chunk.y;
 
-                if (shipsInThisChunk < shipsPerChunk || Math::randomFloat(0.0f, 1.0f) > 0.20f) {
-                    enemies->push_back(new Obstacle(position, Math::randomFloat(0, 359)));
+                if (shipsInThisChunk < shipsPerChunk || Random::randomFloat(0.0f, 1.0f) > 0.20f) {
+                    enemies->push_back(new Obstacle(position, Random::randomFloat(0, 359)));
                 } else {
-                    enemies->push_back(new Ship(position, Math::randomFloat(0, 359), playerPosition));
+                    enemies->push_back(new Ship(position, Random::randomFloat(0, 359), playerPosition));
                     shipsInThisChunk++;
                 }
             }

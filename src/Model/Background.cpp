@@ -7,19 +7,19 @@ Star::Star() {
 }
 
 void Star::randomizePosition() {
-    rect.x = Math::randomFloat(0, Config::levelWidth * Config::parallaxFactor); // 3000 * 0.6f
-    rect.y = Math::randomFloat(0, Config::levelHeight * Config::parallaxFactor); // 4000 * 0.6f
+    rect.x = Random::randomFloat(0, Config::levelWidth * Config::parallaxFactor); // 3000 * 0.6f
+    rect.y = Random::randomFloat(0, Config::levelHeight * Config::parallaxFactor); // 4000 * 0.6f
 }
 
 void Star::randomizeSize() {
-    rect.w = rect.h = Math::randomFloat(0.5f, 5.5f);
+    rect.w = rect.h = Random::randomFloat(0.5f, 5.5f);
 }
 
 void Star::randomizeColor() {
-    color.r = Math::randomInt(0, 255);
-    color.g = Math::randomInt(0, 255);
-    color.b = Math::randomInt(0, 255);
-    color.a = Math::randomInt(0, 255);
+    color.r = Random::randomInt(0, 255);
+    color.g = Random::randomInt(0, 255);
+    color.b = Random::randomInt(0, 255);
+    color.a = Random::randomInt(0, 255);
 }
 
 Background::Background() {

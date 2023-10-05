@@ -6,6 +6,7 @@
 
 #include "Camera.h"
 #include "../Utilities/Math.h"
+#include "../Utilities/Random.h"
 #include "../Utilities/Config.h"
 
 /**
