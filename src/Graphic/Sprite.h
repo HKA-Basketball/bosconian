@@ -6,50 +6,64 @@
 #include "SpriteInfo.h"
 #include "../Utilities/Vector2D.h"
 
+/**
+ * @class Sprite
+ * @brief Represents a graphical sprite with source and destination rectangles.
+ *
+ * The Sprite class encapsulates the information and behavior of a graphical sprite element.
+ * This includes its source rectangle (on the spritesheet) and its destination rectangle (on the screen).
+ */
 class Sprite {
 private:
-    SDL_Rect srcRect;
-    SDL_FRect destRect;
+    SDL_Rect srcRect;     //!< Source rectangle on the spritesheet.
+    SDL_FRect destRect;   //!< Destination rectangle on the screen.
 
 public:
-    explicit Sprite(SpriteInfo spriteInfo) {
-        srcRect = spriteMap.at(spriteInfo);
-        destRect.x = static_cast<float>(srcRect.x);
-        destRect.y = static_cast<float>(srcRect.y);
-        destRect.w = static_cast<float>(srcRect.w);
-        destRect.h = static_cast<float>(srcRect.h);
-    }
+    /**
+     * @brief Construct a Sprite from a SpriteInfo.
+     * @param spriteInfo The information about the sprite.
+     */
+    explicit Sprite(SpriteInfo spriteInfo);
 
-    Sprite(SpriteInfo spriteInfo, const Vector2D& position) : Sprite(spriteInfo) {
-        setPosition(position);
-    }
+    /**
+     * @brief Construct a Sprite from a SpriteInfo and position.
+     * @param spriteInfo The information about the sprite.
+     * @param position The position of the sprite.
+     */
+    Sprite(SpriteInfo spriteInfo, const Vector2D& position);
 
-    Sprite(SpriteInfo spriteInfo, const Vector2D& position, const Vector2D& size) : Sprite(spriteInfo, position) {
-        setSize(size);
-    }
+    /**
+     * @brief Construct a Sprite from a SpriteInfo, position, and size.
+     * @param spriteInfo The information about the sprite.
+     * @param position The position of the sprite.
+     * @param size The size of the sprite.
+     */
+    Sprite(SpriteInfo spriteInfo, const Vector2D& position, const Vector2D& size);
 
-    void setPosition(const Vector2D& newPosition) {
-        destRect.x = newPosition.x;
-        destRect.y = newPosition.y;
-    }
+    /**
+     * @brief Set the position of the sprite.
+     * @param newPosition The new position.
+     */
+    void setPosition(const Vector2D& newPosition);
 
-    void setSize(const Vector2D& newSize) {
-        destRect.w = newSize.x;
-        destRect.h = newSize.y;
-    }
+    /**
+     * @brief Set the size of the sprite.
+     * @param newSize The new size.
+     */
+    void setSize(const Vector2D& newSize);
 
-    SDL_Rect getSourceRectangle() {
-        return srcRect;
-    }
+    /**
+     * @brief Get the source rectangle of the sprite.
+     * @return The source rectangle.
+     */
+    SDL_Rect getSourceRectangle();
 
-    SDL_FRect getDestinationRectangle(bool centered = false) {
-        SDL_FRect updatedDestRect = destRect;
-        if(centered) {
-            updatedDestRect.x = destRect.x - (destRect.w / 2);
-            updatedDestRect.y = destRect.y - (destRect.h / 2);
-        }
-        return updatedDestRect;
-    }
+    /**
+     * @brief Get the destination rectangle of the sprite.
+     * @param centered Whether or not the destination should be centered.
+     * @return The destination rectangle.
+     */
+    SDL_FRect getDestinationRectangle(bool centered = false);
 };
 
 
