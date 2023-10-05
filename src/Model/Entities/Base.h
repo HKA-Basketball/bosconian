@@ -28,7 +28,7 @@ private:
 
 public:
     explicit Base(const Vector2D& position, const Degree angle, Position* playerPositions) : Entity(position, angle) {
-        spriteInfo = SpriteInfo::KERN;
+        spriteInfo = SpriteInfo::CORE;
         hitbox = {{0, 0}, {30, 45}};
         points = 1500;
 

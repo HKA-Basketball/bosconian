@@ -21,7 +21,7 @@ protected:
 
     SpriteInfo spriteInfo = SpriteInfo::PLAYER;
     Hitbox hitbox{{0, 0}, {50, 50}};
-    SpriteAnimation explosion = {{SpriteInfo::ASTRO_EXPLO_01, SpriteInfo::ASTRO_EXPLO_02, SpriteInfo::ASTRO_EXPLO_03}};
+    SpriteAnimation explosion = {{SpriteInfo::EXPLOSION_01, SpriteInfo::EXPLOSION_02, SpriteInfo::EXPLOSION_03}};
 
 public:
     explicit Entity(const Vector2D& position, const Degree angle) : position(position), angle(angle) {

@@ -12,9 +12,9 @@ public:
     explicit Obstacle(const Vector2D& position, const Degree angle) : Entity(position, angle) {
         spriteInfo = Random::getRandomOne(
                 SpriteInfo::BOMB,
-                SpriteInfo::ASTROID_01,
-                SpriteInfo::ASTROID_02,
-                SpriteInfo::ASTROID_03
+                SpriteInfo::ASTEROID_01,
+                SpriteInfo::ASTEROID_02,
+                SpriteInfo::ASTEROID_03
         );
         switch (spriteInfo) {
             default:
