@@ -37,8 +37,4 @@ public:
     }
 };
 
-// Usage:
-// LevelManager manager(levels);
-// auto levelInfoForRound20 = manager.getLevelInfo(20);
-
 #endif //BOSCONIAN_LEVELMANAGER_H
