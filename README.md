@@ -6,13 +6,13 @@ Richtung: w, a, s, d
 Schießen: Strg
 
 ## Level Editor Steuerung
-Richtung: w, a, s, d
-Add Base: B
-Set Player Spawn: P
-Undo Base: U
-Save in file: K
-Next Level: M
-Previous Level: N
+Richtung: w, a, s, d\
+Add Base: B\
+Set Player Spawn: P\
+Undo Base: U\
+Save in file: K\
+Next Level: M\
+Previous Level: N\
 
 ## Bilder
 ![Screenshot 2023-06-26 205327](https://github.com/HKA-Basketball/bosconian/assets/36378780/66cae839-ca84-4967-bff0-5ee35cc85695)
