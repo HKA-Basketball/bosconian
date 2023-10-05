@@ -25,8 +25,7 @@ protected:
 
 public:
     explicit Entity(const Vector2D& position, const Degree angle) : position(position), angle(angle) {
-        /* TODO Hitbox in Sprite size */
-        //hitbox = {position, {static_cast<float>(spriteMap.at(spriteInfo).w), static_cast<float>(spriteMap.at(spriteInfo).h)}};
+        hitbox = {position, {static_cast<float>(spriteMap.at(spriteInfo).w), static_cast<float>(spriteMap.at(spriteInfo).h)}};
     }
 
     virtual void update(float deltaTime) {

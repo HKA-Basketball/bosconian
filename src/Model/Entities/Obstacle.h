@@ -16,6 +16,12 @@ public:
                 SpriteInfo::ASTEROID_02,
                 SpriteInfo::ASTEROID_03
         );
+
+        hitbox = {position, {
+                static_cast<float>(spriteMap.at(spriteInfo).w),
+                static_cast<float>(spriteMap.at(spriteInfo).h)}
+        };
+
         switch (spriteInfo) {
             default:
                 points = 10;
